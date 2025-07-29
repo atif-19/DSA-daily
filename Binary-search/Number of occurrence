@@ -1,0 +1,54 @@
+// 🔍 Problem: Given a sorted array and a target, count how many times the target appears.
+// Important: Use binary search to achieve O(log n) time.
+
+class Solution {  
+public:  
+    int countFreq(vector<int>& arr, int target) {  
+        int start = 0, end = arr.size() - 1, mid;  
+        int first = -1, last = -1;  // To store the first and last occurrence of the target  
+  
+        // 👉 Step 1: Find the first occurrence using binary search  
+        while (start <= end) {  
+            mid = start + (end - start) / 2;  
+  
+            if (arr[mid] == target) {  
+                first = mid;       // Potential first occurrence found  
+                end = mid - 1;     // Keep searching in the left half  
+            }  
+            else if (arr[mid] < target) {  
+                start = mid + 1;   // Target must be on the right  
+            }  
+            else {  
+                end = mid - 1;     // Target must be on the left  
+            }  
+        }  
+  
+        // ❌ If first occurrence not found, target doesn't exist  
+        if (first == -1)  
+            return 0;  
+  
+        // 👉 Step 2: Find the last occurrence using binary search  
+        start = first;             // No need to search before `first` again  
+        end = arr.size() - 1;  
+  
+        while (start <= end) {  
+            mid = start + (end - start) / 2;  
+  
+            if (arr[mid] == target) {  
+                last = mid;        // Potential last occurrence  
+                start = mid + 1;   // Look further right  
+            }  
+            else if (arr[mid] < target) {  
+                start = mid + 1;  
+            }  
+            else {  
+                end = mid - 1;  
+            }  
+        }  
+  
+        // 🧮 Step 3: Return the frequency  
+        return last - first + 1;  
+    }  
+};
+
+//problem similar to first and last occurrence 
