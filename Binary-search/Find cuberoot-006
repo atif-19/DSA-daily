@@ -1,0 +1,42 @@
+// 🔍 Problem: Find the cube root of a given integer `n`
+// Return the **floor** of cube root (i.e., greatest integer whose cube <= n)
+// Use binary search to achieve O(log n) time complexity
+
+class Solution {
+public:
+    int cubeRoot(int n) {
+        // 🔹 Edge case: cube root of 1 is 1
+        if (n == 1)
+            return 1;
+
+        int start = 1, end = n / 2, mid;
+        int ans = 1;
+
+        // 🔁 Binary Search for cube root
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            // ⚠️ Important: Use long long to avoid overflow
+            long long cube = 1LL * mid * mid * mid;
+
+            if (cube == n) {
+                // ✅ Perfect cube found
+                ans = mid;
+                break; // optional, but avoids unnecessary iterations
+            }
+            else if (cube < n) {
+                // 🔼 Go right to find bigger cube roots
+                ans = mid;        // Save current as potential answer
+                start = mid + 1;
+            }
+            else {
+                // 🔽 Go left to find smaller cube roots
+                end = mid - 1;
+            }
+        }
+
+        // 🧠 Flashcard: What if `n` isn't a perfect cube?
+        // Return the floor of cube root → the last mid where cube < n
+        return ans;
+    }
+};
