@@ -1,0 +1,33 @@
+// 🔥 LeetCode: 153. Find Minimum in Rotated Sorted Array
+// Binary Search for the smallest element (pivot) in a rotated sorted array
+
+class Solution {
+public:
+    int findMin(vector<int>& nums) {
+        // 🧠 Edge Case: Already sorted array (no rotation)
+        if (nums[0] <= nums[nums.size() - 1]) 
+            return nums[0];
+
+        int start = 1, end = nums.size() - 1, mid;
+
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            // 📌 FLASHCARD: How do we detect the pivot?
+            // If current element is less than previous, it's the pivot!
+            if (nums[mid] < nums[mid - 1]) 
+                return nums[mid];
+
+            // ⚠️ Important: Which side to go?
+            // If mid is smaller than the last element → pivot is to the left
+            else if (nums[mid] < nums[nums.size() - 1]) 
+                end = mid - 1;
+            // Else, pivot is to the right
+            else 
+                start = mid + 1;
+        }
+
+        // ❌ Just a fallback (not expected to hit this line)
+        return -1;
+    }
+};
