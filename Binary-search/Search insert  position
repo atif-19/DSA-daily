@@ -1,0 +1,50 @@
+class Solution {
+public:
+    int searchInsert(vector<int>& nums, int target) {
+        int start = 0, end = nums.size() - 1, mid;
+
+        // Standard Binary Search Loop
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            if (nums[mid] == target)
+                return mid;  // Found target, return its index
+
+            else if (nums[mid] < target)
+                start = mid + 1;  // Look right
+
+            else
+                end = mid - 1;    // Look left
+        }
+
+        // If target not found, return index where it would be inserted
+        return start;
+    }
+};
+
+
+/*
+───────────────────────────────────────────────
+🧠 TL;DR for Future Me:
+
+🔍 Goal:
+    - Return the index of the target if found.
+    - Otherwise, return the index where it should be inserted to keep the array sorted.
+
+🔁 How it works:
+    - Classic binary search.
+    - If target found → return index.
+    - If not found → 'start' will be at the correct insert position.
+
+⏱️ Time Complexity:
+    - O(log n) — efficient!
+
+🗃️ Space Complexity:
+    - O(1) — no extra memory used.
+
+📌 Edge Cases:
+    - Empty array → returns 0
+    - Target smaller than all elements → returns 0
+    - Target larger than all → returns nums.size()
+───────────────────────────────────────────────
+*/
