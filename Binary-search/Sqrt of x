@@ -1,0 +1,44 @@
+// Problem: Find the integer square root of a non-negative number `x`.
+// That means: return the largest integer whose square is <= x.
+//
+// Constraints:
+// - Do not use built-in functions like sqrt().
+// - Time complexity must be better than O(n). Use Binary Search! 💯
+
+class Solution {
+public:
+    int mySqrt(int x) {
+        // Base cases: sqrt(0) = 0 and sqrt(1) = 1
+        if (x == 0 || x == 1)
+            return x;
+
+        // We initialize our search range
+        // Why end = x/2? Because for any x > 1, sqrt(x) <= x/2
+        int start = 1, end = x / 2;
+        int mid, ans = 0;
+
+        // Binary Search to find the integer square root
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            // We avoid using mid*mid because it might overflow for large x
+            if (mid == x / mid) {
+                // Found exact square root
+                ans = mid;
+                break;
+            }
+            else if (mid < x / mid) {
+                // mid*mid < x, so this could be our potential answer
+                ans = mid;         // Save it, but maybe there's a larger valid one
+                start = mid + 1;   // Move to the right half
+            }
+            else {
+                // mid*mid > x, so we need smaller numbers
+                end = mid - 1;
+            }
+        }
+
+        // Return the floor value of sqrt(x)
+        return ans;
+    }
+};
