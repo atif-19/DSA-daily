@@ -1,0 +1,36 @@
+// 🔍 Problem: Given a sorted binary array (only 1s followed by 0s),
+// count the number of 0s using binary search.
+//
+// Example: arr = [1,1,1,0,0,0] ➤ Output: 3
+
+class Solution {
+public:
+    int countZeroes(vector<int> &arr) {
+        int start = 0, end = arr.size() - 1, mid;
+        int first_Occurrence = -1;  // To store index of first 0
+
+        // 👉 Step 1: Binary Search for the FIRST 0
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            if (arr[mid] == 0) {
+                // 🔎 Found a 0, but might be an earlier one → move left
+                first_Occurrence = mid;
+                end = mid - 1;
+            } else {
+                // 🧭 Keep looking on the right half
+                start = mid + 1;
+            }
+        }
+
+        // ❌ Flashcard: What if there's no 0 in the array?
+        // → Then first_Occurrence will remain -1, so return 0
+        if (first_Occurrence == -1)
+            return 0;
+
+        // ✅ Flashcard: How many 0s are there from first 0 to the end?
+        // → Total count = arr.size() - first_Occurrence
+        int ans = arr.size() - first_Occurrence;
+        return ans;
+    }
+};
