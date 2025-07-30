@@ -1,0 +1,51 @@
+/*
+🧠 Problem: Find the Equilibrium Point in an Array
+
+📄 Description:
+Given an array `arr[]` of `n` integers, find an index such that the sum of elements at lower indexes 
+is equal to the sum of elements at higher indexes. 
+If no such index exists, return -1. If there are multiple such points, return the first one (0-based index).
+
+✅ Constraints:
+- 1 <= n <= 10^6
+- -10^8 <= arr[i] <= 10^8
+
+💡 Example:
+Input: arr[] = {-7, 1, 5, 2, -4, 3, 0}
+Output: 3
+Explanation: Index 3 is the equilibrium point because:
+Left sum = (-7 + 1 + 5) = -1, Right sum = (-4 + 3 + 0) = -1
+
+Approach:
+- First calculate total sum of the array
+- Iterate through the array while maintaining the left sum
+- Right sum can be calculated as totalSum - currentElement - leftSum
+- If leftSum == rightSum, return index
+
+*/
+
+class Solution {
+  public:
+    // Function to find equilibrium point in the array.
+    int findEquilibrium(vector<int> &arr) {
+        // Step 1: Take the total sum
+        int TotalSum = 0;
+        for (int i = 0; i < arr.size(); i++)
+            TotalSum += arr[i];
+
+        int LeftSum = 0; // to compare with right sum
+
+        // Step 2: Start comparison loop
+        for (int i = 0; i < arr.size(); i++) {
+            TotalSum -= arr[i]; // now TotalSum represents the right sum
+
+            // we don’t count the current element in any sum
+            if (LeftSum == TotalSum)
+                return i;
+
+            LeftSum += arr[i]; // update left sum
+        }
+
+        return -1; // if no equilibrium index found
+    }
+};
