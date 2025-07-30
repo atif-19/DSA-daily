@@ -1,0 +1,71 @@
+/*
+🧠 Problem: Union of Two Sorted Arrays
+
+📄 Description:
+Given two sorted arrays `a[]` and `b[]` of sizes `n` and `m` respectively, 
+your task is to find the union of the two arrays. 
+The union of two arrays includes **all the distinct elements** from both arrays, sorted in ascending order.
+
+✅ Constraints:
+- Both arrays are already sorted
+- Arrays may have duplicates, but the result should have only unique elements
+
+💡 Example:
+Input:
+a[] = {1, 2, 4, 5, 6}
+b[] = {2, 3, 5, 7}
+Output:
+{1, 2, 3, 4, 5, 6, 7}
+
+🛠️ Approach:
+- Use two pointers to traverse both arrays
+- At each step, compare elements of both arrays and push the smaller one (if it's not already added)
+- If elements are equal, push only one of them and move both pointers
+- After the loop, add remaining elements from both arrays (ensuring uniqueness)
+
+🕒 Time Complexity: O(n + m)
+🛢️ Space Complexity: O(n + m) for storing the answer
+*/
+
+class Solution {
+  public:
+    vector<int> findUnion(vector<int> &a, vector<int> &b) {
+        vector<int> ans;
+        int i = 0, j = 0;
+
+        while (i < a.size() && j < b.size()) {
+            if (a[i] == b[j]) {
+                if (ans.empty() || ans.back() != a[i])
+                    ans.push_back(a[i]);
+                i++;
+                j++;
+            }
+            else if (a[i] < b[j]) {
+                if (ans.empty() || ans.back() != a[i])
+                    ans.push_back(a[i]);
+                i++;
+            }
+            else {
+                if (ans.empty() || ans.back() != b[j])
+                    ans.push_back(b[j]);
+                j++;
+            }
+        }
+
+        // Add remaining elements from array a
+        while (i < a.size()) {
+            if (ans.empty() || ans.back() != a[i])
+                ans.push_back(a[i]);
+            i++;
+        }
+
+        // Add remaining elements from array b
+        while (j < b.size()) {
+            if (ans.empty() || ans.back() != b[j])
+                ans.push_back(b[j]);
+            j++;
+        }
+
+        return ans;
+    }
+};
