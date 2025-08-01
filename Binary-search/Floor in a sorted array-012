@@ -1,0 +1,43 @@
+/*
+🔍 GFG: Floor in a Sorted Array
+🧠 Problem:
+Given a sorted array `arr[]` of `n` elements and a value `x`, find the **floor of x** in the array.
+The floor of x is the largest element in the array that is smaller than or equal to x.  
+Return the index of the floor element, or -1 if the floor doesn’t exist.
+
+📘 Example:
+Input: arr = [1, 2, 8, 10, 11, 12, 19], x = 5  
+Output: 1  
+Explanation: Floor of 5 is 2 and its index is 1.
+
+💡 Approach:
+- Use binary search to efficiently find the floor.
+- If arr[mid] <= x, update answer and move right.
+- Else, move left.
+
+⏱️ Time Complexity: O(log n)  
+🧠 Space Complexity: O(1)
+
+This is an optimal binary search approach.
+*/
+
+class Solution {
+public:
+    int findFloor(vector<int>& arr, int x) {
+        int start = 0, end = arr.size() - 1, mid;
+        int ans = -1; // Initialize answer to -1 (if no floor exists)
+
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            if (arr[mid] <= x) {
+                ans = mid;          // Potential floor found
+                start = mid + 1;    // Try to find a closer one on the right
+            } else {
+                end = mid - 1;      // Move left
+            }
+        }
+
+        return ans;
+    }
+};
