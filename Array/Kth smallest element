@@ -1,0 +1,54 @@
+/*
+🔍 GFG: Kth Smallest Element in an Unsorted Array (Distinct elements)
+🧠 Problem:
+Given an array `arr` of distinct integers and an integer `k`, return the kth smallest element in the array.
+
+📘 Example:
+Input: arr = [7, 10, 4, 3, 20, 15], k = 3  
+Output: 7  
+Explanation: The sorted order is [3, 4, 7, 10, 15, 20]. The 3rd smallest is 7.
+
+💡 Approach:
+- Find the maximum element to size our boolean "sorting" array.
+- Create a boolean vector of size max+1 where `sorted[i] = true` means i exists in array.
+- Then just count how many true values we've seen until we hit the kth one.
+
+⚙️ Assumptions:
+- Array contains only **distinct** positive integers.
+- `k` is always valid (1 ≤ k ≤ arr.size()).
+
+⏱️ Time Complexity: O(n + maxElement)
+🧠 Space Complexity: O(maxElement)
+👉 Works best when the array size is small or max element is not too large.
+*/
+
+class Solution {
+public:
+    int kthSmallest(vector<int> &arr, int k) {
+        int maxi = INT_MIN;
+
+        // Step 1: Find the maximum value in array
+        for (int i = 0; i < arr.size(); i++) {
+            maxi = max(maxi, arr[i]);
+        }
+
+        // Step 2: Create a boolean array to mark presence
+        vector<bool> sorted(maxi + 1, false);
+        for (int i = 0; i < arr.size(); i++) {
+            sorted[arr[i]] = true;
+        }
+
+        // Step 3: Iterate through the boolean array to find kth smallest
+        int count = 0;
+        for (int i = 0; i < sorted.size(); i++) {
+            if (sorted[i]) {
+                count++;
+                if (count == k)
+                    return i;
+            }
+        }
+
+        // Just in case, although this line shouldn't ever hit due to constraints
+        return 0;
+    }
+};
