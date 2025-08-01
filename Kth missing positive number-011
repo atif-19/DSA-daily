@@ -1,0 +1,44 @@
+/*
+🔍 Leetcode 1539. Kth Missing Positive Number
+🧠 Problem:
+Given an array `arr` of positive integers sorted in strictly increasing order, 
+and an integer `k`, return the kth **positive integer that is missing** from this array.
+
+📘 Example:
+Input: arr = [2,3,4,7,11], k = 5
+Output: 9
+Explanation: The missing positive integers are [1,5,6,8,9,10,12,...]. The 5th missing is 9.
+
+💡 Approach:
+- Use Binary Search to minimize time complexity.
+- At each index `mid`, calculate how many numbers are missing before `arr[mid]`.
+  This is done using: `missingNo = arr[mid] - mid - 1`.
+- If `missingNo` >= `k`, the missing number lies on the left side.
+- Else, move to the right side.
+- Final result is `ans + k`, where `ans` is the first index where missing numbers become >= k.
+⏱️ Time Complexity: O(log n)
+*/
+
+class Solution {
+public:
+    int findKthPositive(vector<int>& arr, int k) {
+        int start = 0, end = arr.size() - 1, mid, ans = arr.size();
+
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            // Calculate how many numbers are missing until index mid
+            int missingNo = arr[mid] - mid - 1;
+
+            if (missingNo >= k) {
+                ans = mid;
+                end = mid - 1;
+            } else {
+                start = mid + 1;
+            }
+        }
+
+        // Final answer: index (ans) + k gives the kth missing number
+        return ans + k;
+    }
+};
