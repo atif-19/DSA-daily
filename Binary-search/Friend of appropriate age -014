@@ -1,0 +1,56 @@
+/*
+💻 LeetCode - 825. Friends Of Appropriate Ages
+🔗 https://leetcode.com/problems/friends-of-appropriate-ages/
+
+📄 Question:
+Some people will make friend requests. The list of their ages is given and each person can only send requests to others who satisfy these conditions:
+
+1. age[B] > 0.5 * age[A] + 7
+2. age[B] <= age[A]
+3. age[B] <= 100 if age[A] > 100
+
+You cannot friend request yourself.
+
+Return the total number of friend requests made.
+
+🧠 Constraints:
+- 1 <= ages.length <= 20000
+- 1 <= ages[i] <= 120
+*/
+
+class Solution {
+public:
+    int numFriendRequests(vector<int>& ages) {
+        sort(ages.begin(), ages.end());
+        int ans = 0;
+        for (int i = 0; i < ages.size(); i++) {
+            if(ages[i] <= 14)
+                continue;
+
+            // Find the first person that satisfies: age > 0.5 * age[i] + 7
+            int start = 0, end = ages.size() - 1, mid, first = 0, last = ages.size() - 1;
+            while (start <= end) {
+                mid = start + (end - start) / 2;
+                if (ages[mid] > (ages[i] * 0.5 + 7)) {
+                    first = mid;
+                    end = mid - 1;
+                } else
+                    start = mid + 1;
+            }
+
+            // Find the last person with age <= ages[i]
+            start = 0, end = ages.size() - 1;
+            while (start <= end) {
+                mid = start + (end - start) / 2;
+                if (ages[mid] <= ages[i]) {
+                    last = mid;
+                    start = mid + 1;
+                } else
+                    end = mid - 1;
+            }
+
+            ans += (last - first);
+        }
+        return ans;
+    }
+};
