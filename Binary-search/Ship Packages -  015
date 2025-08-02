@@ -1,0 +1,58 @@
+/*
+📦 Question: 1011. Capacity To Ship Packages Within D Days
+
+🧠 Problem Statement:
+You are given an array `weights[]` where `weights[i]` is the weight of the ith package.
+You have to ship these packages in **D days** using a ship with **minimum possible capacity**.
+Each day, you must ship packages in the given order.
+Return the least weight capacity of the ship that will result in all the packages being shipped within D days.
+
+🔍 Intuition:
+- It's a classic Binary Search on Answer.
+- Minimum possible capacity = max weight (because we can’t split packages).
+- Maximum possible capacity = sum of all weights (if you ship all in one day).
+- Apply binary search between these two limits to find the minimal valid capacity.
+
+🧮 Time Complexity: O(n * log(sum(weights) - max(weights)))
+📦 Space Complexity: O(1)
+
+📌 Example:
+Input: weights = [1,2,3,1,1], days = 4  
+Output: 3
+*/
+
+class Solution {
+public:
+    int shipWithinDays(vector<int>& weights, int days) {
+        int start = 0, end = 0, mid, ans;
+
+        // Set the search range
+        for (int i = 0; i < weights.size(); i++) {
+            start = max(weights[i], start); // min capacity = heaviest package
+            end += weights[i];              // max capacity = total weight
+        }
+
+        while (start <= end) {
+            mid = start + (end - start) / 2; // trial capacity
+            int count = 1, weight = 0;
+
+            for (int i = 0; i < weights.size(); i++) {
+                weight += weights[i];
+
+                if (weight > mid) {
+                    count++;               // need one more day
+                    weight = weights[i];   // reset to current package
+                }
+            }
+
+            if (count <= days) {
+                ans = mid;        // try for a smaller capacity
+                end = mid - 1;
+            } else {
+                start = mid + 1;  // need more capacity
+            }
+        }
+
+        return ans;
+    }
+};
