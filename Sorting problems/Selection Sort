@@ -1,0 +1,31 @@
+/*
+🧠 Question: Implement Selection Sort in C++
+
+Selection Sort is a simple comparison-based sorting algorithm. It divides the input list into two parts:
+- The sublist of items already sorted, which is built up from left to right.
+- The sublist of items remaining to be sorted.
+
+At every iteration, the minimum element from the unsorted part is picked and moved to the sorted part.
+
+🔁 Time Complexity:
+Best, Average, and Worst Case: O(n^2)
+🧊 Not stable, and not adaptive.
+
+📌 Example:
+Input:  [64, 25, 12, 22, 11]
+Output: [11, 12, 22, 25, 64]
+*/
+
+class Solution {
+  public:
+    void selectionSort(vector<int> &arr) {
+        for(int i = 0; i < arr.size() - 1; i++) {
+            int index = i;
+            for(int j = i + 1; j < arr.size(); j++) {
+                if(arr[j] < arr[index])
+                    index = j;
+            }
+            swap(arr[i], arr[index]);
+        }
+    }
+};
