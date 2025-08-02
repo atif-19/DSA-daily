@@ -1,0 +1,65 @@
+/*
+📝 Question: Allocate Minimum Number of Pages (GFG - Binary Search on Answer)
+📌 Link: https://www.geeksforgeeks.org/problems/allocate-minimum-number-of-pages/0
+
+💡 Problem:
+You are given `n` books, each with a number of pages, and `k` students.
+Allocate books to students such that:
+1. Each student gets at least one book.
+2. Each book is assigned to only one student.
+3. The maximum number of pages assigned to a student is minimized.
+
+🔍 Goal:
+Return the minimum possible value of the maximum number of pages a student has to read.
+
+📥 Input:
+- `arr[]` = number of pages in each book (in order)
+- `k` = number of students
+
+📤 Output:
+- Minimum value of the maximum number of pages assigned
+
+❗ Edge Case:
+If number of students `k` is greater than number of books, return `-1`.
+
+🧠 Approach:
+- Use Binary Search on the answer space (from max element to sum of array).
+- For each mid, check if allocation is possible in `k` students using greedy.
+- Minimize the max pages allocated using this binary search.
+*/
+
+class Solution {
+  public:
+    int findPages(vector<int> &arr, int k) {
+        if(k > arr.size()) return -1;  // Not enough books for each student
+
+        int start = 0, end = 0, mid, ans;
+        
+        for(int i = 0; i < arr.size(); i++) {
+            start = max(start, arr[i]); // minimum capacity must be at least the largest book
+            end += arr[i];              // total sum as the upper bound
+        }
+
+        while(start <= end) {
+            mid = start + (end - start) / 2;
+            int count = 1, pages = 0;
+
+            for(int i = 0; i < arr.size(); i++) {
+                pages += arr[i];
+                if(pages > mid) {
+                    pages = arr[i];  // start new allocation
+                    count++;         // increase student count
+                }
+            }
+
+            if(count <= k) {
+                ans = mid;
+                end = mid - 1; // try to minimize further
+            } else {
+                start = mid + 1; // need more capacity
+            }
+        }
+
+        return ans;
+    }
+};
