@@ -1,0 +1,45 @@
+/*
+🌲 Problem: EKO - Wood Cutting (Binary Search on Answer)
+🎯 Goal: Given `n1` trees with heights `A[]` and a required amount of wood `B`,
+         find the **maximum height (cutoff)** at which to set the saw such that
+         the collected wood is **at least B** units.
+
+🧠 Logic:
+   - If we cut a tree of height `h` at height `mid`, it gives us `h - mid` wood.
+   - If `mid` is too low → more wood is collected.
+   - If `mid` is too high → less wood.
+   - Use binary search to find the maximum height where wood ≥ B.
+
+✅ Time Complexity: O(n * log(maxHeight))
+*/
+
+int solve(int* A, int n1, int B) {
+    int start = 0, end = A[0], mid, ans = 0, i;
+
+    // Find the tallest tree
+    for (i = 1; i < n1; i++) {
+        if (A[i] > end)
+            end = A[i];
+    }
+
+    // Binary Search on height
+    while (start <= end) {
+        mid = start + (end - start) / 2;
+
+        long long wood = 0;
+        for (i = 0; i < n1; i++) {
+            int cutoff = A[i] - mid;
+            if (cutoff > 0)
+                wood += cutoff;
+        }
+
+        if (wood >= B) {
+            ans = mid;         // valid height, try higher
+            start = mid + 1;
+        } else {
+            end = mid - 1;     // not enough wood, try lower
+        }
+    }
+
+    return ans;
+}
