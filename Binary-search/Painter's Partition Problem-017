@@ -1,0 +1,51 @@
+/*
+🧠 Problem: Painter's Partition Problem
+🎯 Goal: Given `n` boards of different sizes (arr[]) and `k` painters,
+         find the **minimum time** needed to paint all boards.
+         Each painter can paint only **contiguous boards**, and all painters
+         take 1 unit time to paint 1 unit of board.
+
+🛠️ Approach:
+   - Use Binary Search on the **answer** (minimum time).
+   - Minimum possible time = size of the largest board.
+   - Maximum possible time = sum of all boards (1 painter paints all).
+   - For each `mid`, check how many painters are needed.
+     - If painters needed ≤ k ➡️ try smaller `mid`.
+     - If more ➡️ try larger `mid`.
+
+✅ Time Complexity: O(n * log(sum - max))
+*/
+
+class Solution {
+  public:
+    int minTime(vector<int>& arr, int k) {
+        int start = 0, end = 0, mid, ans;
+        
+        for (int i = 0; i < arr.size(); i++) {
+            start = max(start, arr[i]);  // largest board size
+            end += arr[i];               // total sum of all boards
+        }
+
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+            int count = 1, boardSize = 0;
+
+            for (int i = 0; i < arr.size(); i++) {
+                boardSize += arr[i];
+                if (boardSize > mid) {
+                    count++;
+                    boardSize = arr[i];
+                }
+            }
+
+            if (count <= k) {
+                ans = mid;
+                end = mid - 1;
+            } else {
+                start = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+};
