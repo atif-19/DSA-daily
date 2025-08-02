@@ -1,0 +1,37 @@
+/*
+🧠 Question: Implement Insertion Sort in C++
+
+Insertion Sort is like sorting cards in your hand 🃏 — you take one card at a time and insert it into the correct position relative to the already sorted part of the hand.
+
+💡 How it works:
+- Start from index 1 and compare with previous elements.
+- Keep shifting the elements until the correct position for the current element is found.
+
+🔁 Time Complexity:
+- Best Case (Already Sorted): O(n)
+- Average & Worst Case: O(n^2)
+
+📦 Space Complexity: O(1) (In-place)
+🟢 Stable: Yes
+🔁 Adaptive: Yes
+
+📌 Example:
+Input:  [5, 2, 4, 6, 1, 3]
+Output: [1, 2, 3, 4, 5, 6]
+*/
+
+class Solution {
+  public:
+    void insertionSort(vector<int>& arr) {
+        int n = arr.size();
+        for(int i = 1; i < n; i++) {
+            for(int j = i; j > 0; j--) {
+                // If current element is smaller than its previous, swap them
+                if(arr[j] < arr[j - 1])
+                    swap(arr[j], arr[j - 1]);
+                else
+                    break; // Early exit if already in correct position
+            }
+        }
+    }
+};
