@@ -1,0 +1,42 @@
+/*
+Question: Aggressive Cows 🐄
+---------------------------------
+You are given an array 'stalls' of length N, where each element represents the position of a stall.
+There are 'k' cows, and you want to place them in these stalls such that the **minimum distance between any two cows is maximized**.
+
+Return the largest minimum distance possible between any two of the k cows.
+
+Approach:
+- Sort the stall positions.
+- Use binary search to find the maximum minimum distance.
+- For a mid distance, check if it's possible to place all cows with at least that distance apart.
+*/
+
+class Solution {
+  public:
+    int aggressiveCows(vector<int> &stalls, int k) {
+        
+        sort(stalls.begin(), stalls.end());
+        int start = 1, end = stalls.back() - stalls.front(), mid, ans;
+        
+        while (start <= end) {
+            mid = start + (end - start) / 2;
+
+            int count = 1, prev = 0;
+            for (int i = 1; i < stalls.size(); i++) {
+                if (stalls[i] - stalls[prev] >= mid) {
+                    count++;
+                    prev = i;
+                }
+            }
+
+            if (count < k) {
+                end = mid - 1;
+            } else {
+                ans = mid;
+                start = mid + 1;
+            }
+        }
+        return ans;
+    }
+};
