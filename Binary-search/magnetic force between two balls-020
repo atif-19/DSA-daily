@@ -1,0 +1,40 @@
+class Solution {
+public:
+    // Function to find the maximum minimum distance between any two balls placed in 'k' baskets
+    int maxDistance(vector<int>& position, int k) {
+        // Step 1: Sort the position vector so we can place balls in order
+        sort(position.begin(), position.end());
+
+        // Step 2: Define binary search boundaries
+        // Minimum possible distance is 1 (we can’t place two balls at same position)
+        // Maximum possible distance is the distance between the first and last position
+        int start = 1, end = position.back() - position.front();
+        int ans = 0;
+
+        // Step 3: Binary search on the answer
+        while (start <= end) {
+            int mid = start + (end - start) / 2;
+
+            // Try to place the balls with at least 'mid' distance between them
+            int count = 1;              // Place the first ball at the first position
+            int last_pos = position[0]; // Track position of last placed ball
+
+            for (int i = 1; i < position.size(); i++) {
+                if (position[i] - last_pos >= mid) {
+                    count++;           // Place a ball here
+                    last_pos = position[i]; // Update last placed position
+                }
+            }
+
+            // If we could place at least 'k' balls, it's a valid distance
+            if (count >= k) {
+                ans = mid;            // Store this as a possible answer
+                start = mid + 1;      // Try for a bigger minimum distance
+            } else {
+                end = mid - 1;        // Distance too big, try smaller
+            }
+        }
+
+        return ans; // The largest minimum distance we could place 'k' balls with
+    }
+};
