@@ -1,1 +1,16 @@
+void segregate0and1(vector<int> &arr) {
+    int start = 0, end = arr.size() - 1;
+
+    while (start < end) {
+        if (arr[start] && !arr[end]) {
+            swap(arr[start++], arr[end--]);  // ✅ Swap if left is 1 and right is 0
+        }
+        else if (arr[start]) {
+            end--;  // ❗ If left is 1 and right is 1, move end back
+        }
+        else {
+            start++;  // ✅ If left is 0, move start forward
+        }
+    }
+}
 
