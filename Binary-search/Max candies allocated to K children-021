@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int maximumCandies(vector<int>& candies, long long k) {
+        // Initialize binary search boundaries
+        long long start = 1, end = 0, mid, ans = 0;
+
+        // Calculate total number of candies
+        long long sum = 0;
+        for(int i = 0; i < candies.size(); i++)
+            sum += candies[i];
+
+        // If total candies are less than number of kids, no way to give each one even 1 candy
+        if(sum < k)
+            return 0;
+
+        // Max possible candies per kid is when we evenly distribute all candies to k kids
+        end = sum / k;
+
+        // Binary search on answer (candies per kid)
+        while(start <= end) {
+            mid = start + (end - start) / 2;
+
+            // Count how many kids we can satisfy if we give 'mid' candies to each
+            long long count = 0;
+            for(int i = 0; i < candies.size(); i++) {
+                count += candies[i] / mid;
+            }
+
+            // If we can't satisfy all k kids with 'mid' candies each, try smaller amount
+            if(count < k) {
+                end = mid - 1;
+            } 
+            // If we can satisfy, store the result and try for a higher value
+            else {
+                ans = mid;          // mid is a potential answer
+                start = mid + 1;    // try to increase per-kid candies
+            }
+        }
+
+        return ans; // Return the max candies each kid can get
+    }
+};
