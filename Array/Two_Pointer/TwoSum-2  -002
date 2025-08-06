@@ -1,0 +1,54 @@
+/*
+--------------------------------------------
+🔹 Problem: Two Sum II - Input Array Is Sorted
+🔗 Leetcode: https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/
+--------------------------------------------
+
+🧠 Approach: Two Pointer Technique
+--------------------------------------------
+- The input array is already sorted in non-decreasing order.
+- We use two pointers, one starting from the beginning (`start`) and the other from the end (`end`).
+- At each step, calculate the sum of the two pointed elements.
+    - If the sum matches the target → return the 1-based indices.
+    - If the sum is less than the target → move the `start` pointer forward (to increase the sum).
+    - If the sum is greater than the target → move the `end` pointer backward (to decrease the sum).
+- This works because the array is sorted, so adjusting the pointers changes the sum in a predictable way.
+
+📈 Time Complexity: O(n)  
+🧠 Space Complexity: O(1) — no extra space used, just two pointers
+
+*/
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& numbers, int target) {
+        // Answer vector to store 1-based indices of the result
+        vector<int> ans(2, -1);
+
+        // Initialize two pointers
+        int start = 0, end = numbers.size() - 1;
+
+        // Loop until the two pointers cross
+        while (start < end) {
+            int sum = numbers[start] + numbers[end];
+
+            // If target sum is found, return 1-based indices
+            if (sum == target) {
+                ans[0] = start + 1;
+                ans[1] = end + 1;
+                return ans;
+            }
+            // If sum is too small, move the start pointer forward
+            else if (sum < target) {
+                start++;
+            }
+            // If sum is too large, move the end pointer backward
+            else {
+                end--;
+            }
+        }
+
+        // If no pair found (although problem guarantees one), return default [-1, -1]
+        return ans;
+    }
+};
