@@ -1,0 +1,95 @@
+/*
+=========================================
+QUESTION:
+=========================================
+LeetCode 2594 - Minimum Time to Repair Cars
+
+You are given:
+- `ranks[i]`: the efficiency of the i-th mechanic.
+- `cars`: total number of cars to repair.
+
+Mechanics work as follows:
+- A mechanic with rank `r` takes `r * t^2` minutes to repair `t` cars.
+- Multiple mechanics work in parallel.
+
+Goal:
+Find the minimum time required so that all `cars` are repaired.
+
+-----------------------------------------
+Example:
+-----------------------------------------
+Input:
+ranks = [4, 2, 3, 1], cars = 10
+
+Output:
+16
+
+Explanation:
+- Mechanic with rank 1 can repair 4 cars in 16 min
+- Mechanic with rank 2 can repair 2 cars in 8 min
+- etc...
+Minimum time to finish all cars is 16 minutes.
+
+-----------------------------------------
+Approach:
+-----------------------------------------
+We use **Binary Search on Time**.
+
+1. Lower bound (start) = 1 minute (minimum possible time)
+2. Upper bound (end) = `min_rank * cars^2` (worst case: fastest mechanic repairs all cars)
+
+Binary search over possible time `mid`:
+    - For each mechanic:
+        - In `mid` minutes, the max cars mechanic can repair = floor(sqrt(mid / rank))
+        - Sum this over all mechanics to get total cars repaired
+    - If total cars < required cars → need more time (move right)
+    - Else → can finish in `mid` or less (store answer & move left)
+
+=========================================
+Time Complexity:
+=========================================
+- Binary Search range: 1 to min_rank * cars^2
+- For each time guess, iterate over `n` mechanics and do O(1) calculations
+- Time: O(n * log(min_rank * cars^2))
+- Space: O(1)
+
+=========================================
+Code:
+=========================================
+*/
+
+class Solution {
+public:
+    long long repairCars(vector<int>& ranks, int cars) {
+        // Lower bound: 1 minute
+        long long start = 1;
+        
+        // Upper bound: fastest mechanic repairs all cars alone
+        long long end = 1LL * (*min_element(ranks.begin(), ranks.end())) * cars * cars;
+
+        long long ans = end; // store final minimum time
+
+        // Binary Search
+        while (start <= end) {
+            long long mid = start + (end - start) / 2; // candidate time
+            long long count = 0; // total cars repaired in 'mid' minutes
+
+            // Calculate how many cars each mechanic can repair
+            for (int r : ranks) {
+                // max cars for mechanic with rank r in 'mid' minutes
+                count += (long long)(sqrt(mid / (double)r));
+            }
+
+            // If not enough cars repaired, need more time
+            if (count < cars) {
+                start = mid + 1;
+            } 
+            // If enough or more cars repaired, try less time
+            else {
+                ans = mid;
+                end = mid - 1;
+            }
+        }
+        return ans;
+    }
+};
