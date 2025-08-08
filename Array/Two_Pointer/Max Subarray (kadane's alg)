@@ -1,0 +1,43 @@
+/*
+ * Author: Atif
+ * Date: 2025-08-08
+ * Problem: Maximum Subarray (Kadane's Algorithm)
+ * Platform: LeetCode
+ * Difficulty: Medium
+ * 
+ * Description:
+ * Given an integer array `nums`, find the contiguous subarray 
+ * (containing at least one number) which has the largest sum 
+ * and return its sum.
+ * 
+ * Approach:
+ * - We use Kadane's Algorithm, which runs in O(n) time and O(1) space.
+ * - The idea is to track the current sum (`prefix`) and the maximum 
+ *   sum found so far (`ans`).
+ * - If `prefix` becomes negative, we reset it to 0 since a negative 
+ *   prefix would reduce the sum of any future subarray.
+ */
+
+class Solution {
+public:
+    /**
+     * @brief Finds the largest sum of any contiguous subarray in nums.
+     * 
+     * @param nums A vector of integers representing the array.
+     * @return int The maximum subarray sum.
+     */
+    int maxSubArray(vector<int>& nums) {
+        int ans = INT_MIN;  // Stores the maximum subarray sum found so far
+        int prefix = 0;     // Tracks the current subarray sum
+
+        for (int i = 0; i < nums.size(); i++) {
+            prefix += nums[i];                  // Extend current subarray
+            ans = max(prefix, ans);              // Update max sum if needed
+            
+            if (prefix < 0)                      // If sum goes negative, reset
+                prefix = 0;
+        }
+        
+        return ans;
+    }
+};
