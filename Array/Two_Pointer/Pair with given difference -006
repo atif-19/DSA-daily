@@ -1,0 +1,47 @@
+/**
+ * @brief Finds whether there exists a pair of elements in the array 
+ *        such that their difference is exactly equal to B.
+ * 
+ * This function uses the two-pointer technique on a sorted array 
+ * to efficiently check for a pair with the given difference.
+ * 
+ * Time Complexity: O(N log N) due to sorting (two-pointer traversal is O(N))
+ * Space Complexity: O(1) - in-place computation
+ * 
+ * @param Arr Vector of integers (input array)
+ * @param B   Target difference (can be positive or negative)
+ * @return int Returns 1 if such a pair exists, otherwise 0.
+ */
+int Solution::solve(vector<int> &Arr, int B) {
+    // Convert B to a non-negative value (difference is absolute)
+    if (B < 0)
+        B *= -1; 
+
+    // Sort the array to apply two-pointer method
+    sort(Arr.begin(), Arr.end());
+
+    int start = 0; // First pointer
+    int end = 1;   // Second pointer
+
+    // Traverse until 'end' pointer reaches the end
+    while (end < Arr.size()) {
+        // Ensure pointers are not pointing to the same element
+        if (start == end)
+            end++;
+
+        // Calculate the difference between elements at 'end' and 'start'
+        int diff = Arr[end] - Arr[start];
+
+        if (diff == B) {
+            return 1; // Found a pair with difference B
+        }
+        else if (diff < B) {
+            end++; // Increase difference by moving 'end' forward
+        }
+        else {
+            start++; // Decrease difference by moving 'start' forward
+        }
+    }
+
+    return 0; // No pair found
+}
