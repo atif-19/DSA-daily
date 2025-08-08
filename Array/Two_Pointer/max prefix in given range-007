@@ -1,0 +1,50 @@
+/**
+ * @brief Finds the maximum prefix sum within a given range for each query.
+ *
+ * This function takes an input array and two arrays representing multiple queries.
+ * For each query, it computes the maximum prefix sum in the subarray 
+ * defined by the corresponding left and right indices.
+ *
+ * Example:
+ * Input: arr = [1, -2, 3, 4], leftIndex = [0, 1], rightIndex = [2, 3]
+ * Output: [2, 7]
+ * Explanation:
+ *  Query 1: Subarray [1, -2, 3] → prefix sums = [1, -1, 2] → max = 2
+ *  Query 2: Subarray [-2, 3, 4] → prefix sums = [-2, 1, 5] → max = 5
+ *
+ * @param arr         The main array of integers.
+ * @param leftIndex   The array of starting indices for each query.
+ * @param rightIndex  The array of ending indices for each query.
+ *
+ * @return A vector<int> containing the maximum prefix sum for each query.
+ *
+ * @note Time Complexity: O(Q * N) in worst case, 
+ *       where Q = number of queries, N = max subarray length in a query.
+ *       Space Complexity: O(Q) for storing results.
+ */
+
+class Solution {
+public:
+    vector<int> maxPrefixes(vector<int>& arr, vector<int>& leftIndex,
+                            vector<int>& rightIndex) {
+        vector<int> ans;
+
+        // Process each query
+        for (int j = 0; j < leftIndex.size(); j++) {
+            int start = leftIndex[j];
+            int end = rightIndex[j];
+            int maxi = INT_MIN; // Stores the maximum prefix sum for the current query
+            int prefix = 0;     // Running sum for prefix calculation
+
+            // Traverse the subarray from start to end
+            for (int i = start; i <= end; i++) {
+                prefix += arr[i];        // Add current element to prefix sum
+                maxi = max(prefix, maxi); // Update maximum if needed
+            }
+
+            ans.push_back(maxi); // Store the result for this query
+        }
+
+        return ans;
+    }
+};
