@@ -1,0 +1,37 @@
+/*
+ * Problem: Check if an array can be split into two parts such that the sum of both parts is equal.
+ * 
+ * Approach:
+ * 1. First, calculate the total sum of all elements in the array.
+ * 2. Iterate through the array, maintaining a running sum of the left part (`leftSum`).
+ * 3. At each step, compute the right part's sum as `TotalSum - leftSum`.
+ * 4. If at any point `leftSum` equals `rightSum`, the array can be split, so return true.
+ * 5. If no such point exists, return false.
+ * 
+ * Time Complexity: O(n) — Single pass to calculate sums.
+ * Space Complexity: O(1) — No extra space used besides variables.
+ */
+
+class Solution {
+public:
+    bool canSplit(vector<int>& arr) {
+        // Calculate total sum of array
+        long long TotalSum = accumulate(arr.begin(), arr.end(), 0LL);
+        
+        long long leftSum = 0;  // Sum of elements from the left side
+        long long rightSum;     // Sum of elements from the right side
+        
+        // Traverse until the second last element (to ensure both parts are non-empty)
+        for (int i = 0; i < arr.size() - 1; i++) {
+            leftSum += arr[i];                // Add current element to left sum
+            rightSum = TotalSum - leftSum;    // Remaining sum becomes right sum
+            
+            // Check if both sides have equal sum
+            if (rightSum == leftSum)
+                return true;
+        }
+        
+        // No split found where both sums are equal
+        return false;
+    }
+};
