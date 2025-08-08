@@ -1,0 +1,104 @@
+/*
+=========================================
+QUESTION:
+=========================================
+LeetCode 2064 - Minimized Maximum of Products Distributed to Any Store
+
+You are given:
+- An integer `n` (number of stores)
+- An array `quantities` where quantities[i] represents the number of products of type i.
+
+You must distribute all products to exactly n stores such that:
+- Each store can receive products of multiple types.
+- No store can receive more than a certain number of products (limit).
+
+Your goal: Minimize the maximum number of products any single store can get.
+
+Return that minimized maximum.
+
+-----------------------------------------
+Example:
+-----------------------------------------
+Input:
+n = 6
+quantities = [11, 6]
+
+Output:
+3
+
+Explanation:
+We can distribute as:
+Store 1: 3 items of type 1
+Store 2: 3 items of type 1
+Store 3: 3 items of type 1
+Store 4: 2 items of type 1
+Store 5: 3 items of type 2
+Store 6: 3 items of type 2
+
+Here, the maximum products in any store = 3, and it’s the smallest possible.
+
+-----------------------------------------
+Approach:
+-----------------------------------------
+We use **Binary Search on the Answer**.
+
+- Lower bound (start) = 1 product per store (minimum possible limit)
+- Upper bound (end) = max quantity in `quantities` (worst case: one store gets all of a type)
+
+We binary search over this limit (mid):
+    - For each type of product, calculate how many stores are needed if
+      each store can hold at most mid products of that type.
+      Formula: (quantity + mid - 1) / mid  [ceiling division]
+    - Sum these store counts.
+    - If total stores needed <= n → we can try a smaller max limit (search left)
+    - Else → we need a bigger max limit (search right)
+
+=========================================
+Time Complexity:
+=========================================
+- Binary Search range: 1 to max(quantities)
+- For each mid, we iterate over quantities (O(m), m = quantities.size())
+- Time: O(m * log(max(quantities)))
+- Space: O(1) extra
+
+=========================================
+Code:
+=========================================
+*/
+
+class Solution {
+public:
+    int minimizedMaximum(int n, vector<int>& quantities) {
+        int start = 1; // minimum possible max products in a store
+        int end = 0;   // maximum possible max products in a store
+        int ans = 0;
+
+        // Find the largest quantity (upper bound for binary search)
+        for (int q : quantities)
+            end = max(end, q);
+
+        // Binary Search on the answer
+        while (start <= end) {
+            int mid = start + (end - start) / 2; // candidate max limit
+            int count = 0; // total stores needed
+
+            // Calculate required stores for each product type
+            for (int q : quantities) {
+                // Ceiling division: how many stores for this product type
+                count += (q + mid - 1) / mid;
+            }
+
+            // If we can fit into <= n stores, try a smaller limit
+            if (count <= n) {
+                ans = mid;       // store current answer
+                end = mid - 1;   // search for smaller max
+            }
+            // Else, we need to allow bigger max per store
+            else {
+                start = mid + 1;
+            }
+        }
+
+        return ans;
+    }
+};
