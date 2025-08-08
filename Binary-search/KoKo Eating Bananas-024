@@ -1,0 +1,97 @@
+/*
+=========================================
+QUESTION:
+=========================================
+LeetCode 875 - Koko Eating Bananas
+
+Koko loves bananas and has `n` piles of bananas.
+The `i`th pile has `piles[i]` bananas.
+
+Koko can decide her eating speed `k` (bananas per hour).
+In one hour, she can eat up to `k` bananas from a pile:
+- If the pile has <= k bananas, she eats the whole pile in that hour.
+- If the pile has > k bananas, she eats k bananas and the rest remain for future hours.
+
+Koko wants to finish all bananas within `h` hours.
+
+Find the **minimum integer eating speed** `k` such that she can finish in `h` hours.
+
+-----------------------------------------
+Example:
+-----------------------------------------
+Input:
+piles = [3,6,7,11], h = 8
+
+Output:
+4
+
+Explanation:
+If k = 4:
+- Pile 1: eats in 1 hour
+- Pile 2: eats in 2 hours
+- Pile 3: eats in 2 hours
+- Pile 4: eats in 3 hours
+Total = 8 hours ✅
+
+-----------------------------------------
+Approach:
+-----------------------------------------
+We use **Binary Search on Eating Speed**.
+
+- Lower bound (start) = 1 banana/hour (slowest possible)
+- Upper bound (end) = max pile size (fastest possible; eat largest pile in one go)
+
+Binary search on `mid` (candidate speed):
+    - Calculate total hours required with this speed:
+        hours += ceil(piles[i] / mid) for each pile
+    - If total hours > h → too slow → increase speed (start = mid+1)
+    - If total hours <= h → possible answer, try smaller speed (end = mid-1)
+
+=========================================
+Time Complexity:
+=========================================
+- Binary search range: 1 to max(piles)
+- For each speed, iterate over `n` piles
+- Time: O(n * log(max(piles)))
+- Space: O(1)
+
+=========================================
+Code:
+=========================================
+*/
+
+class Solution {
+public:
+    int minEatingSpeed(vector<int>& piles, int h) {
+        int start = 1;  // minimum possible speed
+        int end = 0;    // maximum possible speed
+        int ans = 0;
+
+        // Find the maximum pile size for the upper bound
+        for (int bananas : piles)
+            end = max(end, bananas);
+
+        // Binary Search
+        while (start <= end) {
+            int mid = start + (end - start) / 2; // candidate speed
+            long long hours = 0; // total hours needed
+
+            // Calculate hours needed at speed 'mid'
+            for (int bananas : piles) {
+                // equivalent to ceil(bananas / mid) without floating point
+                hours += (bananas + mid - 1) / mid;
+            }
+
+            // If more hours than allowed → increase speed
+            if (hours > h) {
+                start = mid + 1;
+            }
+            // If within allowed hours → possible answer, try smaller speed
+            else {
+                ans = mid;
+                end = mid - 1;
+            }
+        }
+        return ans;
+    }
+};
