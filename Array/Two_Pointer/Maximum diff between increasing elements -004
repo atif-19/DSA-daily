@@ -1,0 +1,39 @@
+/*
+    Problem: Maximum Difference Between Increasing Elements
+    --------------------------------------------------------
+    Given an integer array nums, we need to find the maximum difference 
+    between two elements nums[j] and nums[i] such that j > i and nums[j] > nums[i].
+    If no such pair exists, return -1.
+
+    Approach:
+    ---------
+    - We'll traverse the array from right to left.
+    - Maintain the maximum value encountered so far (maxi).
+    - For each element, calculate the difference: diff = maxi - nums[i].
+        - If diff > 0, update ans with the maximum of ans and diff.
+        - If nums[i] is greater than the current maxi, update maxi.
+    - Return ans at the end (default -1 if no valid difference is found).
+
+    Time Complexity:  O(n)  → Single pass through the array.
+    Space Complexity: O(1)  → Constant extra space.
+*/
+
+class Solution {
+public:
+    int maximumDifference(vector<int>& nums) {
+        int ans = -1;                              // Stores the maximum valid difference found
+        int maxi = nums[nums.size() - 1];          // Track the largest element from the right
+
+        // Traverse from second last element to the first
+        for (int i = nums.size() - 2; i >= 0; i--) {
+            int diff = maxi - nums[i];             // Calculate difference
+
+            if (diff > 0)
+                ans = max(diff, ans);              // Update answer if positive difference found
+            else
+                maxi = max(maxi, nums[i]);         // Update maximum element so far
+        }
+
+        return ans;
+    }
+};
