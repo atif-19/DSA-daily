@@ -1,0 +1,103 @@
+/*
+=========================================
+QUESTION:
+=========================================
+LeetCode 410 - Split Array Largest Sum
+
+You are given an array `nums` which contains n non-negative integers, 
+and an integer `k`. 
+
+You need to split the array into k or fewer continuous subarrays. 
+The goal is to minimize the largest sum among these subarrays.
+
+Return the minimized largest subarray sum.
+
+-----------------------------------------
+Example:
+-----------------------------------------
+Input:
+nums = [7, 2, 5, 10, 8], k = 2
+
+Output:
+18
+
+Explanation:
+We can split into:
+[7, 2, 5] -> sum = 14
+[10, 8]  -> sum = 18
+The largest sum among these is 18, and it’s the smallest possible.
+
+-----------------------------------------
+Approach:
+-----------------------------------------
+We will use **Binary Search on the Answer**.
+
+- The minimum possible largest sum = max element in nums 
+  (because no subarray can have a sum smaller than the largest single element).
+- The maximum possible largest sum = sum of all elements 
+  (when we take the whole array as one subarray).
+- We binary search between these two limits to find the smallest possible "largest sum".
+
+For each mid value:
+    - Check if we can split the array into at most k subarrays 
+      such that no subarray sum exceeds mid.
+    - If yes, try to reduce the limit (search left).
+    - If no, increase the limit (search right).
+
+=========================================
+Time Complexity:
+=========================================
+- Binary Search range = (sum of array) - (max element)
+- Each check requires O(n) to iterate through nums.
+- Time: O(n * log(sum of nums - max element))
+- Space: O(1) (constant extra space)
+
+=========================================
+Code:
+=========================================
+*/
+
+class Solution {
+public:
+    int splitArray(vector<int>& nums, int k) {
+        // Lower bound: largest single element
+        long long start = *max_element(nums.begin(), nums.end());
+
+        // Upper bound: sum of all elements
+        long long end = 0;
+        for (int i = 0; i < nums.size(); i++)
+            end += nums[i];
+
+        long long ans = end; // will store final minimized largest sum
+
+        // Binary Search
+        while (start <= end) {
+            long long mid = start + (end - start) / 2;
+
+            // Count how many subarrays are needed if max sum allowed is mid
+            int count = 1; // at least one subarray
+            long long sum = 0;
+
+            for (int i = 0; i < nums.size(); i++) {
+                sum += nums[i];
+
+                // If sum exceeds mid, we start a new subarray
+                if (sum > mid) {
+                    count++;
+                    sum = nums[i]; // start new subarray from current element
+                }
+            }
+
+            // If we can split into at most k subarrays
+            if (count <= k) {
+                ans = mid;      // this mid is a possible answer
+                end = mid - 1;  // try smaller largest sum
+            } 
+            // If more than k subarrays are needed
+            else {
+                start = mid + 1; // need to allow bigger subarray sum
+            }
+        }
+        return ans;
+    }
+};
