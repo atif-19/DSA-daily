@@ -1,0 +1,82 @@
+/*
+Problem: Matrix Diagonal Sum (LeetCode 1572)
+
+You are given a square matrix 'mat' of size n x n.
+Return the sum of the matrix's primary diagonal and secondary diagonal elements.
+
+Rules:
+------
+- The primary diagonal runs from top-left to bottom-right.
+- The secondary diagonal runs from top-right to bottom-left.
+- If both diagonals share the same middle element (when n is odd), 
+  count that element only once.
+
+Example:
+--------
+Input:
+mat = [
+  [1, 2, 3],
+  [4, 5, 6],
+  [7, 8, 9]
+]
+
+Primary diagonal: 1 + 5 + 9 = 15
+Secondary diagonal: 3 + 5 + 7 = 15
+Shared middle element (5) is counted twice → subtract once.
+
+Output:
+25
+
+Constraints:
+------------
+- n == mat.length == mat[i].length
+- 1 <= n <= 100
+- 1 <= mat[i][j] <= 100
+*/
+
+class Solution {
+public:
+    int diagonalSum(vector<vector<int>>& mat) {
+        int sum = 0;
+
+        /*
+         Step 1: Traverse the primary diagonal (top-left → bottom-right)
+         - row and col both start from 0
+         - increment both row and col in each step
+        */
+        int row = 0, col = 0;
+        while (row < mat.size())
+            sum += mat[row++][col++];
+
+        /*
+         Step 2: Traverse the secondary diagonal (top-right → bottom-left)
+         - row starts from 0, col starts from last column index
+         - increment row and decrement col in each step
+        */
+        row = 0, col = mat[0].size() - 1;
+        while (row < mat.size())
+            sum += mat[row++][col--];
+
+        /*
+         Step 3: Remove duplicate middle element if n is odd
+         - For odd-sized matrices, the center element is part of both diagonals.
+         - We subtract it once to avoid double counting.
+        */
+        if (mat.size() % 2 == 1) {
+            int index = mat.size() / 2;
+            sum -= mat[index][index];
+        }
+
+        return sum;
+    }
+};
+
+/*
+Time Complexity:
+----------------
+O(n) — We visit exactly 2n elements (primary + secondary diagonals).
+
+Space Complexity:
+-----------------
+O(1) — Constant extra space.
+*/
