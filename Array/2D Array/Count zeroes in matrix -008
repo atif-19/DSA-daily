@@ -1,0 +1,54 @@
+/**
+ * @brief Count the number of 0's in a square binary matrix where each row is sorted.
+ *
+ * Problem:
+ * --------
+ * Given a square binary matrix `A` (only 0's and 1's), where each row is sorted
+ * in non-decreasing order (all 0's come before 1's in a row), return the count of 0's.
+ *
+ * Example:
+ * --------
+ * Input:
+ *      A =
+ *      [[0, 0, 1],
+ *       [0, 1, 1],
+ *       [0, 0, 0]]
+ *
+ * Output:
+ *      6
+ *
+ * Explanation:
+ *      There are 6 zeros in total.
+ *
+ * Approach:
+ * ---------
+ * 1. Initially assume all elements are 0 → total_zeros = n × n.
+ * 2. For each row:
+ *      - Scan from left to right.
+ *      - When the first 1 is found at column `col`:
+ *          → The rest of the row (from col to last) will all be 1's.
+ *          → Subtract `(total_columns - col)` from the total zero count.
+ *          → Break the loop for this row since we know all further elements are 1's.
+ *
+ * Time Complexity:  O(n × m) in the worst case (n = rows, m = cols),  
+ *                   but it stops early in each row after the first 1 is found.
+ * Space Complexity: O(1) — constant extra space.
+ */
+
+class Solution {
+public:
+    int countZeros(vector<vector<int>> A) {
+        int n = A.size();                      // Number of rows (also columns since it's square)
+        int ans = n * n;                       // Assume all elements are zeros initially
+        
+        for (int row = 0; row < n; row++) {
+            for (int col = 0; col < A[0].size(); col++) {
+                if (A[row][col] == 1) {
+                    ans -= (A[0].size() - col); // Remove the number of 1's in this row
+                    break;                      // No need to check further in this row
+                }
+            }
+        }
+        return ans;
+    }
+};
