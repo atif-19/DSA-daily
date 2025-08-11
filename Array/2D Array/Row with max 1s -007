@@ -1,0 +1,49 @@
+/**
+ * @brief Find the row with the maximum number of 1's in a binary matrix.
+ *
+ * Problem:
+ * --------
+ * Given a binary matrix (only 0's and 1's), where each row is sorted in non-decreasing order
+ * (all 0's come before 1's), find the index of the row with the maximum number of 1's.
+ * If multiple rows have the same number of 1's, return the smallest row index.
+ * If no 1's are present, return -1.
+ *
+ * Example:
+ * --------
+ * Input:
+ *      arr =
+ *      [[0, 1, 1, 1],
+ *       [0, 0, 1, 1],
+ *       [1, 1, 1, 1],
+ *       [0, 0, 0, 0]]
+ *
+ * Output:
+ *      2
+ *
+ * Explanation:
+ *      Row 2 has 4 ones, which is the maximum among all rows.
+ *
+ * Approach:
+ * ---------
+ * - Iterate column by column from left to right.
+ * - For each column, scan rows from top to bottom.
+ * - The first time we encounter a 1, return that row index immediately.
+ *   (Because rows are sorted, the first 1 we encounter will belong to the row with the max 1's).
+ *
+ * Time Complexity:  O(n × m) in the worst case, where n = number of rows, m = number of columns.
+ *                   But in the best case, it can stop early.
+ * Space Complexity: O(1) — no extra space used.
+ */
+
+class Solution {
+public:
+    int rowWithMax1s(vector<vector<int>> &arr) {
+        for (int col = 0; col < arr[0].size(); col++) {
+            for (int row = 0; row < arr.size(); row++) {
+                if (arr[row][col] == 1)
+                    return row; // Found the first 1 → this row has the maximum number of 1's
+            }
+        }
+        return -1; // No 1's found in the matrix
+    }
+};
