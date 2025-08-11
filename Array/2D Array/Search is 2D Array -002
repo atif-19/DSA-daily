@@ -1,93 +1,48 @@
-/*
-Problem: Search a 2D Matrix (LeetCode 74)
-
-You are given an m x n integer matrix 'matrix' with the following properties:
-1. Each row is sorted in ascending order from left to right.
-2. The first integer of each row is greater than the last integer of the previous row.
-
-Given an integer 'target', return true if 'target' is in the matrix, or false otherwise.
-
-Example:
----------
-Input:
-matrix = [
-  [1, 3, 5, 7],
-  [10, 11, 16, 20],
-  [23, 30, 34, 50]
-], target = 3
-
-Output: true
-
-Constraints:
-------------
-- m == matrix.length
-- n == matrix[i].length
-- 1 <= m, n <= 100
-- -10^4 <= matrix[i][j], target <= 10^4
-*/
-
+// C++ program to search for a target value in a 2D matrix using Binary Search
+// Time Complexity: O(log(m * n)) where m = number of rows, n = number of columns
+// Space Complexity: O(1)
 
 class Solution {
 public:
+    /**
+     * @brief Searches for a target value in a 2D matrix.
+     * 
+     * The matrix has the following properties:
+     *  - Integers in each row are sorted from left to right.
+     *  - The first integer of each row is greater than the last integer of the previous row.
+     * 
+     * The approach treats the matrix as a single sorted 1D array and applies binary search.
+     * 
+     * @param matrix Reference to the 2D vector (matrix) of integers.
+     * @param target The integer value to search for.
+     * @return true if the target is found in the matrix, false otherwise.
+     */
     bool searchMatrix(vector<vector<int>>& matrix, int target) {
-        /*
-         Step 1: Binary Search to find the correct row
-         ------------------------------------------------
-         - Each row's first element is greater than the last element of the previous row.
-         - This means we can binary search over the first elements of each row to find
-           which row could possibly contain 'target'.
-         - Row index is stored in 'Row'. If target is smaller than all first elements, Row stays -1.
-        */
-        int start = 0, end = matrix.size() - 1;
-        int mid, Row = -1;
+        int start = 0;
+        int end = (matrix.size() * matrix[0].size()) - 1;
+        int mid;
 
         while (start <= end) {
             mid = start + (end - start) / 2;
 
-            if (matrix[mid][0] == target)  // Found target in the first column
-                return true;
-            else if (matrix[mid][0] < target) {
-                // Target could be in this row, move search to later rows
-                Row = mid;
-                start = mid + 1;
-            } else {
-                // Target must be in an earlier row
-                end = mid - 1;
+            // Map 1D mid index to 2D coordinates (row, col)
+            int row = mid / matrix[0].size();
+            int col = mid % matrix[0].size();
+
+            if (matrix[row][col] == target) {
+                return true; // Target found
+            }
+            else if (matrix[row][col] < target) {
+                start = mid + 1; // Search right half
+            }
+            else {
+                end = mid - 1; // Search left half
             }
         }
-
-        // If Row is -1, target is smaller than the smallest element in the matrix
-        if (Row == -1)
-            return false;
-
-        /*
-         Step 2: Binary Search within the found row
-         -------------------------------------------
-         - Now that we know 'Row', we search in that row using a normal binary search.
-        */
-        start = 0, end = matrix[0].size() - 1;
-        while (start <= end) {
-            mid = start + (end - start) / 2;
-            if (matrix[Row][mid] == target) {
-                return true;
-            } else if (target > matrix[Row][mid]) {
-                start = mid + 1;
-            } else {
-                end = mid - 1;
-            }
-        }
-
-        // Target not found
-        return false;
+        return false; // Target not found
     }
 };
 
-/*
-Time Complexity:
-----------------
-- Binary search for row: O(log m)
-- Binary search within row: O(log n)
-Total: O(log m + log n)
 
 Space Complexity:
 -----------------
