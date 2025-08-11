@@ -1,0 +1,37 @@
+/**
+ * @brief Transposes a given 2D matrix.
+ *
+ * The transpose of a matrix is obtained by flipping it over its diagonal, 
+ * turning the matrix's rows into columns and columns into rows.
+ *
+ * Example:
+ *  Input:
+ *      [[1, 2, 3],
+ *       [4, 5, 6]]
+ *  Output:
+ *      [[1, 4],
+ *       [2, 5],
+ *       [3, 6]]
+ *
+ * @param mat The input matrix of dimensions M x N.
+ * @return A new matrix of dimensions N x M which is the transpose of mat.
+ *
+ * @note Time Complexity: O(M × N) where M is the number of rows and N is the number of columns.
+ *       Space Complexity: O(M × N) for the new transposed matrix.
+ */
+class Solution {
+public:
+    vector<vector<int>> transpose(vector<vector<int>>& mat) {
+        // Create the result matrix with swapped dimensions
+        vector<vector<int>> ans(mat[0].size(), vector<int>(mat.size()));
+
+        // Fill the transposed matrix
+        for (int row = 0; row < mat.size(); row++) {
+            for (int col = 0; col < mat[0].size(); col++) {
+                ans[col][row] = mat[row][col]; // Swap row and column indices
+            }
+        }
+
+        return ans;
+    }
+};
