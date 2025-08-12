@@ -1,0 +1,57 @@
+class Solution {
+public:
+    int minimumIndex(vector<int>& nums) {
+        int count = 0, candidate;
+
+        // -------------------------
+        // Step 1: Find the dominant element using Boyer–Moore Majority Vote Algorithm
+        // -------------------------
+        // The "dominant element" is the one that appears more than n/2 times (if it exists).
+        // We use count to track the balance:
+        // - If count becomes 0, we set a new candidate.
+        // - If the current number matches the candidate, we increase count.
+        // - Otherwise, we decrease count.
+        for (int i = 0; i < nums.size(); i++) {
+            if (count == 0) {
+                candidate = nums[i];
+                count++;
+            } else {
+                if (nums[i] == candidate)
+                    count++;
+                else
+                    count--;
+            }
+        }
+
+        // -------------------------
+        // Step 2: Count the total frequency of the candidate in the whole array
+        // -------------------------
+        count = 0; 
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] == candidate)
+                count++;
+        }
+
+        // -------------------------
+        // Step 3: Iterate through array and check for valid split point
+        // -------------------------
+        // We split the array into two parts: left [0..i] and right [i+1..n-1]
+        // Conditions for a valid split:
+        //   1. candidate must be dominant in left: leftCount * 2 > (i + 1)
+        //   2. candidate must be dominant in right: count * 2 > (n - i - 1)
+        // We track leftCount (candidate count in left) and decrement count as we move.
+        int leftCount = 0;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] == candidate) {
+                leftCount++;
+                count--;
+            }
+            // Check dominance in both subarrays
+            if (((i + 1) < 2 * leftCount) && ((nums.size() - i - 1) < 2 * count)) 
+                return i; // Found the first valid split index
+        }
+
+        // If no valid index is found
+        return -1;
+    }
+};
