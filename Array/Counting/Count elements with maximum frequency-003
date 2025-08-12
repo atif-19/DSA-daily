@@ -1,0 +1,31 @@
+class Solution {
+public:
+    int maxFrequencyElements(vector<int>& nums) {
+        // Frequency array to store occurrences of elements
+        // Assuming nums[i] is in range [1, 100]
+        vector<int> temp(100, 0);
+
+        // Step 1: Store the frequency of each element
+        for (int i = 0; i < nums.size(); i++) {
+            int value = nums[i];
+            temp[value - 1]++; // value-1 because 0-indexed array
+        }
+
+        // Step 2: Find the maximum frequency
+        int maxi = INT_MIN;
+        for (int i = 0; i < temp.size(); i++) {
+            maxi = max(maxi, temp[i]);
+        }
+        
+        // Step 3: Count total frequency of all elements 
+        // that occur 'maxi' times
+        int ans = 0;
+        for (int i = 0; i < temp.size(); i++) {
+            if (temp[i] == maxi) {
+                ans += maxi;
+            }
+        }
+
+        return ans;
+    }
+};
