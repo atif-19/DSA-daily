@@ -1,0 +1,75 @@
+/*
+------------------------------------------------------------
+Problem: Defanging an IP Address (LeetCode #1108)
+------------------------------------------------------------
+
+Given a valid IPv4 address, return a defanged version of that IP address.
+
+A defanged IP address replaces every period "." with "[.]".
+
+------------------------------------------------------------
+Example 1:
+------------------------------------------------------------
+Input:  address = "1.1.1.1"
+Output: "1[.]1[.]1[.]1"
+
+------------------------------------------------------------
+Example 2:
+------------------------------------------------------------
+Input:  address = "255.100.50.0"
+Output: "255[.]100[.]50[.]0"
+
+------------------------------------------------------------
+Constraints:
+------------------------------------------------------------
+• The given address is a valid IPv4 address.
+• 1 <= address.length <= 15
+• address consists of digits and periods.
+
+------------------------------------------------------------
+Approach:
+------------------------------------------------------------
+We iterate through the string character by character:
+    - If the character is '.', append "[.]" to the result.
+    - Otherwise, append the character as it is.
+This ensures all '.' characters are replaced while maintaining the rest of the address.
+
+------------------------------------------------------------
+Time Complexity:
+------------------------------------------------------------
+O(n) - We iterate over each character exactly once.
+
+------------------------------------------------------------
+Space Complexity:
+------------------------------------------------------------
+O(n) - We construct a new string for the result.
+
+------------------------------------------------------------
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string defangIPaddr(string address) {
+        string ans = "";
+        int i = 0;
+        while (i < address.size()) {
+            if (address[i] == '.')
+                ans.append("[.]");
+            else
+                ans += address[i];
+            i++;
+        }
+        return ans;
+    }
+};
+
+// Example usage
+int main() {
+    Solution sol;
+    string ip = "255.100.50.0";
+    cout << sol.defangIPaddr(ip) << endl; // Output: 255[.]100[.]50[.]0
+    return 0;
+}
