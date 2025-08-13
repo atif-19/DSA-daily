@@ -1,0 +1,106 @@
+/*
+------------------------------------------------------------
+Problem: Sorting the Sentence
+------------------------------------------------------------
+You are given a shuffled sentence where each word has a number 
+at its end indicating its position in the correct order.
+
+Task:
+Rearrange the sentence to form the correct sentence without 
+the numbers.
+
+------------------------------------------------------------
+Example 1:
+------------------------------------------------------------
+Input:
+s = "is2 sentence4 This1 a3"
+Output:
+"This is a sentence"
+
+Explanation:
+- "This1" is the 1st word.
+- "is2" is the 2nd word.
+- "a3" is the 3rd word.
+- "sentence4" is the 4th word.
+
+------------------------------------------------------------
+Constraints:
+------------------------------------------------------------
+• 2 <= s.length <= 200
+• s consists of lowercase and uppercase English letters, digits, and spaces.
+• The number at the end of each word is between 1 and the number of words.
+
+------------------------------------------------------------
+Approach:
+------------------------------------------------------------
+1. First, find the total number of words by scanning the string 
+   and checking the highest number found in any word.
+2. Create a vector of strings with size equal to the number of words.
+3. Traverse the input string:
+   - Extract each word without the digit.
+   - Place the word in the correct index based on the digit.
+4. Concatenate all words in order, adding spaces between them.
+
+------------------------------------------------------------
+Time Complexity:
+------------------------------------------------------------
+O(n) – We make a single pass to find word count and another to 
+place them correctly, where n is the length of the string.
+
+------------------------------------------------------------
+Space Complexity:
+------------------------------------------------------------
+O(n) – We store words in an extra vector of size equal to the 
+number of words.
+
+------------------------------------------------------------
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    string sortSentence(string s) {
+        int no_of_words = 0;
+        
+        // Step 1: Find the total number of words
+        for (int i = 0; i < s.size(); i++) {
+            if (isdigit(s[i]))
+                no_of_words = max(no_of_words, s[i] - '0');
+        }
+
+        // Step 2: Create a vector to store words in correct order
+        vector<string> words(no_of_words);
+
+        // Step 3: Traverse and place words in correct position
+        int i = 0;
+        string word = "";
+        while (i < s.size()) {
+            if (isdigit(s[i])) {
+                words[s[i] - '0' - 1] = word; // place word at correct index
+                word = "";
+            } else if (s[i] != ' ') {
+                word += s[i];
+            }
+            i++;
+        }
+
+        // Step 4: Build the result string
+        s = "";
+        for (int i = 0; i < words.size(); i++) {
+            s += words[i];
+            if (i < words.size() - 1)
+                s += ' ';
+        }
+        return s;
+    }
+};
+
+// Example usage
+int main() {
+    Solution sol;
+    string s = "is2 sentence4 This1 a3";
+    cout << sol.sortSentence(s) << endl; // Output: "This is a sentence"
+    return 0;
+}
