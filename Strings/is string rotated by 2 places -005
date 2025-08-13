@@ -1,0 +1,113 @@
+/*
+------------------------------------------------------------
+Problem: Check if String is Rotated by Two Places
+------------------------------------------------------------
+Given two strings s1 and s2, the task is to check if s2 is 
+a rotation of s1 by exactly two places (either clockwise or 
+anticlockwise).
+
+------------------------------------------------------------
+Example 1:
+------------------------------------------------------------
+Input:
+s1 = "amazon"
+s2 = "azonam"
+Output: true
+Explanation: Rotating "amazon" clockwise by 2 gives "azonam".
+
+------------------------------------------------------------
+Example 2:
+------------------------------------------------------------
+Input:
+s1 = "amazon"
+s2 = "onamaz"
+Output: true
+Explanation: Rotating "amazon" anticlockwise by 2 gives "onamaz".
+
+------------------------------------------------------------
+Constraints:
+------------------------------------------------------------
+• 1 <= |s1|, |s2| <= 100
+• Strings contain only lowercase English letters.
+
+------------------------------------------------------------
+Approach:
+------------------------------------------------------------
+We check two possible scenarios:
+1. Clockwise rotation by 2 characters.
+2. Anticlockwise rotation by 2 characters.
+
+Clockwise rotation means that the last two characters of s1 
+move to the front.
+Anticlockwise rotation means that the first two characters of s1 
+move to the end.
+
+Instead of creating new rotated strings, we simulate the 
+comparison using two-pointer index shifts.
+
+------------------------------------------------------------
+Time Complexity:
+------------------------------------------------------------
+O(n) – We compare each character at most twice.
+
+------------------------------------------------------------
+Space Complexity:
+------------------------------------------------------------
+O(1) – Constant extra space.
+
+------------------------------------------------------------
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    bool isRotated(string& s1, string& s2) {
+        if (s1.size() != s2.size())
+            return false;
+
+        if (s1.size() < 2 && s1 == s2)
+            return true;
+
+        // Check clockwise rotation (right shift by 2)
+        int i1 = 0, i2 = 2;
+        while (i1 < s1.size()) {
+            if (s1[i1] != s2[i2])
+                break;
+
+            i1++;
+            i2++;
+            if (i2 >= s2.size())
+                i2 = 0;
+
+            if (i1 >= s1.size())
+                return true;
+        }
+
+        // Check anticlockwise rotation (left shift by 2)
+        i1 = 0, i2 = s2.size() - 2;
+        while (i1 < s1.size()) {
+            if (s1[i1] != s2[i2])
+                break;
+
+            i1++;
+            i2++;
+            if (i2 >= s2.size())
+                i2 = 0;
+
+            if (i1 >= s1.size())
+                return true;
+        }
+
+        return false;
+    }
+};
+
+// Example usage
+int main() {
+    Solution sol;
+    string s1 = "amazon", s2 = "azonam";
+    cout << (sol.isRotated(s1, s2) ? "true" : "false") << endl; // Output: true
+    return 0;
+}
