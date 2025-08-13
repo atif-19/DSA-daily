@@ -1,0 +1,83 @@
+/*
+--------------------------------------
+📌 Problem: Custom Sort String
+LeetCode Link: https://leetcode.com/problems/custom-sort-string/
+Difficulty: Medium
+--------------------------------------
+
+📝 Problem Statement:
+You are given two strings `order` and `s`.
+- `order` is a permutation of lowercase letters.
+- `s` is another string.
+
+Your task is to sort the characters of `s` so that:
+1. Characters appear in the same relative order as in `order`.
+2. Characters in `s` that are NOT present in `order` can be placed anywhere after those in `order`.
+
+--------------------------------------
+Example:
+Input:
+    order = "cba"
+    s = "abcd"
+Output:
+    "cbad"
+Explanation:
+    - `c` comes first, then `b`, then `a` according to `order`.
+    - `d` is not in `order`, so it’s placed at the end.
+
+--------------------------------------
+💡 Approach:
+1. Count the frequency of each character in `s` (using a vector of size 26 for lowercase letters).
+2. Clear `s` and rebuild it:
+   - First, append characters in the sequence given by `order`.
+   - Then, append the remaining characters not in `order`.
+
+--------------------------------------
+⏳ Complexity:
+- Time Complexity: O(n + m) → n for counting frequency in `s`, m for processing `order`.
+- Space Complexity: O(1) → Fixed-size vector<int> of length 26.
+
+--------------------------------------
+📚 Flashcards for Quick Revision:
+Q: Why use vector<int> of size 26?
+A: To store frequency of each lowercase letter in O(1) space.
+
+Q: What’s the key trick here?
+A: First place characters in `order`, then append leftovers.
+
+Q: Can we avoid extra space?
+A: Not efficiently — frequency counting is necessary for fast reconstruction.
+--------------------------------------
+*/
+
+class Solution {
+public:
+    string customSortString(string order, string s) {
+        // Step 1: Store frequency of each character in s
+        vector<int> count(26, 0);
+        for (char c : s)
+            count[c - 'a']++;
+        
+        // Step 2: Clear s to rebuild the sorted string
+        s.clear();
+
+        // Step 3: Add characters in the order specified
+        for (char c : order) {
+            int index = c - 'a';
+            while (count[index] > 0) {
+                s += c;
+                count[index]--;
+            }
+        }
+
+        // Step 4: Append remaining characters not in order
+        for (int i = 0; i < 26; i++) {
+            while (count[i] > 0) {
+                s += (char)(i + 'a');
+                count[i]--;
+            }
+        }
+
+        return s;
+    }
+};
