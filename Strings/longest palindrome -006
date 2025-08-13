@@ -1,0 +1,119 @@
+/*
+------------------------------------------------------------
+Problem: Longest Palindrome
+------------------------------------------------------------
+Given a string `s` which can contain both uppercase and 
+lowercase letters, return the length of the longest palindrome 
+that can be built with those letters.
+
+Note:
+- Letters are case-sensitive ('A' and 'a' are different).
+- You can rearrange the letters.
+
+------------------------------------------------------------
+Example 1:
+------------------------------------------------------------
+Input:
+s = "abccccdd"
+Output:
+7
+
+Explanation:
+One of the longest palindromes is "dccaccd" which has length 7.
+
+------------------------------------------------------------
+Example 2:
+------------------------------------------------------------
+Input:
+s = "a"
+Output:
+1
+
+Explanation:
+Single letter is itself a palindrome.
+
+------------------------------------------------------------
+Constraints:
+------------------------------------------------------------
+• 1 <= s.length <= 2000
+• s consists of lowercase and/or uppercase English letters.
+
+------------------------------------------------------------
+Approach:
+------------------------------------------------------------
+1. Maintain two frequency arrays:
+   - One for uppercase letters (A-Z).
+   - One for lowercase letters (a-z).
+2. Count the frequency of each character.
+3. For each letter:
+   - If the count is even → Add it directly to the palindrome length.
+   - If the count is odd → Add (count - 1) to make it even, 
+     and mark that we have a single element available.
+4. If any single element exists, we can place it in the 
+   middle of the palindrome → Add 1 to the result.
+
+------------------------------------------------------------
+Time Complexity:
+------------------------------------------------------------
+O(n) – Single pass to count characters + fixed-size loops over 26 elements.
+
+------------------------------------------------------------
+Space Complexity:
+------------------------------------------------------------
+O(1) – Constant space since the arrays are of fixed size (26 each).
+
+------------------------------------------------------------
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    int longestPalindrome(string s) {
+        vector<int> Capital(26, 0);
+        vector<int> Small(26, 0);
+
+        // Step 1: Count uppercase and lowercase letters separately
+        for (int i = 0; i < s.size(); i++) {
+            if (isupper(s[i]))
+                Capital[s[i] - 'A']++;
+            else
+                Small[s[i] - 'a']++;
+        }
+
+        int ans = 0;
+        bool singleElement = false;
+
+        // Step 2: Process uppercase letters
+        for (int i = 0; i < 26; i++) {
+            if (Capital[i] % 2 == 0) {
+                ans += Capital[i];
+            } else {
+                ans += Capital[i] - 1;
+                singleElement = true;
+            }
+        }
+
+        // Step 3: Process lowercase letters
+        for (int i = 0; i < 26; i++) {
+            if (Small[i] % 2 == 0) {
+                ans += Small[i];
+            } else {
+                ans += Small[i] - 1;
+                singleElement = true;
+            }
+        }
+
+        // Step 4: If there’s any single element, put it in the middle
+        return ans + singleElement;
+    }
+};
+
+// Example usage
+int main() {
+    Solution sol;
+    string s = "abccccdd";
+    cout << sol.longestPalindrome(s) << endl; // Output: 7
+    return 0;
+}
