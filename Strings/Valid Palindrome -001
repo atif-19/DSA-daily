@@ -1,0 +1,95 @@
+/*
+----------------------------------------
+Problem: Valid Palindrome (LeetCode #125)
+----------------------------------------
+
+Given a string s, determine if it is a palindrome, considering only alphanumeric characters and ignoring cases.
+
+----------------------------------------
+Example 1:
+----------------------------------------
+Input:  s = "A man, a plan, a canal: Panama"
+Output: true
+Explanation: After removing non-alphanumeric characters and converting to lowercase, 
+             s becomes "amanaplanacanalpanama", which is a palindrome.
+
+----------------------------------------
+Example 2:
+----------------------------------------
+Input:  s = "race a car"
+Output: false
+Explanation: After processing, it becomes "raceacar", which is not a palindrome.
+
+----------------------------------------
+Constraints:
+----------------------------------------
+1 <= s.length <= 2 * 10^5
+s consists only of printable ASCII characters.
+
+----------------------------------------
+Approach:
+----------------------------------------
+We use the two-pointer technique:
+    1. Start from both ends of the string.
+    2. Skip non-alphanumeric characters.
+    3. Compare characters in lowercase form.
+    4. If all characters match, it’s a palindrome.
+
+----------------------------------------
+Time Complexity:
+----------------------------------------
+O(n) - Each character is processed at most once.
+
+----------------------------------------
+Space Complexity:
+----------------------------------------
+O(1) - No extra data structures are used, only a few variables.
+
+----------------------------------------
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    // Helper function to check if a character is alphanumeric
+    int isAlpha(char c) {
+        if (isdigit(c)) // digit check
+            return 1;
+        char c1 = tolower(c);
+        if (c1 >= 'a' && c1 <= 'z') // alphabet check
+            return 1;
+        return 0;
+    }
+
+    // Main function to check palindrome
+    bool isPalindrome(string s) {
+        int start = 0, end = s.size() - 1;
+
+        while (start < end) {
+            // Move start pointer forward until we find alphanumeric char
+            if (!isAlpha(s[start])) {
+                start++;
+                continue;
+            }
+            // Move end pointer backward until we find alphanumeric char
+            if (!isAlpha(s[end])) {
+                end--;
+                continue;
+            }
+            // Compare characters ignoring case
+            if (tolower(s[start++]) != tolower(s[end--]))
+                return false;
+        }
+        return true;
+    }
+};
+
+// Example usage
+int main() {
+    Solution sol;
+    string s = "A man, a plan, a canal: Panama";
+    cout << (sol.isPalindrome(s) ? "true" : "false") << endl;
+    return 0;
+}
