@@ -1,0 +1,96 @@
+/*
+---------------------------------
+📌 Problem: Case-Specific Sorting of Strings
+---------------------------------
+📝 Statement:
+Given a string `s` containing both uppercase and lowercase letters, 
+sort all uppercase letters among themselves and lowercase letters among themselves, 
+but maintain the original positions of uppercase and lowercase letters.
+
+Example:
+---------
+Input:  s = "defRTSersUXI"
+Output: "deeIRSfrsTUX"
+
+Explanation:
+- All uppercase letters: R, T, S, U, X, I → Sorted → I, R, S, T, U, X
+- All lowercase letters: d, e, f, e, r, s → Sorted → d, e, e, f, r, s
+- Place them back into the same positions where uppercase/lowercase were originally.
+
+---------------------------------
+💡 Approach:
+---------------------------------
+1. Create two frequency arrays:
+   - `upper[26]` for counting uppercase letter occurrences.
+   - `lower[26]` for counting lowercase letter occurrences.
+
+2. Traverse the string:
+   - Count each character's frequency based on whether it is uppercase or lowercase.
+
+3. Traverse the string again:
+   - For each uppercase position, find the next available uppercase letter in sorted order.
+   - For each lowercase position, find the next available lowercase letter in sorted order.
+   - Place the sorted character back in the same position.
+
+---------------------------------
+⏱ Complexity Analysis:
+---------------------------------
+- Time Complexity: O(n + 26 + n) → O(n)
+  (Two passes over the string + constant 26 for alphabet lookup)
+- Space Complexity: O(26 + 26) → O(1) extra space
+
+---------------------------------
+🎯 Why is this Optimal?
+---------------------------------
+- Sorting is done using counting sort logic (O(1) lookup for 26 letters).
+- No extra string storage needed; sorting is position-aware.
+- Avoids O(n log n) sort calls — perfect for interview efficiency.
+
+---------------------------------
+📚 Flashcards:
+---------------------------------
+Q: Why not just sort directly?  
+A: Direct sort would mix uppercase and lowercase together, violating position constraints.
+
+Q: Why counting sort instead of normal sort?  
+A: Alphabet size is fixed (26), so counting sort is faster (O(1) per lookup).
+
+Q: Can we do better than O(n)?  
+A: No — we must inspect each character at least once, so O(n) is optimal.
+
+---------------------------------
+💻 Code Implementation:
+---------------------------------
+*/
+
+class Solution {
+public:
+    string caseSort(string& s) {
+        // Frequency arrays for uppercase & lowercase
+        vector<int> upper(26, 0);
+        vector<int> lower(26, 0);
+
+        // Count occurrences
+        for (int i = 0; i < s.size(); i++) {
+            if (isupper(s[i]))
+                upper[s[i] - 'A']++;
+            else
+                lower[s[i] - 'a']++;
+        }
+
+        // Rebuild string with sorted characters at correct positions
+        for (int i = 0; i < s.size(); i++) {
+            int l = 0, u = 0;
+            if (isupper(s[i])) {
+                while (!upper[u]) u++;
+                s[i] = u + 'A';
+                upper[u]--;
+            } else {
+                while (!lower[l]) l++;
+                s[i] = l + 'a';
+                lower[l]--;
+            }
+        }
+        return s;
+    }
+};
