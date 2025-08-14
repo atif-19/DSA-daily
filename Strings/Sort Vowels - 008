@@ -1,0 +1,119 @@
+/*
+-----------------------------------
+Problem: Sort Vowels in a String
+-----------------------------------
+Given a string `s`, sort the vowels in it in ascending order based on their ASCII values 
+while keeping all other characters in their original positions.
+
+Example:
+Input:  s = "lEetcOde"
+Output: "lEOtcede"
+
+-----------------------------------
+Approach:
+-----------------------------------
+1. Create two frequency arrays:
+   - `Capital` for uppercase vowels (size 26)
+   - `small` for lowercase vowels (size 26)
+
+2. First Pass (Extract & Mark):
+   - Iterate over the string and whenever a vowel is found:
+     - Count its occurrence in the respective frequency array.
+     - Replace it in the string with a placeholder character `'#'`.
+
+3. Second Pass (Refill Sorted Vowels):
+   - Iterate over the string again.
+   - Whenever a `'#'` is found:
+     - First check the `Capital` array from 'A' to 'Z' (index 0 → 'A').
+       If a count is found, replace `'#'` with that vowel and decrement its count.
+     - If no capital vowel is left, check the `small` array from 'a' to 'z' 
+       and do the same.
+   - This ensures vowels are placed back in sorted order.
+
+-----------------------------------
+Time Complexity: O(n + 26 + 26) ≈ O(n)
+Space Complexity: O(1) (since arrays are fixed size)
+-----------------------------------
+*/
+
+// Author: Atif
+// Date: 13-Aug-2025
+// Status: ✅ Accepted on LeetCode
+
+class Solution {
+public:
+    string sortVowels(string s) {
+        // Store counts for capital vowels
+        vector<int> Capital(26, 0);
+        // Store counts for small vowels
+        vector<int> small(26, 0);
+
+        // Step 1: Identify vowels, count them, mark with '#'
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == 'a' || s[i] == 'e' || s[i] == 'i' || s[i] == 'o' || s[i] == 'u') {
+                small[s[i] - 'a']++;
+                s[i] = '#';
+            }
+            else if (s[i] == 'A' || s[i] == 'E' || s[i] == 'I' || s[i] == 'O' || s[i] == 'U') {
+                Capital[s[i] - 'A']++;
+                s[i] = '#';
+            }
+        }
+
+        // Step 2: Refill vowels in sorted order
+        int iter = 0;
+        while (iter < s.size()) {
+            int filled = 0;
+
+            if (s[iter] == '#') {
+                // First try to place uppercase vowels
+                for (int i = 0; i < 26; i++) {
+                    if (Capital[i]) {
+                        s[iter] = i + 'A';
+                        filled = 1;
+                        Capital[i]--;
+                        break;
+                    }
+                }
+                // If filled with uppercase, skip lowercase check
+                if (filled) {
+                    iter++;
+                    continue;
+                }
+                // Try lowercase vowels
+                for (int i = 0; i < 26; i++) {
+                    if (small[i]) {
+                        s[iter] = i + 'a';
+                        small[i]--;
+                        break;
+                    }
+                }
+            }
+            iter++;
+        }
+
+        return s;
+    }
+};
+
+
+/*
+-----------------------------------
+FLASHCARDS
+-----------------------------------
+Q: Which data structures are used for vowel storage?
+A: Two integer arrays (size 26) for capital and small letters.
+
+Q: Why replace vowels with '#' in first pass?
+A: To mark their positions and avoid losing where they originally were.
+
+Q: Why first check capital vowels before lowercase?
+A: ASCII ordering: capital letters come before lowercase letters.
+
+Q: Time Complexity?
+A: O(n) — single pass for counting + single pass for replacing.
+
+Q: Space Complexity?
+A: O(1) — frequency arrays are fixed size (26 each).
+-----------------------------------
+*/
