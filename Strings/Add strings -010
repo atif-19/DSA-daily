@@ -1,0 +1,83 @@
+/*
+📌 Flashcard — Add Strings
+
+📝 Problem:
+Given two non-negative integers `num1` and `num2` represented as strings, return the sum of `num1` and `num2`, also as a string.
+
+⚠️ You are NOT allowed to convert the inputs directly to integers (e.g., using stoi or stoll) or use built-in big integer libraries.
+
+Example:
+---------
+Input:  num1 = "456", num2 = "77"
+Output: "533"
+
+🎯 Key Points:
+- Strings can be very long (up to 10^4 digits)
+- Must simulate manual addition (right to left)
+- Handle carry properly
+
+💡 Approach:
+1. Ensure `num1` is always the longer string.
+2. Start adding from the last digit (like manual addition).
+3. Keep track of carry.
+4. Append each computed digit to the answer string.
+5. Reverse the result at the end (since we append from LSB to MSB).
+
+⏱ Time Complexity:  O(max(n, m))  → We process each digit once.
+💾 Space Complexity: O(max(n, m))  → For storing the result.
+*/
+
+class Solution {
+public:
+    string addStrings(string num1, string num2) {
+        // Step 1: Make sure num1 is longer
+        if (num1.size() < num2.size())
+            swap(num1, num2);
+
+        // Pointers for last digits of each string
+        int first = num1.size() - 1;
+        int second = num2.size() - 1;
+
+        int carry = 0;  // To store carry after each sum
+        string ans = "";
+
+        // Step 2: Add digits until num2 is exhausted
+        while (second >= 0) {
+            int sum = (num1[first] - '0') + (num2[second] - '0') + carry;
+
+            ans += (sum % 10) + '0'; // Store the current digit
+            carry = sum / 10;        // Update carry
+
+            first--;
+            second--;
+        }
+
+        // Step 3: Add remaining digits of num1
+        while (first >= 0) {
+            int sum = (num1[first] - '0') + carry;
+            ans += (sum % 10) + '0';
+            carry = sum / 10;
+            first--;
+        }
+
+        // Step 4: If carry still remains, append it
+        if (carry)
+            ans += carry + '0';
+
+        // Step 5: Reverse result since we built it backwards
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+
+/*
+🔍 Dry Run:
+num1 = "456", num2 = "77"
+--------------------------------
+Step 1: swap not needed (num1 longer)
+Step 2: Add last digits: 6 + 7 = 13 → ans = "3", carry = 1
+Step 3: 5 + 7 + 1 = 13 → ans = "33", carry = 1
+Step 4: 4 + 1 = 5     → ans = "335", carry = 0
+Reverse → "533"
+✅ Output: "533"
+*/
