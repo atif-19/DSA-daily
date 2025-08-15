@@ -1,0 +1,75 @@
+/*
+---------------------------------------
+📌 Problem: Factorial of Large Number
+---------------------------------------
+📝 Statement:
+Given an integer n, return the factorial of n as an array of digits (because factorial values grow very large and can't fit in standard data types).
+
+Example:
+Input:  n = 5
+Output: [1, 2, 0]   // 5! = 120
+
+---------------------------------------
+💡 Approach:
+---------------------------------------
+1. Use a vector<int> `ans` to store digits of the result in reverse order.
+2. Start with ans = {1} (0! and 1! = 1).
+3. Multiply the current result by each number from 2 to n:
+   - For each digit in `ans`, multiply by current `n` and add any carry.
+   - Update the digit with `(val % 10)` and move `(val / 10)` to carry.
+4. After processing all digits, if carry remains, push its digits into `ans`.
+5. After finishing, reverse the result to get the final factorial digits in correct order.
+
+✅ This is the same logic you use for “manual multiplication” on paper.
+
+---------------------------------------
+⏱ Complexity:
+---------------------------------------
+- Time:  O(n * k)  
+    where k = number of digits in n!
+    (because for each n we multiply with all current digits)
+- Space: O(k) → to store digits of n!
+
+---------------------------------------
+🎯 Flashcards:
+---------------------------------------
+Q: Why store digits in reverse order during multiplication?
+A: So we can directly multiply starting from the least significant digit without reversing every step.
+
+Q: What’s the number of digits in n! approximately?
+A: ≈ floor(log10(n!)) + 1 → use Stirling’s approximation for large n.
+
+Q: Why can’t we use long long for large factorials?
+A: Factorials grow extremely fast; even 21! exceeds 64-bit integer range.
+
+---------------------------------------
+*/
+
+class Solution {
+public:
+    vector<int> factorial(int n) {
+        vector<int> ans(1, 1); // Start with 1
+        int carry, val;
+
+        while (n > 1) {
+            carry = 0;
+            for (int i = 0; i < ans.size(); i++) {
+                val = (ans[i] * n) + carry;
+                ans[i] = val % 10;
+                carry = val / 10;
+            }
+
+            // Push remaining carry digits
+            while (carry) {
+                ans.push_back(carry % 10);
+                carry /= 10;
+            }
+
+            n--;
+        }
+
+        // Reverse to get correct order
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
