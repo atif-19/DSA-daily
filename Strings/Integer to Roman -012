@@ -1,0 +1,105 @@
+/*
+---------------------------------------
+📌 Problem: Integer to Roman
+---------------------------------------
+📝 Statement:
+Given an integer between 1 and 3999, convert it into its Roman numeral representation.
+
+Roman numeral rules:
+- I(1), V(5), X(10), L(50), C(100), D(500), M(1000)
+- Use subtractive notation:
+    4 → IV, 9 → IX
+    40 → XL, 90 → XC
+    400 → CD, 900 → CM
+
+Example:
+Input:  num = 1994
+Output: "MCMXCIV"
+
+---------------------------------------
+💡 Approach (Your Method):
+---------------------------------------
+1. Extract digits starting from units place → tens → hundreds → thousands.
+2. For each digit, call a helper function `Roman(n, place)`:
+    - `place` decides which symbols to use (units, tens, hundreds, thousands).
+    - Append the corresponding Roman characters.
+3. Build the result in reverse order (because we start from units) and reverse at the end.
+
+✅ This works without predefining a full mapping table — you construct each part on the fly.
+
+---------------------------------------
+⏱ Complexity:
+---------------------------------------
+- Time:  O(1) → At most 4 digits, each converted in constant steps.
+- Space: O(1) → Result string only.
+
+---------------------------------------
+🎯 Flashcards:
+---------------------------------------
+Q: Why reverse twice in the code?
+A: First reverse each segment (because we build from lower to higher), then reverse the full string for final order.
+
+Q: What’s the valid input range for this problem?
+A: 1 ≤ num ≤ 3999 (as per Roman numeral convention).
+
+Q: How many unique symbols are there in Roman numerals?
+A: 7 (I, V, X, L, C, D, M).
+
+---------------------------------------
+*/
+
+class Solution {
+public:
+    // Converts a single digit 'n' at a given place value 'count' into its Roman part
+    string Roman(int n, int count) {
+        string Rom = "";
+
+        if (count == 3) { // Thousands place
+            while (n--) Rom += 'M';
+        }
+        else if (count == 2) { // Hundreds place
+            if (n == 4) Rom += "CD";
+            else if (n == 9) Rom += "CM";
+            else {
+                if (n < 5) while (n--) Rom += 'C';
+                else { Rom += 'D'; n -= 5; while (n--) Rom += 'C'; }
+            }
+        }
+        else if (count == 1) { // Tens place
+            if (n == 4) Rom += "XL";
+            else if (n == 9) Rom += "XC";
+            else {
+                if (n < 5) while (n--) Rom += 'X';
+                else { Rom += 'L'; n -= 5; while (n--) Rom += 'X'; }
+            }
+        }
+        else { // Units place
+            if (n == 4) Rom += "IV";
+            else if (n == 9) Rom += "IX";
+            else {
+                if (n < 5) while (n--) Rom += 'I';
+                else { Rom += 'V'; n -= 5; while (n--) Rom += 'I'; }
+            }
+        }
+
+        // Reverse because digits are processed from low → high
+        reverse(Rom.begin(), Rom.end());
+        return Rom;
+    }
+
+    string intToRoman(int num) {
+        string ans = "";
+        int i = 0;
+        
+        while (i <= 3) { // Process units → tens → hundreds → thousands
+            int n = num % 10;
+            num /= 10;
+            ans += Roman(n, i);
+            i++;
+        }
+
+        // Reverse full string to get correct Roman numeral
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
