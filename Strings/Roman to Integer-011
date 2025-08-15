@@ -1,0 +1,75 @@
+/*
+---------------------------------------
+📌 Problem: Roman to Integer
+---------------------------------------
+📝 Statement:
+Given a Roman numeral string, convert it into its integer representation.
+
+Roman numeral rules:
+- I(1), V(5), X(10), L(50), C(100), D(500), M(1000)
+- If a smaller numeral comes before a larger one, subtract it. (e.g., IV = 4)
+- Otherwise, add its value. (e.g., VI = 6)
+
+Example:
+Input:  s = "MCMXCIV"
+Output: 1994
+Explanation:
+    M  (1000) → add
+    CM (900)  → subtract C (100) from M (1000)
+    XC (90)   → subtract X (10) from C (100)
+    IV (4)    → subtract I (1) from V (5)
+
+---------------------------------------
+💡 Approach:
+---------------------------------------
+1. Store the value of each Roman numeral in an unordered_map for O(1) access.
+2. Traverse the string from left to right:
+    - If the current numeral is smaller than the next one, subtract its value.
+    - Else, add its value.
+3. Return the final sum.
+
+This approach directly implements the Roman numeral rules in a single pass.
+
+---------------------------------------
+⏱ Complexity:
+---------------------------------------
+- Time:  O(n) → Single pass through the string.
+- Space: O(1) → Fixed size map of 7 entries.
+
+---------------------------------------
+🎯 Flashcards (for revision):
+---------------------------------------
+Q: How do you decide whether to subtract or add a Roman numeral?
+A: If its value is less than the next numeral’s value → subtract, else add.
+
+Q: Why is unordered_map used?
+A: For O(1) lookup of numeral values.
+
+Q: What's the largest value a Roman numeral can represent here?
+A: M (1000) — but combination rules allow much larger numbers.
+
+---------------------------------------
+*/
+
+class Solution {
+public:
+    int romanToInt(string s) {
+        // Roman numeral to integer mapping
+        unordered_map<char,int> val = {
+            {'I',1}, {'V',5}, {'X',10}, {'L',50},
+            {'C',100}, {'D',500}, {'M',1000}
+        };
+
+        int ans = 0;
+
+        for (int i = 0; i < s.size(); i++) {
+            // If current value < next value → subtract
+            if (i + 1 < s.size() && val[s[i]] < val[s[i+1]])
+                ans -= val[s[i]];
+            else
+                ans += val[s[i]];
+        }
+
+        return ans;
+    }
+};
