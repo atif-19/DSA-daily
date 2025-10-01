@@ -1,0 +1,71 @@
+// Generate All Subsequences of a String using Recursion
+// -------------------------------------------------------------
+// Problem Statement:
+// Given a string, generate all possible non-empty subsequences.
+//
+// Example:
+// Input: "abc"
+// Output: ["a", "b", "c", "ab", "ac", "bc", "abc"]
+//
+// -------------------------------------------------------------
+// Approach:
+// - At each character, we have 2 choices:
+//   1. Do not include the current character in the subsequence.
+//   2. Include the current character in the subsequence.
+// - Recursively explore both choices.
+// - When the index reaches the end of the string (base case),
+//   add the current subsequence to the result (if non-empty).
+//
+// Note: Subsequences differ from substrings because characters
+// do not need to be contiguous — order matters but gaps are allowed.
+//
+// -------------------------------------------------------------
+// Time Complexity: O(2^n * n)
+//   - There are 2^n subsequences.
+//   - Copying each subsequence into the result can take O(n).
+//
+// Space Complexity:
+//   - Recursion depth: O(n)
+//   - Output storage: O(2^n * n) for all subsequences
+// -------------------------------------------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Helper function to recursively generate subsequences
+void Sub(vector<string>& ans,  // stores all subsequences
+         string s,             // input string
+         string temp,          // current subsequence being built
+         int index) {          // current index in string
+
+    // Base case: when index reaches end of string
+    if (index >= s.size()) {
+        if (temp.empty()) return;  // skip empty subsequence
+        ans.push_back(temp);       // store the built subsequence
+        return;
+    }
+
+    // Choice 1: Do NOT take s[index]
+    Sub(ans, s, temp, index + 1);
+
+    // Choice 2: Take s[index]
+    temp += s[index];
+    Sub(ans, s, temp, index + 1);
+}
+
+// Main function to return all subsequences of the string
+vector<string> subsequences(string str) {
+    vector<string> ans;   // stores final result
+    string temp = "";     // temporary subsequence
+    Sub(ans, str, temp, 0);
+    return ans;
+}
+
+// -------------------------------------------------------------
+// Example usage (for local testing):
+// int main() {
+//     string str = "abc";
+//     vector<string> result = subsequences(str);
+//     for (string seq : result) cout << seq << " ";
+// }
+// -------------------------------------------------------------
