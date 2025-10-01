@@ -1,0 +1,66 @@
+// Quick Sort Implementation in C++ (Ascending Order)
+// Time Complexity: O(n log n) on average, O(n^2) in worst case (already sorted with poor pivot choice)
+// Space Complexity: O(log n) due to recursion stack
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// -------------------------------------------------
+// Function: partition
+// Partitions the array around the pivot (last element)
+// Elements <= pivot are moved to the left
+// Elements > pivot are moved to the right
+// Returns the final position of the pivot
+// -------------------------------------------------
+int partition(vector<int>& arr, int start, int end) {
+    int pos = start; // Position for placing smaller elements
+
+    for (int i = start; i <= end; i++) {
+        if (arr[i] <= arr[end]) { 
+            // Swap current element with position pointer
+            swap(arr[pos++], arr[i]);
+        }
+    }
+
+    // After loop, pivot (arr[end]) is in correct position
+    return pos - 1;
+}
+
+// -------------------------------------------------
+// Function: QuickSort
+// Recursively sorts subarrays divided by the pivot
+// arr   : reference to vector being sorted
+// start : starting index of the subarray
+// end   : ending index of the subarray
+// -------------------------------------------------
+void QuickSort(vector<int>& arr, int start, int end) {
+    if (start >= end) return; // Base case: single element or invalid range
+
+    // Partition array and get pivot index
+    int pivot = partition(arr, start, end);
+
+    // Recursively apply quicksort to left and right subarrays
+    QuickSort(arr, start, pivot - 1);
+    QuickSort(arr, pivot + 1, end);
+}
+
+// -------------------------------------------------
+// Main function to test Quick Sort
+// -------------------------------------------------
+int main() {
+    vector<int> arr = {12, 11, 10, 9, 7, 5, 4, 2, 0};
+
+    cout << "Original array: ";
+    for (int num : arr) cout << num << " ";
+    cout << endl;
+
+    // Call QuickSort
+    QuickSort(arr, 0, arr.size() - 1);
+
+    cout << "Sorted array:   ";
+    for (int num : arr) cout << num << " ";
+    cout << endl;
+
+    return 0;
+}
