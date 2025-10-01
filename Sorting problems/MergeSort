@@ -1,0 +1,92 @@
+// Merge Sort Implementation in C++
+// Time Complexity: O(n log n)
+// Space Complexity: O(n) due to temporary arrays
+
+#include <iostream>
+#include <vector>
+using namespace std;
+
+// -------------------------------
+// Function: Merge
+// Merges two sorted halves of the array into one sorted subarray
+// arr   : reference to the vector being sorted
+// start : starting index of the subarray
+// mid   : middle index dividing the two halves
+// end   : ending index of the subarray
+// -------------------------------
+void Merge(vector<int>& arr, int start, int mid, int end) {
+    // Temporary array to store the merged result
+    vector<int> temp(end - start + 1);
+
+    // Left half pointer, right half pointer, and temp array pointer
+    int left = start, right = mid + 1, index = 0;
+
+    // Compare elements from both halves and copy the smaller one
+    while (left <= mid && right <= end) {
+        if (arr[left] <= arr[right]) {
+            temp[index++] = arr[left++];
+        } else {
+            temp[index++] = arr[right++];
+        }
+    }
+
+    // Copy remaining elements of left half (if any)
+    while (left <= mid) {
+        temp[index++] = arr[left++];
+    }
+
+    // Copy remaining elements of right half (if any)
+    while (right <= end) {
+        temp[index++] = arr[right++];
+    }
+
+    // Copy the sorted temp array back into the original array
+    int k = start;
+    index = 0;
+    while (k <= end) {
+        arr[k++] = temp[index++];
+    }
+}
+
+// -------------------------------
+// Function: MergeSort
+// Recursively divides the array into halves and sorts them
+// arr   : reference to the vector being sorted
+// start : starting index of the subarray
+// end   : ending index of the subarray
+// -------------------------------
+void MergeSort(vector<int>& arr, int start, int end) {
+    if (start < end) {
+        // Find the midpoint to divide the array
+        int mid = start + (end - start) / 2;
+
+        // Recursively sort the left half
+        MergeSort(arr, start, mid);
+
+        // Recursively sort the right half
+        MergeSort(arr, mid + 1, end);
+
+        // Merge the two sorted halves
+        Merge(arr, start, mid, end);
+    }
+}
+
+// -------------------------------
+// Main function to test Merge Sort
+// -------------------------------
+int main() {
+    vector<int> arr = {12, 11, 10, 9, 7, 5, 4, 2, 0};
+
+    cout << "Original array: ";
+    for (int num : arr) cout << num << " ";
+    cout << endl;
+
+    // Call merge sort
+    MergeSort(arr, 0, arr.size() - 1);
+
+    cout << "Sorted array:   ";
+    for (int num : arr) cout << num << " ";
+    cout << endl;
+
+    return 0;
+}
