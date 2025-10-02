@@ -1,0 +1,59 @@
+/*
+    Problem: Generate Parentheses (LeetCode 22)
+    --------------------------------------------
+    Given n pairs of parentheses, write a function to generate all combinations 
+    of well-formed parentheses.
+
+    Example:
+        Input: n = 3
+        Output: ["((()))","(()())","(())()","()(())","()()()"]
+
+    Approach:
+    ----------
+    - We use recursion + backtracking to build the string step by step.
+    - Keep track of:
+        `left`  = number of '(' used so far
+        `right` = number of ')' used so far
+    - Rules:
+        1. We can add '(' if `left < n`
+        2. We can add ')' if `right < left` (to keep it valid)
+    - Base case:
+        When the length of the current string == 2*n → push it to answer.
+
+    Time Complexity: O(2^(2n)) in worst case, but valid pruning reduces calls.
+    Space Complexity: O(2n) recursion depth + storage of results.
+*/
+
+class Solution {
+public:
+    // Helper recursive function to generate valid parentheses
+    void Generate(vector<string>& ans, string &temp, int n, int left, int right) {
+        // Base case: if string length == 2*n, it's a valid combination
+        if (right + left == 2 * n) {
+            ans.push_back(temp);
+            return;
+        }
+
+        // If we can still add a '(', do it
+        if (left < n) {
+            temp += '(';
+            Generate(ans, temp, n, left + 1, right);
+            temp.pop_back(); // backtrack
+        }
+
+        // If we can add a ')', do it
+        if (right < left) {
+            temp += ')';
+            Generate(ans, temp, n, left, right + 1);
+            temp.pop_back(); // backtrack
+        }
+    }
+
+    // Main function
+    vector<string> generateParenthesis(int n) {
+        string temp = "";
+        vector<string> ans;
+        Generate(ans, temp, n, 0, 0);
+        return ans;
+    }
+};
