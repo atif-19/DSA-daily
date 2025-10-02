@@ -1,0 +1,54 @@
+/*
+    Problem: Subset Sums
+    --------------------
+    Given an array of integers, generate all possible subset sums.
+    A subset sum is the sum of elements of any subset (including empty subset).
+
+    Example:
+        Input: arr = [1, 2]
+        Subsets: [], [1], [2], [1,2]
+        Subset sums: 0, 1, 2, 3
+
+    Approach:
+    - Use recursion (backtracking) to explore all subsets.
+    - At each index, we have two choices:
+        1. Exclude the current element → move to next index.
+        2. Include the current element → add it to sum, then move to next index.
+    - Base case: when index reaches the end of the array, store the current sum.
+
+    Complexity Analysis:
+    --------------------
+    Time Complexity  : O(2^n)
+        - Each element can either be included or excluded, leading to 2^n subsets.
+    Auxiliary Space  : O(n)
+        - Recursion depth is at most n.
+    Output Space     : O(2^n)
+        - We must store all subset sums, hence result vector has size 2^n.
+*/
+
+class Solution {
+  public:
+    // Recursive helper function to generate all subset sums
+    void SubSum(vector<int>& ans, int temp, vector<int> arr, int index) {
+        // Base case: when we reach the end of the array, store the sum
+        if (index >= arr.size()) {
+            ans.push_back(temp);
+            return;
+        }
+
+        // Choice 1: Do not include current element
+        SubSum(ans, temp, arr, index + 1);
+
+        // Choice 2: Include current element
+        temp += arr[index];
+        SubSum(ans, temp, arr, index + 1);
+    }
+
+    // Function to return all subset sums
+    vector<int> subsetSums(vector<int>& arr) {
+        int temp = 0;
+        vector<int> ans;
+        SubSum(ans, temp, arr, 0);
+        return ans;
+    }
+};
