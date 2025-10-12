@@ -1,0 +1,98 @@
+/*
+    🧩 Problem: Permutations II (LeetCode #47)
+    -----------------------------------------------------
+    Given a collection of numbers, nums, that might contain duplicates,
+    return all possible unique permutations in any order.
+
+    Example:
+    Input:  nums = [1,1,2]
+    Output: [[1,1,2],[1,2,1],[2,1,1]]
+
+    -----------------------------------------------------
+    💡 Approach: Frequency-Based Backtracking (No HashMap)
+    -----------------------------------------------------
+    Instead of generating all permutations and filtering duplicates later,
+    we track how many times each number appears using a frequency array.
+
+    - 'count' array (size = 21) represents elements from -10 to +10.
+      index 0 → 0, index 1 → 1, ... index 10 → 10,
+      index 11 → -1, index 12 → -2, ... index 20 → -10.
+
+    - For every index 'i' with count[i] > 0:
+        1️⃣ Decrease its count
+        2️⃣ Add the corresponding value to the temporary vector
+        3️⃣ Recurse further
+        4️⃣ Backtrack by restoring the count and popping the value
+
+    This ensures that no duplicate permutations are generated.
+
+    -----------------------------------------------------
+    🧠 Example:
+    nums = [1, 1, -1]
+    count = [0,1,...,1,...] → meaning one '1' and one '-1'
+    The recursion explores all valid arrangements using counts,
+    generating only unique permutations.
+
+    -----------------------------------------------------
+    ⏱️ Time Complexity:  O(n × n!)
+        - n! possible unique permutations (less if duplicates exist)
+        - Each permutation requires O(n) to be stored.
+
+    💾 Space Complexity: O(n + 21)
+        - Recursion depth = O(n)
+        - Count array = fixed size (21)
+        - Output storage = O(n × n!) for all permutations.
+
+    -----------------------------------------------------
+    ✅ This is an optimal array-only solution for small integer ranges.
+       (If input range is large, use a hash map instead.)
+*/
+
+class Solution {
+public:
+    // Helper recursive function to generate unique permutations
+    void Permut(vector<vector<int>>& ans, vector<int> nums, vector<int>& count, vector<int>& temp) {
+        // Base case: permutation formed
+        if (temp.size() == nums.size()) {
+            ans.push_back(temp);
+            return;
+        }
+
+        // Try placing each available number
+        for (int i = 0; i < count.size(); i++) {
+            if (count[i] != 0) {
+                count[i]--;
+
+                // Map index to actual value
+                int value = (i <= 10) ? i : (i - 10) * (-1);
+                temp.push_back(value);
+
+                // Recurse
+                Permut(ans, nums, count, temp);
+
+                // Backtrack
+                count[i]++;
+                temp.pop_back();
+            }
+        }
+    }
+
+    // Main function
+    vector<vector<int>> permuteUnique(vector<int>& nums) {
+        vector<vector<int>> ans;
+        vector<int> temp;
+        vector<int> count(21, 0);  // supports numbers from -10 to 10
+
+        // Fill frequency array
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] >= 0)
+                count[nums[i]]++;
+            else
+                count[(-1 * nums[i]) + 10]++;
+        }
+
+        // Generate all unique permutations
+        Permut(ans, nums, count, temp);
+        return ans;
+    }
+};
