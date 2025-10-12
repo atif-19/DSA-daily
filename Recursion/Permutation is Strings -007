@@ -1,0 +1,91 @@
+/*
+    🧩 Problem: String Permutations (Distinct + Duplicate Characters)
+    ---------------------------------------------------------------
+    Given a string S (consisting of uppercase letters), generate 
+    all possible **unique permutations** of the characters of S.
+
+    Example:
+    Input:  S = "AAB"
+    Output: ["AAB", "ABA", "BAA"]
+
+    ---------------------------------------------------------------
+    💡 Approach: Frequency-Based Backtracking (No Sorting, No Set)
+    ---------------------------------------------------------------
+    - Instead of generating all permutations and removing duplicates,
+      we track how many times each character appears using a frequency array.
+
+    - At each recursive step:
+        1️⃣ Pick any character whose count > 0
+        2️⃣ Append it to the current string (temp)
+        3️⃣ Decrease its count and recurse
+        4️⃣ Backtrack by removing the character and restoring the count
+
+    - This ensures each unique permutation is generated **once** directly.
+
+    ---------------------------------------------------------------
+    🧠 Example Walkthrough:
+    S = "AAB"
+    count = [A:2, B:1]
+
+    Step 1 → pick 'A' → temp = "A", count[A] = 1
+        Step 2 → pick 'A' again → temp = "AA", count[A] = 0
+            Step 3 → pick 'B' → temp = "AAB" ✅
+        Backtrack → temp = "A"
+        Step 4 → pick 'B' → temp = "AB"
+            Step 5 → pick 'A' → temp = "ABA" ✅
+    Backtrack fully → pick 'B' first → temp = "B"
+        Step 6 → pick 'A' twice → temp = "BAA" ✅
+
+    Output = ["AAB", "ABA", "BAA"]
+
+    ---------------------------------------------------------------
+    ⏱️ Time Complexity:  O(n × n!)
+        - n! possible unique permutations in the worst case.
+        - Each takes O(n) time to be copied into ans.
+
+    💾 Space Complexity: O(n + 26)
+        - Recursion depth: O(n)
+        - Count array: fixed size (26)
+        - Output: O(n × n!) for storing all results.
+
+    ---------------------------------------------------------------
+    ✅ This is the optimal and elegant approach for unique string permutations.
+*/
+
+class Solution {
+public:
+    // Recursive function to generate all unique permutations
+    void Permut(vector<string>& ans, vector<int>& count, string &temp, string s) {
+        // Base case: when all characters are used
+        if (temp.size() == s.size()) {
+            ans.push_back(temp);
+            return;
+        }
+
+        // Try placing each available character
+        for (int i = 0; i < count.size(); i++) {
+            if (count[i] != 0) {
+                count[i]--;
+                temp += ('A' + i);             // Add corresponding character
+                Permut(ans, count, temp, s);   // Recurse
+                count[i]++;                    // Backtrack
+                temp.pop_back();               // Remove last char
+            }
+        }
+    }
+
+    // Main function
+    vector<string> findPermutation(string &s) {
+        vector<string> ans;
+        string temp = "";
+        vector<int> count(26, 0);
+
+        // Fill frequency array for each character
+        for (int i = 0; i < s.size(); i++)
+            count[s[i] - 'A']++;
+
+        // Generate all unique permutations
+        Permut(ans, count, temp, s);
+        return ans;
+    }
+};
