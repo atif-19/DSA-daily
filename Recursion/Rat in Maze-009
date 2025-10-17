@@ -1,0 +1,95 @@
+/*
+-----------------------------------------
+ 🧠 RAT IN A MAZE (BACKTRACKING)
+-----------------------------------------
+
+📌 Problem Statement:
+Given an `n x n` binary matrix (maze), where 1 represents an open cell and 0 represents a blocked cell,
+a rat starts from the top-left cell (0,0) and must reach the bottom-right cell (n-1,n-1).
+The rat can move in four directions: Up (U), Down (D), Left (L), Right (R).
+Find all possible paths from start to end and return them in lexicographically sorted order.
+
+-----------------------------------------
+⚙️ Approach:
+-----------------------------------------
+1. **Recursion + Backtracking**
+   - Start from (0,0).
+   - Explore all 4 possible directions (U, D, L, R) using helper arrays.
+   - Mark the current cell as visited to avoid cycles.
+   - Backtrack after exploring each path by unmarking the visited cell.
+
+2. **Helper Arrays for Directions**
+   - `row_num` and `col_num` define the row/col change for each move.
+   - `dir` stores the corresponding direction characters ('U', 'D', 'L', 'R').
+
+3. **Base Case**
+   - If the rat reaches (n-1, n-1), store the current path string in `ans`.
+
+4. **Sorting**
+   - All paths are collected and sorted lexicographically before returning.
+
+-----------------------------------------
+🧩 Time & Space Complexity:
+-----------------------------------------
+- **Time Complexity:** O(4^(n*n)) (worst case, every cell explored in 4 directions)
+- **Space Complexity:** O(n*n) (visited array + recursion stack)
+
+-----------------------------------------
+🧑‍💻 Author: Atif (VGEC | CSE 2027)
+-----------------------------------------
+*/
+
+class Solution {
+public:
+    // Movement arrays for Up, Down, Left, Right
+    int row_num[4] = {-1, 1, 0, 0};
+    int col_num[4] = {0, 0, -1, 1};
+    string dir = "UDLR";
+
+    // Utility function to check if next move is valid
+    bool valid(int row, int col, int n) {
+        return (row >= 0 && row < n && col >= 0 && col < n);
+    }
+
+    // Recursive backtracking function to find all paths
+    void FindPath(vector<string>& ans, string& temp, vector<vector<int>>& maze,
+                  int row, int col, int n, vector<vector<int>>& visited) {
+        // Base case: reached destination
+        if (row == n - 1 && col == n - 1) {
+            ans.push_back(temp);
+            return;
+        }
+
+        // Mark current cell as visited
+        visited[row][col] = 1;
+
+        // Explore all 4 possible directions
+        for (int k = 0; k < 4; k++) {
+            int newRow = row + row_num[k];
+            int newCol = col + col_num[k];
+
+            if (valid(newRow, newCol, n) && !visited[newRow][newCol] && maze[newRow][newCol]) {
+                temp.push_back(dir[k]);                   // choose
+                FindPath(ans, temp, maze, newRow, newCol, n, visited); // explore
+                temp.pop_back();                           // backtrack
+            }
+        }
+
+        // Unmark current cell before backtracking
+        visited[row][col] = 0;
+    }
+
+    // Main function
+    vector<string> ratInMaze(vector<vector<int>>& maze) {
+        int n = maze.size();
+        vector<string> ans;
+        string temp;
+        vector<vector<int>> visited(n, vector<int>(n, 0));
+
+        if (maze[0][0] == 0) return ans; // If start is blocked, no path possible
+
+        FindPath(ans, temp, maze, 0, 0, n, visited);
+        sort(ans.begin(), ans.end()); // Sort results lexicographically
+        return ans;
+    }
+};
