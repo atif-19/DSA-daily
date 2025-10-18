@@ -1,0 +1,95 @@
+/*
+ * Title     : Generate N-Bit Binary Numbers
+ * Author    : Atif
+ * Language  : C++
+ * Description:
+ * ------------
+ * This program generates all binary numbers of length N such that:
+ *   → Every prefix of the binary number has at least as many 1’s as 0’s.
+ * 
+ * For example, for N = 3, the valid outputs are:
+ *   111, 110, 101
+ * 
+ * Approach:
+ * ----------
+ * We use recursion with backtracking to build all possible binary strings.
+ * At each step, we:
+ *   1. Try adding '1' — always valid since it increases ones count.
+ *   2. Try adding '0' — only valid if ones > zeros so far.
+ * 
+ * Base conditions:
+ *   - If zeros > ones → invalid prefix, stop recursion.
+ *   - If total length == n → push the string into the result vector.
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    /**
+     * @brief Helper recursive function to generate all valid N-bit binary strings.
+     * 
+     * @param ans   Reference to a vector to store valid binary strings.
+     * @param temp  The current binary string being built.
+     * @param ones  Count of '1's in the current string.
+     * @param zeros Count of '0's in the current string.
+     * @param n     Target length of the binary strings.
+     */
+    void NBit(vector<string> &ans, string &temp, int ones, int zeros, int n) {
+        // If at any point zeros > ones, it's invalid → backtrack
+        if (zeros > ones) return;
+
+        // Base case: when the string length reaches n
+        if (ones + zeros == n) {
+            ans.push_back(temp);
+            return;
+        }
+
+        // Add '1' → always allowed
+        temp.push_back('1');
+        NBit(ans, temp, ones + 1, zeros, n);
+        temp.pop_back(); // backtrack
+
+        // Add '0' → allowed only if ones > zeros
+        temp.push_back('0');
+        NBit(ans, temp, ones, zeros + 1, n);
+        temp.pop_back(); // backtrack
+    }
+
+    /**
+     * @brief Generates all valid N-bit binary strings following prefix condition.
+     * 
+     * @param n Number of bits for binary strings.
+     * @return vector<string> All valid binary strings of length n.
+     */
+    vector<string> NBitBinary(int n) {
+        vector<string> ans;
+        string temp;
+        NBit(ans, temp, 0, 0, n);
+        return ans;
+    }
+};
+
+int main() {
+    Solution obj;
+    int n = 3; // Example input
+    vector<string> result = obj.NBitBinary(n);
+
+    cout << "All valid " << n << "-bit binary numbers are:\n";
+    for (const string &str : result)
+        cout << str << " ";
+    cout << endl;
+
+    return 0;
+}
+
+/*
+ * Sample Output:
+ * ---------------
+ * All valid 3-bit binary numbers are:
+ * 111 110 101
+ *
+ * Time Complexity:  O(2^N)   (Each bit has two choices)
+ * Space Complexity: O(N)     (Recursive call stack depth)
+ */
