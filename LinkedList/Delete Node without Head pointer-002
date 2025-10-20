@@ -1,0 +1,40 @@
+/*
+  🚀 Problem: Delete a Node in a Singly Linked List (without Head Pointer)
+
+  🧩 Approach:
+  Normally, deleting a node in a singly linked list requires access to the previous node.
+  But here, we’re only given the pointer to the node that needs to be deleted.
+  
+  So instead of deleting this node directly, we:
+  1. Copy the data of the next node into the current node.
+  2. Bypass (unlink) the next node.
+  3. Done — O(1) time, no head pointer needed.
+
+  ⚠️ Important:
+  - This trick works only if the node to be deleted is **not the last node**.
+*/
+
+/* Linked List Node Structure */
+struct Node {
+  int data;
+  Node *next;
+  Node(int x) {
+    data = x;
+    next = NULL;
+  }
+};
+
+class Solution {
+  public:
+    void deleteNode(Node* del_node) {
+        // Safety check: if node is null or last node, cannot delete
+        if (del_node == NULL || del_node->next == NULL)
+            return;
+
+        // Copy next node's data into current node
+        del_node->data = del_node->next->data;
+
+        // Unlink and delete the next node
+        del_node->next = del_node->next->next;
+    }
+};
