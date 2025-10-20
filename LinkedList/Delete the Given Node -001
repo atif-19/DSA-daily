@@ -1,0 +1,55 @@
+/*
+  🚀 Problem: Delete a Node in a Singly Linked List (with Head Pointer)
+
+  🧩 Approach:
+  - Traverse the list from the head until you find the node
+    just before the node to delete.
+  - Change its next pointer to skip the node to delete.
+  - Free the memory of the deleted node.
+
+  ⚙️ Time Complexity: O(n)
+  ⚙️ Space Complexity: O(1)
+*/
+
+/* Linked List Node Structure */
+struct Node {
+  int data;
+  Node *next;
+  Node(int x) {
+    data = x;
+    next = NULL;
+  }
+};
+
+class Solution {
+  public:
+    Node* deleteNode(Node* head, int key) {
+        // If list is empty
+        if (head == NULL) return NULL;
+
+        // If head itself holds the key to be deleted
+        if (head->data == key) {
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+            return head;
+        }
+
+        // Find the previous node of the node to be deleted
+        Node* curr = head;
+        while (curr->next != NULL && curr->next->data != key)
+            curr = curr->next;
+
+        // If key was not found in linked list
+        if (curr->next == NULL)
+            return head;
+
+        // Unlink the node from linked list
+        Node* temp = curr->next;
+        curr->next = curr->next->next;
+        delete temp;
+
+        return head;
+    }
+};
+
