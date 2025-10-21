@@ -1,0 +1,54 @@
+/**
+ * 🚀 Problem: Reverse a Singly Linked List (Recursive Approach)
+ *
+ * 🧠 Intuition:
+ * We recursively reverse the linked list by:
+ * 1️⃣ Storing the next node (fut).
+ * 2️⃣ Reversing the current node’s pointer to point backward (curr->next = prev).
+ * 3️⃣ Moving one step ahead (curr = fut).
+ * 4️⃣ When curr becomes NULL, we return prev (which becomes the new head).
+ *
+ * 🧩 Example:
+ * Input:  1 → 2 → 3 → 4 → 5 → NULL
+ * Output: 5 → 4 → 3 → 2 → 1 → NULL
+ *
+ * ⚙️ Time Complexity: O(n)
+ * 💾 Space Complexity: O(n) — due to recursion call stack
+ *
+ * ⚔️ Comparison:
+ * - Recursive → Elegant, readable, conceptually clear.
+ * - Iterative → More memory-efficient (O(1)), better for very large lists.
+ */
+
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class Solution {
+public:
+    // Recursive helper function to reverse the list
+    ListNode* rev(ListNode* curr, ListNode* prev) {
+        // Base case: when we reach the end of the list
+        if (curr == nullptr)
+            return prev;
+
+        // Store the next node
+        ListNode* fut = curr->next;
+
+        // Reverse the link
+        curr->next = prev;
+
+        // Recursive call for the rest of the list
+        return rev(fut, curr);
+    }
+
+    // Main function to reverse the entire linked list
+    ListNode* reverseList(ListNode* head) {
+        return rev(head, nullptr);
+    }
+};
