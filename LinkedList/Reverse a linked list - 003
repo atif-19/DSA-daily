@@ -1,0 +1,54 @@
+/**
+ * 🚀 Problem: Reverse a Singly Linked List (Iterative Approach)
+ *
+ * 🧠 Intuition:
+ * The idea is to reverse the `next` pointers of each node one by one
+ * using three pointers: `prev`, `curr`, and `prec` (next node).
+ *
+ * 🪄 Step-by-step:
+ * 1️⃣ Initialize `prev = NULL` (for new tail) and `curr = head` (for traversal).
+ * 2️⃣ Store the next node as `prec = curr->next` before breaking the link.
+ * 3️⃣ Reverse the current node’s pointer: `curr->next = prev`.
+ * 4️⃣ Move both `prev` and `curr` one step forward.
+ * 5️⃣ When `curr` becomes NULL, `prev` points to the new head.
+ *
+ * 🧩 Example:
+ * Input:  1 → 2 → 3 → 4 → 5 → NULL
+ * Output: 5 → 4 → 3 → 2 → 1 → NULL
+ *
+ * ⚙️ Time Complexity: O(n)
+ * 💾 Space Complexity: O(1)
+ *
+ * ⚔️ Comparison:
+ * - Iterative → Faster, constant space, production-friendly.
+ * - Recursive → Cleaner, conceptual clarity, but uses O(n) stack space.
+ */
+
+struct ListNode {
+    int val;
+    ListNode *next;
+
+    ListNode() : val(0), next(nullptr) {}
+    ListNode(int x) : val(x), next(nullptr) {}
+    ListNode(int x, ListNode *next) : val(x), next(next) {}
+};
+
+class Solution {
+public:
+    ListNode* reverseList(ListNode* head) {
+        ListNode* prev = nullptr; // Previous node
+        ListNode* prec = nullptr; // Next node (to preserve before breaking link)
+        ListNode* curr = head;    // Current node
+
+        // Traverse and reverse pointers
+        while (curr != nullptr) {
+            prec = curr->next;   // Store next node
+            curr->next = prev;   // Reverse current link
+            prev = curr;         // Move prev one step ahead
+            curr = prec;         // Move curr one step ahead
+        }
+
+        // 'prev' becomes the new head of reversed list
+        return prev;
+    }
+};
