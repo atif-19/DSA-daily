@@ -1,0 +1,48 @@
+class Solution {
+public:
+    /*
+        Function: majorityElement
+        ---------------------------------------
+        Implements the Moore’s Voting Algorithm to find 
+        the majority element in the given array.
+
+        A majority element is the element that appears 
+        more than ⌊n / 2⌋ times in the array.
+
+        Approach:
+        ----------
+        1. Initialize the first element as the candidate 
+           and set its vote count to 1.
+        2. Traverse the array:
+            - If the vote count becomes 0, assign the current 
+              element as the new candidate.
+            - If the current element equals the candidate, 
+              increase votes.
+            - Otherwise, decrease votes.
+        3. After one pass, the candidate will be the 
+           majority element (as guaranteed by the problem).
+
+        Time Complexity:  O(n)
+        Space Complexity: O(1)
+    */
+    int majorityElement(vector<int>& nums) {
+        int candidate = nums[0];
+        int votes = 1;
+
+        for (int i = 1; i < nums.size(); i++) {
+            // If votes drop to zero, switch candidate
+            if (votes == 0) {
+                candidate = nums[i];
+            }
+
+            // Increment or decrement votes
+            if (nums[i] == candidate)
+                votes++;
+            else
+                votes--;
+        }
+
+        // Candidate at the end of traversal is the majority element
+        return candidate;
+    }
+};
