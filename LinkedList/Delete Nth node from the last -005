@@ -1,0 +1,61 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+/**
+ * Approach:
+ * - Use two pointers (fast and slow).
+ * - Move the 'fast' pointer n steps ahead first.
+ * - Then move both 'fast' and 'slow' together until 'fast' reaches the end.
+ * - 'slow' will then point to the node just before the one to delete.
+ * - Adjust pointers to remove the target node.
+ *
+ * Time Complexity: O(N)
+ * Space Complexity: O(1)
+ * 
+ * This is the optimal one-pass solution, commonly expected in interviews.
+ */
+
+class Solution {
+public:
+    ListNode* removeNthFromEnd(ListNode* head, int n) {
+        // Initialize two pointers
+        ListNode* slow = head;
+        ListNode* fast = head;
+
+        // Move 'fast' n steps ahead
+        for (int i = 0; i < n; i++)
+            fast = fast->next;
+
+        // Edge case: when we need to delete the head itself
+        if (!fast) {
+            ListNode* ptr = head;
+            head = head->next;
+            delete ptr;
+            return head;
+        }
+
+        // Move both pointers until 'fast' reaches the last node
+        while (fast->next != nullptr) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+
+        // 'slow' now points to the node before the one to delete
+        ListNode* ptr = slow->next;
+        slow->next = ptr->next;
+
+        // Delete the target node to free memory
+        delete ptr;
+
+        // Return the possibly updated head
+        return head;
+    }
+};
