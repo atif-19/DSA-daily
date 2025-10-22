@@ -1,0 +1,65 @@
+/* Link list Node
+struct Node {
+    int data;
+    struct Node* next;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+/*
+ * Function: deleteK
+ * -----------------
+ * Removes every k-th node from a singly linked list.
+ *
+ * Parameters:
+ *  head: Pointer to the head of the linked list.
+ *  k: The interval of nodes to delete (every k-th node will be deleted).
+ *
+ * Returns:
+ *  Pointer to the head of the modified linked list.
+ *
+ * Example:
+ *  Input:  1 -> 2 -> 3 -> 4 -> 5 -> 6, k = 3
+ *  Output: 1 -> 2 -> 4 -> 5  (nodes 3 and 6 are deleted)
+ */
+class Solution {
+  public:
+    Node* deleteK(Node* head, int k) {
+        // If k == 1, it means we need to delete every node
+        if (k == 1) {
+            return NULL;
+        }
+
+        Node* prev = NULL;  // To keep track of the previous node
+        Node* curr = head;  // To traverse the linked list
+        int count = 1;      // Counter to keep track of current position
+
+        // Traverse the linked list
+        while (curr) {
+            // If current node is the k-th node, delete it
+            if (count == k) {
+                // Connect the previous node to the node after the deleted one
+                prev->next = curr->next;
+                delete curr; // Free memory of deleted node
+
+                // Move current pointer to next valid node
+                curr = prev->next;
+
+                // Reset count for next k interval
+                count = 1;
+            } else {
+                // Move both pointers forward
+                prev = curr;
+                curr = curr->next;
+                count++;
+            }
+        }
+
+        // Return the updated head pointer
+        return head;
+    }
+};
