@@ -1,0 +1,67 @@
+/**
+ * Problem: Squares of a Sorted Array
+ * Platform: LeetCode
+ * Approach: Two-pointer merge technique
+ * 
+ * Explanation:
+ *  - The array is already sorted but may contain both negative and positive numbers.
+ *  - After squaring, the order can change since (-4)^2 = 16 and (3)^2 = 9.
+ *  - We first find the point where positive numbers start.
+ *  - Then, we merge the squared values of the negative part (in reverse) 
+ *    and the positive part (in forward direction) — similar to merge sort.
+ * 
+ * Steps:
+ *  1️⃣ Find the index of the first non-negative element.
+ *  2️⃣ Square every element in the array.
+ *  3️⃣ Use two pointers — one moving backward for negatives, one forward for positives.
+ *  4️⃣ Merge them into a new array based on smaller squared values.
+ * 
+ * Time Complexity: O(n)
+ * Space Complexity: O(n)
+ * 
+ * Note: The algorithm is optimal in time. 
+ *       Space can be reduced but would make the implementation less clean.
+ */
+
+class Solution {
+public:
+    vector<int> sortedSquares(vector<int>& nums) {
+        // Find the first non-negative number
+        int start, end = -1;
+        for (int i = 0; i < nums.size(); i++) {
+            if (nums[i] >= 0) {
+                end = i;
+                break;
+            }
+        }
+
+        // Square each element in-place
+        for (int i = 0; i < nums.size(); i++)
+            nums[i] *= nums[i];
+
+        // If all numbers were negative, just reverse after squaring
+        if (end == -1) {
+            reverse(nums.begin(), nums.end());
+            return nums;
+        }
+
+        // Merge the negative (reversed) and positive parts
+        start = end - 1;
+        vector<int> ans;
+        while (start >= 0 && end <= nums.size() - 1) {
+            if (nums[start] <= nums[end]) {
+                ans.push_back(nums[start--]);
+            } else {
+                ans.push_back(nums[end++]);
+            }
+        }
+
+        // Add remaining elements (if any)
+        while (start >= 0)
+            ans.push_back(nums[start--]);
+        while (end < nums.size())
+            ans.push_back(nums[end++]);
+
+        return ans;
+    }
+};
