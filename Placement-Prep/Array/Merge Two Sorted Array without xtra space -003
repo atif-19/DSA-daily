@@ -1,0 +1,49 @@
+/**
+ * Problem: Merge Sorted Array
+ * Platform: LeetCode
+ * Approach: In-place merge from the end (Two-pointer technique)
+ * 
+ * Explanation:
+ *  - You’re given two sorted arrays: `nums1` (size m+n, with m valid elements) and `nums2` (size n).
+ *  - The goal is to merge `nums2` into `nums1` such that `nums1` becomes one sorted array.
+ *  - Instead of using extra space, we start filling `nums1` from the end.
+ *    Why? Because the largest elements should go at the end, and the unused space is already there.
+ * 
+ * Steps:
+ *  1️⃣ Initialize three pointers:
+ *      - `i` at `m - 1` → last valid element in nums1
+ *      - `j` at `n - 1` → last element in nums2
+ *      - `index` at `m + n - 1` → last index of nums1 (where we fill elements)
+ *  2️⃣ Compare elements from the back:
+ *      - If `nums1[i] >= nums2[j]`, place `nums1[i]` at `nums1[index]` and move `i` & `index` left.
+ *      - Otherwise, place `nums2[j]` and move `j` & `index` left.
+ *  3️⃣ If any elements remain in `nums2`, copy them over (since nums1’s leftovers are already sorted).
+ * 
+ * Time Complexity: O(m + n)
+ * Space Complexity: O(1)
+ * 
+ * This is the most optimal in-place solution — no extra space, fully stable merge logic.
+ */
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int i = m - 1;           // Pointer for nums1
+        int j = n - 1;           // Pointer for nums2
+        int index = m + n - 1;   // Fill position in nums1
+
+        // Merge from the back
+        while (i >= 0 && j >= 0) {
+            if (nums1[i] >= nums2[j]) {
+                nums1[index--] = nums1[i--];
+            } else {
+                nums1[index--] = nums2[j--];
+            }
+        }
+
+        // If any elements remain in nums2
+        while (j >= 0) {
+            nums1[index--] = nums2[j--];
+        }
+    }
+};
