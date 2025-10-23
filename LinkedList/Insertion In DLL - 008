@@ -1,0 +1,62 @@
+/*
+class Node {
+  public:
+    int data;
+    Node* next;
+    Node* prev;
+
+    Node(int x) {
+        data = x;
+        next = prev = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+    /**
+     * Function to insert a new node at a given position in a Doubly Linked List.
+     * 
+     * @param head Pointer to the head of the linked list.
+     * @param p Position after which the new node should be inserted (0-based index).
+     * @param x Value to be inserted into the new node.
+     * 
+     * @return Pointer to the (possibly unchanged) head of the modified linked list.
+     * 
+     * The function performs the following steps:
+     * 1. Traverses the list to reach the node at position `p`.
+     * 2. Creates a new node with the given value `x`.
+     * 3. Inserts the new node after the `p`-th node by rewiring the
+     *    `next` and `prev` pointers appropriately.
+     * 4. Handles the edge case where insertion is done at the end of the list.
+     *
+     * Time Complexity: O(p)  → linear traversal to the position.
+     * Space Complexity: O(1) → constant extra space.
+     */
+    Node* insertAtPos(Node* head, int p, int x) {
+        // Step 1: Traverse to the node at position 'p'
+        Node* curr = head;
+        for (int i = 0; i < p; i++)
+            curr = curr->next;
+
+        // Step 2: Create the new node
+        Node* n = new Node(x);
+
+        // Step 3: Handle insertion at the end of the list
+        if (!curr->next) {
+            n->prev = curr;
+            curr->next = n;
+        }
+        // Step 4: Handle insertion in the middle of the list
+        else {
+            Node* fut = curr->next; // the node currently after curr
+            fut->prev = n;
+            n->next = fut;
+            n->prev = curr;
+            curr->next = n;
+        }
+
+        // Step 5: Return the head (unchanged in this case)
+        return head;
+    }
+};
