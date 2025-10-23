@@ -1,0 +1,72 @@
+/*
+Structure of Node:
+class Node {
+  public:
+    int data;
+    Node *next;
+    Node *prev;
+
+    Node(int val) {
+        data = val;
+        this->next = NULL;
+        this->prev = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    /**
+     * Function to delete a node at position x in a doubly linked list.
+     * 
+     * @param head Pointer to the head of the doubly linked list.
+     * @param x Position of the node to delete (1-based index).
+     * @return Pointer to the (possibly new) head of the linked list.
+     * 
+     * Approach:
+     * 1. Handle edge cases:
+     *    - Only one node in the list.
+     *    - Deleting the head node.
+     * 2. Traverse to the node at position x.
+     * 3. Handle tail deletion.
+     * 4. Handle deletion of a middle node by rewiring the `next` and `prev` pointers.
+     *
+     * Time Complexity: O(x) → traverse to position x.
+     * Space Complexity: O(1) → in-place deletion.
+     */
+    Node* delPos(Node* head, int x) {
+        // Edge case: single node
+        if (!head->next && x == 1) {
+            delete head;
+            return nullptr;
+        }
+
+        // Deleting head
+        if (x == 1) {
+            Node* temp = head;
+            head = head->next;
+            if (head) head->prev = nullptr;
+            delete temp;
+            return head;
+        }
+
+        // Traverse to the node at position x
+        Node* curr = head;
+        for (int i = 1; i < x; i++)
+            curr = curr->next;
+
+        // Deleting tail
+        if (!curr->next) {
+            curr->prev->next = nullptr;
+            delete curr;
+            return head;
+        }
+
+        // Deleting a middle node
+        curr->prev->next = curr->next;
+        curr->next->prev = curr->prev;
+        delete curr;
+
+        return head;
+    }
+};
