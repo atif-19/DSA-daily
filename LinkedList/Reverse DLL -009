@@ -1,0 +1,51 @@
+/*
+class Node {
+  public:
+    int data;
+    Node *next;
+    Node *prev;
+    Node(int val) {
+        data = val;
+        next = NULL;
+        prev = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    /**
+     * Function to reverse a Doubly Linked List.
+     * 
+     * @param head Pointer to the head of the original doubly linked list.
+     * @return Pointer to the new head of the reversed linked list.
+     * 
+     * Approach:
+     * 1. Traverse the list once.
+     * 2. For every node, swap its `next` and `prev` pointers.
+     * 3. After the traversal, the last processed node will have its
+     *    `prev` pointer pointing to the new head.
+     * 4. Find and return this new head.
+     *
+     * Time Complexity: O(N) — each node is visited once.
+     * Space Complexity: O(1) — in-place reversal.
+     */
+    Node* reverse(Node* head) {
+        Node* curr = head;
+
+        // Step 1: Swap next and prev for each node
+        while (curr) {
+            Node* fut = curr->next;  // temporarily store next
+            curr->next = curr->prev; // reverse next
+            curr->prev = fut;        // reverse prev
+            curr = fut;              // move forward
+        }
+
+        // Step 2: Find the new head (last non-null prev)
+        Node* newhead = head;
+        while (newhead && newhead->prev != NULL)
+            newhead = newhead->prev;
+
+        return newhead;
+    }
+};
