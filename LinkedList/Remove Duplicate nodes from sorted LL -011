@@ -1,0 +1,52 @@
+/*
+struct Node {
+    int data;
+    struct Node *next;
+    Node(int x) {
+        data = x;
+        next = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    /*
+      Function to remove duplicates from a sorted linked list.
+      -------------------------------------------------------
+      Approach:
+      - Since the linked list is already sorted, all duplicates will be adjacent.
+      - We traverse the list with two pointers (`temp` and `curr`):
+          → `temp` points to the current unique node.
+          → `curr` checks ahead for duplicates.
+      - If both have the same data, we unlink `curr` and delete it.
+      - Otherwise, we move both pointers forward.
+      
+      Time Complexity: O(N)  → one traversal of the list
+      Space Complexity: O(1) → no extra space used
+    */
+    Node* removeDuplicates(Node* head) {
+        // Base case: If there's only one node, just return it
+        if (head->next == NULL)
+            return head;
+
+        Node* temp = head;
+        Node* curr = temp->next;
+
+        // Traverse the linked list
+        while (curr) {
+            if (temp->data == curr->data) {
+                // Duplicate found → unlink and delete the duplicate node
+                temp->next = curr->next;
+                delete curr;
+                curr = temp->next;
+            } else {
+                // Move both pointers forward when data is unique
+                temp = temp->next;
+                curr = curr->next;
+            }
+        }
+
+        return head;
+    }
+};
