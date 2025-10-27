@@ -1,0 +1,79 @@
+/*
+------------------------------------------------------------
+🧠 Problem: Remove Loop in a Linked List
+------------------------------------------------------------
+Given a linked list that may contain a loop (cycle),
+the task is to remove the loop if present — without
+losing any nodes of the list.
+
+After removal, the linked list should become linear
+(i.e., should not contain any cycle).
+
+------------------------------------------------------------
+💡 Approach: Floyd’s Cycle Detection Algorithm 
+(Tortoise and Hare Method)
+------------------------------------------------------------
+1️⃣ Use two pointers:
+    - `slow` moves 1 step at a time.
+    - `fast` moves 2 steps at a time.
+
+2️⃣ Detect loop:
+    - Move both pointers until `slow == fast`.
+    - If `fast` or `fast->next` becomes NULL → no loop exists.
+
+3️⃣ Find the start of the loop:
+    - Move `slow` to `head`.
+    - Move both `slow` and `fast` one step at a time.
+    - When they meet again → that’s the start of the loop.
+
+4️⃣ Remove the loop:
+    - Traverse until `slow->next == fast`.
+    - Set `slow->next = NULL` to break the cycle.
+
+------------------------------------------------------------
+📈 Example:
+Input:
+1 -> 2 -> 3 -> 4 -> 5
+         ↑         |
+         └─────────┘
+
+Output (after removal):
+1 -> 2 -> 3 -> 4 -> 5 -> NULL
+
+------------------------------------------------------------
+⏱️ Time Complexity: O(N)
+📦 Space Complexity: O(1)
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    void removeLoop(Node* head) {
+        Node* slow = head, *fast = head;
+
+        // Step 1: Detect loop using Floyd’s algorithm
+        while (fast && fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+            if (slow == fast)
+                break;
+        }
+
+        // Step 2: If no loop, return
+        if (fast == NULL || fast->next == NULL)
+            return;
+
+        // Step 3: Find the start node of the loop
+        slow = head;
+        while (slow != fast) {
+            slow = slow->next;
+            fast = fast->next;
+        }
+
+        // Step 4: Remove the loop
+        while (slow->next != fast)
+            slow = slow->next;
+
+        slow->next = NULL;
+    }
+};
