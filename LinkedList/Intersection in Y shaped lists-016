@@ -1,0 +1,79 @@
+/*
+------------------------------------------------------------
+🧠 Problem: Intersection Point in Y-Shaped Linked List
+------------------------------------------------------------
+Given two singly linked lists that merge into a Y-shaped
+structure, find the node where both linked lists intersect.
+If no intersection exists, return NULL.
+
+------------------------------------------------------------
+💡 Approach 2: Length Difference Method (Optimized)
+------------------------------------------------------------
+1️⃣ Find lengths of both lists: l1 and l2.
+
+2️⃣ Move the head pointer of the longer list ahead by 
+   |l1 - l2| nodes — this equalizes the remaining 
+   length of both lists.
+
+3️⃣ Traverse both lists simultaneously until:
+   - The pointers meet → intersection node found.
+   - Either pointer reaches NULL → no intersection.
+
+------------------------------------------------------------
+📈 Example:
+List 1: 4 -> 1 -> 8 -> 4 -> 5
+List 2:      5 -> 6 -> 1 ┘
+Output: 8
+
+------------------------------------------------------------
+⏱️ Time Complexity: O(N + M)
+📦 Space Complexity: O(1)
+
+------------------------------------------------------------
+✅ Notes:
+- More memory-efficient than the hashing approach.
+- Works purely on pointer logic.
+- Commonly asked in FAANG interviews.
+
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    Node* intersectPoint(Node* head1, Node* head2) {
+        // Step 1: Find the lengths of both lists
+        int l1 = 0, l2 = 0;
+        Node* h1 = head1;
+        Node* h2 = head2;
+
+        while (h1) {
+            l1++;
+            h1 = h1->next;
+        }
+
+        while (h2) {
+            l2++;
+            h2 = h2->next;
+        }
+
+        // Step 2: Align both lists
+        h1 = head1;
+        h2 = head2;
+        if (l1 > l2) {
+            for (int i = 0; i < l1 - l2; i++)
+                h1 = h1->next;
+        } else {
+            for (int i = 0; i < l2 - l1; i++)
+                h2 = h2->next;
+        }
+
+        // Step 3: Move both pointers until they meet
+        while (h1 && h2 && h1 != h2) {
+            h1 = h1->next;
+            h2 = h2->next;
+        }
+
+        // Step 4: Return intersection node (or NULL)
+        return h1;
+    }
+};
