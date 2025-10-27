@@ -1,0 +1,110 @@
+/*
+------------------------------------------------------------
+🧠 Problem: Add Two Numbers (LeetCode #2)
+------------------------------------------------------------
+You are given two non-empty linked lists representing two
+non-negative integers. The digits are stored in **reverse order**, 
+and each node contains a single digit.
+
+Add the two numbers and return the sum as a linked list.
+
+You may assume that the two numbers do not contain any leading
+zero, except the number 0 itself.
+
+------------------------------------------------------------
+💡 Approach: Iterative Digit-wise Addition
+------------------------------------------------------------
+1️⃣ Initialize pointers `curr1` and `curr2` for both lists,
+   and variables `sum` and `carry` as 0.
+
+2️⃣ Traverse both lists simultaneously:
+   - Add the corresponding digits and the carry.
+   - Create a new node for the digit `(sum % 10)`.
+   - Update carry as `(sum / 10)`.
+
+3️⃣ Continue traversal for the remaining nodes of the longer list.
+
+4️⃣ If `carry` remains after traversal, create one final node for it.
+
+5️⃣ Return the head of the new linked list representing the sum.
+
+------------------------------------------------------------
+📈 Example:
+Input:
+l1 = [2 -> 4 -> 3]  
+l2 = [5 -> 6 -> 4]
+
+Explanation:
+342 + 465 = 807
+
+Output:
+[7 -> 0 -> 8]
+
+------------------------------------------------------------
+⏱️ Time Complexity: O(max(N, M))
+📦 Space Complexity: O(max(N, M))
+
+------------------------------------------------------------
+✅ Notes:
+- Digits are in reverse order, so we can add directly from head.
+- No reversing or recursion needed → optimal approach.
+- Clean, iterative logic and handles carry propagation perfectly.
+
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
+        ListNode* curr1 = l1;
+        ListNode* curr2 = l2;
+        int sum = 0, carry = 0;
+
+        ListNode* head = nullptr;
+        ListNode* tail = nullptr;
+
+        // Traverse both lists simultaneously
+        while (curr1 && curr2) {
+            sum = curr1->val + curr2->val + carry;
+
+            if (head == nullptr) {
+                head = new ListNode(sum % 10);
+                tail = head;
+            } else {
+                tail->next = new ListNode(sum % 10);
+                tail = tail->next;
+            }
+
+            carry = sum / 10;
+            curr1 = curr1->next;
+            curr2 = curr2->next;
+        }
+
+        // Remaining nodes in l1
+        while (curr1) {
+            sum = curr1->val + carry;
+            tail->next = new ListNode(sum % 10);
+            tail = tail->next;
+            carry = sum / 10;
+            curr1 = curr1->next;
+        }
+
+        // Remaining nodes in l2
+        while (curr2) {
+            sum = curr2->val + carry;
+            tail->next = new ListNode(sum % 10);
+            tail = tail->next;
+            carry = sum / 10;
+            curr2 = curr2->next;
+        }
+
+        // Final carry
+        while (carry) {
+            tail->next = new ListNode(carry % 10);
+            carry /= 10;
+            tail = tail->next;
+        }
+
+        return head;
+    }
+};
