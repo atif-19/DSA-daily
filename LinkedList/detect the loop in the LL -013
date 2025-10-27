@@ -1,0 +1,45 @@
+/*
+------------------------------------------------------------
+🧠 Problem: Detect Loop in a Linked List
+------------------------------------------------------------
+Given a linked list, the task is to determine whether the 
+linked list contains a cycle (loop) or not.
+
+A loop exists if there is a node in the list that can be 
+reached again by continuously following the next pointer.
+
+------------------------------------------------------------
+💡 Approach: Floyd’s Cycle Detection Algorithm 
+(Tortoise and Hare Algorithm)
+------------------------------------------------------------
+1️⃣ Use two pointers:
+    - `slow` moves one step at a time.
+    - `fast` moves multiple steps at a time (here, 3 steps).
+
+2️⃣ If there’s a loop, both pointers will eventually meet 
+   at some node inside the loop.
+
+3️⃣ If the `fast` pointer or its next pointer becomes NULL, 
+   that means the list terminates → No loop.
+
+------------------------------------------------------------
+⏱️ Time Complexity: O(N)
+📦 Space Complexity: O(1)
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    bool detectLoop(Node* head) {
+        Node* slow = head, *fast = head->next;
+        
+        while (fast && fast->next && fast->next->next) {
+            if (slow == fast)
+                return true;
+            slow = slow->next;
+            fast = fast->next->next->next;
+        }
+        
+        return false;
+    }
+};
