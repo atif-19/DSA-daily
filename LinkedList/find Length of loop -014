@@ -1,0 +1,72 @@
+/*
+------------------------------------------------------------
+🧠 Problem: Find Length of Loop in a Linked List
+------------------------------------------------------------
+Given a linked list, determine if it contains a loop.
+If a loop exists, return the total number of nodes forming 
+the loop; otherwise, return 0.
+
+------------------------------------------------------------
+💡 Approach: Floyd’s Cycle Detection Algorithm 
+(Tortoise and Hare Method)
+------------------------------------------------------------
+1️⃣ Use two pointers — `slow` and `fast`:
+    - `slow` moves 1 step at a time
+    - `fast` moves 2 steps at a time
+
+2️⃣ Traverse the list:
+    - If `fast` or `fast->next` becomes NULL → No loop (return 0)
+    - If `slow == fast` → Loop detected
+
+3️⃣ Once a loop is found, keep one pointer fixed and 
+   move the other until it meets the same node again, 
+   counting the steps. This count gives the loop length.
+
+------------------------------------------------------------
+📈 Example:
+Input:
+1 -> 2 -> 3 -> 4 -> 5
+         ↑         |
+         └─────────┘
+
+Output: 3
+(Loop contains nodes 3 → 4 → 5)
+
+------------------------------------------------------------
+⏱️ Time Complexity: O(N)
+📦 Space Complexity: O(1)
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    int lengthOfLoop(Node *head) {
+        if (head->next == NULL)
+            return 0;
+        if (head->next == head)
+            return 1;
+        
+        Node* slow = head, *fast = head->next;
+        
+        // Detect loop using Floyd's algorithm
+        while (fast && fast->next) {
+            if (slow == fast)
+                break;
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        
+        // No loop found
+        if (fast == NULL || fast->next == NULL)
+            return 0;
+        
+        // Loop exists → count its length
+        int count = 1;
+        while (slow->next != fast) {
+            count++;
+            slow = slow->next;
+        }
+        
+        return count;
+    }
+};
