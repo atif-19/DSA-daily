@@ -1,0 +1,63 @@
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+class Solution {
+public:
+    ListNode* reverseBetween(ListNode* head, int left, int right) {
+        // Edge case: if there's only one node, or nothing to reverse
+        if (head->next == NULL || left == right)
+            return head;
+
+        // prev and curr will help us traverse till 'left'
+        ListNode* prev = NULL;
+        ListNode* curr = head;
+
+        // first will store the node before the 'left' position
+        // second will store the node at 'left' position (start of reversal)
+        ListNode* first = NULL;
+        ListNode* second = NULL;
+
+        // Step 1: Traverse to the 'left' position
+        for (int i = 1; i < left; i++) {
+            prev = curr;
+            curr = curr->next;
+        }
+
+        // Mark connections before and at the start of the reversal
+        first = prev;
+        second = curr;
+
+        // Step 2: Reverse the sublist between left and right
+        int i = 0;
+        while (curr && i < (right - left + 1)) {
+            ListNode* fut = curr->next; // temporarily store next node
+            curr->next = prev;          // reverse the link
+            prev = curr;                // move prev forward
+            curr = fut;                 // move curr forward
+            i++;
+        }
+
+        // Step 3: Connect the reversed part with the rest of the list
+        if (!first) {
+            // if reversal starts from head (left == 1)
+            head = prev; // new head becomes the end of reversed part
+        } else {
+            // otherwise connect the node before reversal to the new start
+            first->next = prev;
+        }
+
+        // Connect the end of reversed section to remaining nodes
+        second->next = curr;
+
+        // Step 4: Return the new head
+        return head;
+    }
+};
