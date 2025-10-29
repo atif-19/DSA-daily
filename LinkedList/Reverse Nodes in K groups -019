@@ -1,0 +1,109 @@
+/**
+ * 💡 Problem: Reverse Nodes in k-Group (LeetCode #25)
+ * 
+ * 🧩 Description:
+ * Given a linked list, reverse the nodes of the list `k` at a time, 
+ * and return its modified list.
+ * 
+ * - k is a positive integer and is less than or equal to the length of the linked list.
+ * - If the number of nodes is not a multiple of k, 
+ *   then the left-out nodes in the end should remain as they are.
+ * 
+ * You may not alter the values in the list’s nodes, 
+ * only nodes themselves may be changed.
+ * 
+ * 🔹 Example:
+ * Input:  head = [1, 2, 3, 4, 5], k = 2  
+ * Output: [2, 1, 4, 3, 5]
+ * 
+ * Input:  head = [1, 2, 3, 4, 5], k = 3  
+ * Output: [3, 2, 1, 4, 5]
+ * 
+ * 🔸 Constraints:
+ * - The number of nodes in the list is n.
+ * - 1 <= k <= n <= 5000
+ * - 0 <= Node.val <= 1000
+ * 
+ * ⚙️ Approach:
+ * 1. Count the total number of nodes (n).
+ * 2. Determine the last node that should be reversed (only complete k-groups).
+ * 3. Use a dummy node before the head to simplify edge cases.
+ * 4. For each complete group:
+ *    - Reverse exactly k nodes using pointer manipulation.
+ *    - Reconnect the reversed segment with the next part of the list.
+ * 5. Leave any remaining nodes (less than k) as-is.
+ * 
+ * 🕒 Time Complexity:  O(n)
+ * 💾 Space Complexity: O(1)
+ * 
+ * ✅ This solution performs in-place reversal using only pointer rewiring — no extra array or stack.
+ */
+
+/**
+ * Definition for singly-linked list.
+ * struct ListNode {
+ *     int val;
+ *     ListNode *next;
+ *     ListNode() : val(0), next(nullptr) {}
+ *     ListNode(int x) : val(x), next(nullptr) {}
+ *     ListNode(int x, ListNode *next) : val(x), next(next) {}
+ * };
+ */
+
+class Solution {
+public:
+    /**
+     * Function to reverse nodes of a linked list in groups of size k.
+     */
+    ListNode* reverseKGroup(ListNode* head, int k) {
+
+        // Step 1: Count total nodes in the list
+        ListNode* temp = head;
+        int n = 0;
+        while (temp) {
+            temp = temp->next;
+            n++;
+        }
+
+        // Step 2: Determine the end node of the last complete k-group
+        ListNode* end = head;
+        int steps = (n / k) * k;  // total nodes that can be reversed
+        while (end && steps--) {
+            end = end->next;
+        }
+
+        // Step 3: Create a dummy node to simplify the reversal logic
+        ListNode* dummy = new ListNode(0);
+        dummy->next = head;
+        head = dummy;
+
+        // Step 4: Reverse each k-group until reaching 'end'
+        while (dummy->next != end) {
+            int count = k;
+            ListNode* prev = dummy;
+            ListNode* curr = dummy->next;
+            ListNode* groupStart = dummy->next;
+
+            // Reverse the current group of k nodes
+            while (curr && count--) {
+                ListNode* fut = curr->next;
+                curr->next = prev;
+                prev = curr;
+                curr = fut;
+            }
+
+            // Connect reversed group with the remaining list
+            dummy->next = prev;
+            groupStart->next = curr;
+
+            // Move dummy pointer to the end of the reversed group
+            dummy = groupStart;
+        }
+
+        // Step 5: Adjust head and clean up dummy node
+        ListNode* newHead = head->next;
+        delete head;
+
+        return newHead;
+    }
+};
