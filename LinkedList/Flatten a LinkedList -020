@@ -1,0 +1,122 @@
+/*
+💥 Problem: Flattening a Linked List
+
+You are given a linked list where each node has two pointers:
+1️⃣ 'next' pointer — connects nodes on the same level (like a normal linked list)
+2️⃣ 'bottom' pointer — points to another sorted linked list
+
+The task is to flatten the entire structure so that all nodes appear 
+in one single sorted linked list using the 'bottom' pointer.
+
+Example:
+Input:
+    5 -> 10 -> 19 -> 28
+    |    |     |     |
+    V    V     V     V
+    7    20    22    35
+    |          |     |
+    V          V     V
+    8          50    40
+                   |
+                   V
+                   45
+
+Output:
+    5 -> 7 -> 8 -> 10 -> 19 -> 20 -> 22 -> 28 -> 35 -> 40 -> 45 -> 50
+(Flattened using bottom pointers)
+*/
+
+/*
+class Node {
+public:
+    int data;
+    Node* next;
+    Node* bottom;
+
+    Node(int x) {
+        data = x;
+        next = NULL;
+        bottom = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+
+    /*
+    🔧 Helper Function: merge()
+    Merges two sorted linked lists (connected by 'bottom' pointers)
+    into one sorted list.
+    */
+    Node* merge(Node* head1, Node* head2) {
+        // Create a dummy node to simplify list merging
+        Node* head = new Node(0);
+        Node* tail = head;
+
+        // Merge both lists using bottom pointers
+        while (head1 && head2) {
+            if (head1->data <= head2->data) {
+                tail->bottom = head1;
+                head1 = head1->bottom;
+            } else {
+                tail->bottom = head2;
+                head2 = head2->bottom;
+            }
+            tail = tail->bottom;
+            tail->bottom = NULL; // ensure no old references remain
+        }
+
+        // Attach remaining nodes (if any)
+        if (head1)
+            tail->bottom = head1;
+        else
+            tail->bottom = head2;
+
+        // Move head to the real start and delete dummy
+        Node* newHead = head->bottom;
+        delete head;
+        return newHead;
+    }
+
+    /*
+    🚀 Main Function: flatten()
+    Iteratively flattens the multilevel linked list into a single sorted list.
+    */
+    Node* flatten(Node* root) {
+        if (!root || !root->next)
+            return root;
+
+        Node *head1, *head2, *head3;
+
+        // Keep merging lists from left to right
+        while (root->next) {
+            head1 = root;
+            head2 = root->next;
+            head3 = root->next->next;
+
+            // Disconnect to isolate the two lists being merged
+            head1->next = NULL;
+            head2->next = NULL;
+
+            // Merge two sorted lists
+            root = merge(head1, head2);
+
+            // Reconnect with the remaining lists
+            root->next = head3;
+        }
+
+        return root;
+    }
+};
+
+/*
+🧠 Time Complexity: O(N * N * M)
+- Each merge operation takes O(N + M) where N and M are lengths of the two lists.
+- As we merge all lists, total time is roughly O(N * M) where N = number of lists.
+
+💾 Space Complexity: O(1)
+- We use only constant extra space (no recursion or auxiliary structures).
+
+✅ Approach Type: Iterative + Linked List Merging
+*/
