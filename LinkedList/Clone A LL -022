@@ -1,0 +1,90 @@
+/*
+🧩 Problem: Copy List with Random Pointer (LeetCode #138)
+
+Given a linked list where each node has two pointers:
+- `next`: points to the next node in the list.
+- `random`: can point to any node in the list (or NULL).
+
+Your task is to **create a deep copy** of the list — 
+that means every node should be newly created and 
+the `next` and `random` links should be preserved correctly 
+for the cloned list.
+
+---------------------------------------------------------------
+💡 Example:
+Input:
+1 -> 2 -> 3
+|    ^    
+↓    |    
+3    1    
+
+Output: (Deep copy)
+1' -> 2' -> 3'
+|     ^ 
+↓     |
+3'    1'
+---------------------------------------------------------------
+🔍 Approach:
+
+We’ll use a 3-step **O(N)** time, **O(1)** extra space method:
+
+1️⃣ **Duplicate each node and insert it after the original one.**
+   So original list like:
+   A → B → C
+   becomes:
+   A → A' → B → B' → C → C'
+
+2️⃣ **Assign random pointers** for the copied nodes:
+   If original node A has random pointer to B,
+   then A' (copy) will have random pointing to B'.
+
+3️⃣ **Detach the new copied list** from the original list.
+
+---------------------------------------------------------------
+🧮 Complexity:
+Time  = O(N)   → traversing the list 3 times.
+Space = O(1)   → no extra hash map or list used.
+
+*/
+
+class Solution {
+public:
+    Node* copyRandomList(Node* head) {
+        // ✅ Edge case: empty list
+        if (head == NULL)
+            return NULL;
+
+        // 🪄 Step 1: Insert cloned nodes after each original node
+        Node* curr = head;
+        while (curr) {
+            Node* copy = new Node(curr->val); // clone node
+            copy->next = curr->next;          // link clone to next original
+            curr->next = copy;                // link original to clone
+            curr = copy->next;                // move to next original
+        }
+
+        // 🎯 Step 2: Set random pointers for cloned nodes
+        Node* original = head;
+        while (original) {
+            if (original->random)
+                original->next->random = original->random->next;
+            original = original->next->next; // skip to next original
+        }
+
+        // ✂️ Step 3: Detach the cloned list from the original list
+        Node* newHead = head->next; // head of cloned list
+        Node* clone = newHead;
+        original = head;
+
+        while (clone && original) {
+            original->next = clone->next;             // restore original next
+            if (clone->next)
+                clone->next = clone->next->next;      // link clone to next clone
+            original = original->next;
+            clone = clone->next;
+        }
+
+        // ✅ Return deep copied list head
+        return newHead;
+    }
+};
