@@ -1,0 +1,81 @@
+// 🚀 Problem: Make the Array Beautiful
+// 🧩 Difficulty: Easy-Medium  
+// 🧠 Topic: Stack | Array | Simulation  
+// 💻 Platform: GeeksforGeeks  
+// 🎯 Approach: Stack-based Pair Cancellation
+
+/*
+📝 Problem Statement:
+Given an array of integers, we need to make it *beautiful*.  
+An array is called *beautiful* if there are no adjacent elements
+with opposite signs (i.e., one positive and one negative).  
+
+We can remove adjacent pairs that have opposite signs repeatedly 
+until no such pair exists.  
+Finally, return the resulting array.
+
+-------------------------------------------------------
+Example:
+Input: arr = [4, 2, -2, 1]
+Step 1: 2 and -2 are opposite → remove them  
+Remaining = [4, 1]  
+Output: [4, 1]
+
+Input: arr = [1, -1, 2, -2, 3]
+→ 1 and -1 cancel, 2 and -2 cancel  
+Output: [3]
+
+-------------------------------------------------------
+🔍 Approach:
+- Use a stack to simulate the pair cancellation process.
+- Traverse the array:
+  1. If stack is empty → push element.
+  2. If top and current element have opposite signs → pop the top (cancel pair).
+  3. Else → push the element.
+- Finally, the stack will contain the "beautiful" array elements.
+- Reverse the stack contents to maintain the original order.
+
+-------------------------------------------------------
+⏱️ Time Complexity: O(N)
+📦 Space Complexity: O(N)
+Where N = number of elements in the array.
+*/
+
+class Solution {
+  public:
+    vector<int> makeBeautiful(vector<int> arr) {
+        stack<int> st;
+
+        // Step 1: Process each element and maintain valid sequence
+        for (int i = 0; i < arr.size(); i++) {
+            if (st.empty()) {
+                st.push(arr[i]);
+            } 
+            else if (st.top() < 0) {
+                // If top is negative and current is non-negative → cancel
+                if (arr[i] >= 0)
+                    st.pop();
+                else
+                    st.push(arr[i]);
+            } 
+            else {
+                // If top is positive and current is negative → cancel
+                if (arr[i] < 0)
+                    st.pop();
+                else
+                    st.push(arr[i]);
+            }
+        }
+
+        // Step 2: Reverse stack to form result in correct order
+        vector<int> result(st.size());
+        int i = st.size() - 1;
+        while (!st.empty()) {
+            result[i--] = st.top();
+            st.pop();
+        }
+
+        // Step 3: Return the final "beautiful" array
+        return result;
+    }
+};
