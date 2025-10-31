@@ -1,0 +1,49 @@
+// 💡 Problem: Insert an Element at the Bottom of a Stack
+// 🔗 Platform: GeeksforGeeks
+// 🧩 Difficulty: Easy
+// 🧠 Concept: Stack Manipulation
+
+/*
+🧠 Approach:
+The task is to insert a given element `x` at the **bottom** of a stack while maintaining 
+the order of other elements.
+
+🔹 Idea:
+1. Create a temporary stack `s`.
+2. Pop all elements from the original stack `st` and push them into `s`.  
+   → This reverses their order.
+3. Push the new element `x` into the now-empty original stack `st`.
+4. Push all elements back from `s` to `st` to restore the original order above `x`.
+
+Thus, `x` ends up at the bottom of the original stack.
+
+📈 Time Complexity: O(N)
+   → Each element is moved twice (to temp stack and back).
+📦 Space Complexity: O(N)
+   → Additional stack used for temporary storage.
+*/
+
+class Solution {
+  public:
+    stack<int> insertAtBottom(stack<int> st, int x) {
+        stack<int> s;
+
+        // Step 1: Reverse the original stack into temp stack
+        while (!st.empty()) {
+            s.push(st.top());
+            st.pop();
+        }
+
+        // Step 2: Insert the new element at the bottom
+        st.push(x);
+
+        // Step 3: Push elements back to restore original order
+        while (!s.empty()) {
+            st.push(s.top());
+            s.pop();
+        }
+
+        // Step 4: Return the modified stack
+        return st;
+    }
+};
