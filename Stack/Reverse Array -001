@@ -1,0 +1,36 @@
+/*
+💡 Problem: Reverse String
+🔗 Leetcode: https://leetcode.com/problems/reverse-string/
+
+🧠 Approach:
+We use a stack to reverse the given string.
+Since a stack follows the LIFO (Last In First Out) principle, 
+pushing all characters and then popping them will give the reversed order.
+
+🔹 Steps:
+1. Push each character of the input string into a stack.
+2. Pop characters one by one from the stack and overwrite them back into the array.
+3. This reverses the string in-place using extra stack space.
+
+📈 Time Complexity: O(N)
+    → Each character is pushed and popped once.
+📦 Space Complexity: O(N)
+    → Extra space used by the stack to store N characters.
+*/
+
+class Solution {
+public:
+    void reverseString(vector<char>& s) {
+        stack<char> st;
+
+        // Push all characters onto the stack
+        for (int i = 0; i < s.size(); i++)
+            st.push(s[i]);
+        
+        // Pop characters from the stack to reverse the string
+        for (int i = 0; i < s.size(); i++) {
+            s[i] = st.top();
+            st.pop();
+        }
+    }
+};
