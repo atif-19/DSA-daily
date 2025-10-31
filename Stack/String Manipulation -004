@@ -1,0 +1,56 @@
+// 🚀 Problem: Remove Consecutive Same Strings
+// 🧩 Difficulty: Easy  
+// 🧠 Topic: Stack | String | Simulation  
+// 💻 Platform: GeeksforGeeks  
+// 🎯 Approach: Stack-based Pair Removal
+
+/*
+📝 Problem Statement:
+Given an array of strings, remove all *consecutive duplicate* string pairs 
+until no more consecutive pairs exist.  
+Return the number of strings remaining in the array.
+
+-------------------------------------------------------
+Example:
+Input: arr = ["ab", "aa", "aa", "bcd", "ab"]
+Step 1: "aa" and "aa" are consecutive duplicates → remove them  
+Array becomes ["ab", "bcd", "ab"]  
+Output: 3
+
+Input: arr = ["tom", "jerry", "jerry", "tom"]
+→ "jerry" and "jerry" cancel out → Remaining ["tom", "tom"] → cancel again  
+Output: 0
+
+-------------------------------------------------------
+🔍 Approach:
+- Use a stack to keep track of strings.
+- Traverse the array:
+  1. If stack is empty, push the current string.
+  2. If current string is same as stack top → pop (cancel pair).
+  3. Else, push the current string.
+- The remaining elements in the stack represent the final sequence.
+
+-------------------------------------------------------
+⏱️ Time Complexity: O(N)
+📦 Space Complexity: O(N)
+Where N = number of strings in the array.
+*/
+
+class Solution {
+  public:
+    int removeConsecutiveSame(vector<string>& arr) {
+        stack<string> st;
+        st.push(arr[0]);
+
+        // Step 1: Traverse and cancel consecutive same pairs
+        for (int i = 1; i < arr.size(); i++) {
+            if (!st.empty() && arr[i] == st.top())
+                st.pop(); // remove consecutive duplicate
+            else
+                st.push(arr[i]); // push non-duplicate string
+        }
+
+        // Step 2: Return the remaining number of strings
+        return st.size();
+    }
+};
