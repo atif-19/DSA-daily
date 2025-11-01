@@ -1,0 +1,70 @@
+// 💡 Problem: Backspace String Compare
+// 📄 Description:
+// Given two strings s and t, return true if they are equal when both are typed into empty text editors.
+// '#' means a backspace character.
+//
+// Example:
+// Input: s = "ab#c", t = "ad#c"
+// Output: true
+// Explanation: Both become "ac".
+//
+// 🧠 Approach:
+// Use stacks to simulate the typing and backspace process for both strings.
+// - Traverse each character.
+// - If it’s not a '#', push it into the stack (like typing a character).
+// - If it’s '#', pop from the stack if it’s not empty (like pressing backspace).
+// - After processing, rebuild both strings from their respective stacks and compare.
+//
+// ⚙️ Steps:
+// 1. Process string s → simulate typing using a stack.
+// 2. Process string t → same simulation.
+// 3. Rebuild the resulting strings from stacks.
+// 4. Return true if both are identical.
+//
+// 🧩 Complexity Analysis:
+// ⏱️ Time Complexity: O(n + m) — each string is traversed once.
+// 🧮 Space Complexity: O(n + m) — stacks store the final characters of both strings.
+
+class Solution {
+public:
+    bool backspaceCompare(string s, string t) {
+        stack<char> st;
+
+        // Step 1️⃣: Process string s
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] != '#') {
+                st.push(s[i]);  // Typing a character
+            } else {
+                if (!st.empty())  // Simulate backspace
+                    st.pop();
+            }
+        }
+
+        // Build the final processed version of s
+        s = "";
+        while (!st.empty()) {
+            s += st.top();
+            st.pop();
+        }
+
+        // Step 2️⃣: Process string t
+        for (int i = 0; i < t.size(); i++) {
+            if (t[i] != '#') {
+                st.push(t[i]);
+            } else {
+                if (!st.empty())
+                    st.pop();
+            }
+        }
+
+        // Build the final processed version of t
+        t = "";
+        while (!st.empty()) {
+            t += st.top();
+            st.pop();
+        }
+
+        // Step 3️⃣: Compare the final results
+        return s == t;
+    }
+};
