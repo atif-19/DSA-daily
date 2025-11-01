@@ -1,0 +1,58 @@
+// ✅ Problem: Minimum Add to Make Parentheses Valid
+// LeetCode: 921
+//
+// 🧩 Problem Statement:
+// Given a string s consisting of only '(' and ')', return the minimum number 
+// of parentheses that must be added to make the string valid.
+//
+// A string is valid if:
+// 1️⃣ Open brackets are closed by the same type of brackets.
+// 2️⃣ Open brackets are closed in the correct order.
+//
+// ----------------------------------------------------------
+// 🧠 Approach:
+// - Use two counters: `left` and `right`.
+// - Traverse the string character by character:
+//    • When encountering '(', increment `left` (need one more closing bracket).
+//    • When encountering ')':
+//         - If there's no unmatched '(', increment `right` (need one opening bracket).
+//         - Otherwise, decrease `left` since one '(' is now matched.
+// - Finally, the total number of brackets to add is `left + right`.
+//
+// ----------------------------------------------------------
+// ✨ Example:
+// Input:  s = "()))(("
+// Output: 4
+// Explanation:
+//   "()))((" → add 2 '(' and 2 ')' to make it valid: "(()())()"
+//
+// ----------------------------------------------------------
+// ⏱️ Time Complexity: O(n)
+// Single traversal of the string.
+//
+// 💾 Space Complexity: O(1)
+// Only two integer counters used.
+//
+// ----------------------------------------------------------
+
+class Solution {
+public:
+    int minAddToMakeValid(string s) {
+        int left = 0, right = 0;  // left = unmatched '(', right = unmatched ')'
+
+        for (int i = 0; i < s.size(); i++) {
+            if (s[i] == '(') {
+                left++; // Need one more ')'
+            } 
+            else { // Closing parenthesis ')'
+                if (left == 0)
+                    right++; // No '(' available, so need one '('
+                else
+                    left--; // One '(' matched
+            }
+        }
+
+        // Total unmatched = sum of both
+        return left + right;
+    }
+};
