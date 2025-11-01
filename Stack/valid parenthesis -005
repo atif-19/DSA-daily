@@ -1,0 +1,80 @@
+/*
+🧩 Problem: Valid Parentheses
+--------------------------------------------
+Given a string `s` containing just the characters 
+'(', ')', '{', '}', '[' and ']', determine if the input string is valid.
+
+A string is valid if:
+1. Open brackets must be closed by the same type of brackets.
+2. Open brackets must be closed in the correct order.
+
+--------------------------------------------
+🔹 Example 1:
+Input: s = "()"
+Output: true
+
+🔹 Example 2:
+Input: s = "()[]{}"
+Output: true
+
+🔹 Example 3:
+Input: s = "(]"
+Output: false
+
+--------------------------------------------
+💡 Approach:
+We use a stack to keep track of opening brackets.
+- Whenever we encounter an opening bracket, we push it onto the stack.
+- For every closing bracket, we check if the top of the stack contains the corresponding opening bracket.
+  - If it matches, we pop it.
+  - If it doesn’t match or the stack is empty, the string is invalid.
+- After processing all characters, if the stack is empty, the string is valid.
+
+--------------------------------------------
+⏱️ Time Complexity: O(N)
+Each character is pushed and popped at most once.
+
+💾 Space Complexity: O(N)
+Stack stores at most all the opening brackets.
+
+--------------------------------------------
+✅ Status: Accepted on LeetCode
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    bool isValid(string s) {
+        stack<char> st;
+
+        for (int i = 0; i < s.size(); i++) {
+            // Case 1: Stack is empty
+            if (st.empty()) {
+                if (s[i] == '(' || s[i] == '{' || s[i] == '[')
+                    st.push(s[i]);
+                else // Closing without an opening
+                    return false;
+            }
+
+            // Case 2: Opening parenthesis → push it
+            else if (s[i] == '(' || s[i] == '{' || s[i] == '[') {
+                st.push(s[i]);
+            }
+
+            // Case 3: Closing parenthesis → check top of stack
+            else {
+                if ((s[i] == ')' && st.top() == '(') ||
+                    (s[i] == '}' && st.top() == '{') ||
+                    (s[i] == ']' && st.top() == '['))
+                    st.pop();
+                else
+                    return false;
+            }
+        }
+
+        // Valid if no unmatched openings remain
+        return st.empty();
+    }
+};
