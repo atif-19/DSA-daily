@@ -1,0 +1,64 @@
+// ✅ Problem: Get Minimum Element at Pop
+// GFG Problem Link: https://www.geeksforgeeks.org/problems/get-min-at-pop/1
+//
+// 🧩 Problem Statement:
+// Given an array of integers, your task is to create a stack such that 
+// when elements are popped from the stack, the minimum element at that point 
+// is printed. 
+//
+// That means — at each pop operation, you should be able to tell 
+// "What was the minimum element in the stack just before popping?"
+//
+// ----------------------------------------------------------
+// 🧠 Approach:
+// 1️⃣ Create an auxiliary stack `s` that stores the **minimum value so far** 
+//     for each position of the original array.
+// 2️⃣ Iterate through the array:
+//     - For each element `arr[i]`, update the running minimum.
+//     - Push this minimum into the stack.
+// 3️⃣ While popping elements from the stack, simply print the top —
+//     because each top already represents the minimum till that point.
+//
+// ----------------------------------------------------------
+// ✨ Example:
+//
+// Input:  arr = [1, 6, 43, 1, 2, 0, 5], n = 7
+//
+// Step 1: Pushing with tracking minimums
+//   Stack (top → bottom): [0, 0, 1, 1, 1, 1, 1]
+//
+// Step 2: Popping and printing minimums:
+//   Output: 0 0 1 1 1 1 1
+//
+// ----------------------------------------------------------
+// ⏱️ Time Complexity: O(n)
+// Each element is pushed and popped exactly once.
+//
+// 💾 Space Complexity: O(n)
+// Stack is used to store the running minimum values.
+//
+// ----------------------------------------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+// Function to push elements into the stack while tracking the minimum at each point.
+stack<int> _push(int arr[], int n) {
+    int mini = INT_MAX;
+    stack<int> s;
+
+    for (int i = 0; i < n; i++) {
+        mini = min(arr[i], mini);  // Update running minimum
+        s.push(mini);              // Push current minimum
+    }
+
+    return s;
+}
+
+// Function to print the minimum value at each pop operation.
+void _getMinAtPop(stack<int> s) {
+    while (!s.empty()) {
+        cout << s.top() << " ";  // Print current minimum
+        s.pop();                 // Pop element
+    }
+}
