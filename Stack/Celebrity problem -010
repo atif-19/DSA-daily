@@ -1,0 +1,98 @@
+// ✅ Problem: Celebrity Problem
+// GFG Problem Link: https://www.geeksforgeeks.org/problems/the-celebrity-problem/1
+//
+// 🧩 Problem Statement:
+// You are given a square matrix `mat` of size N x N where:
+//   - mat[i][j] = 1 → person i knows person j
+//   - mat[i][j] = 0 → person i does NOT know person j
+//
+// A *celebrity* is a person who is:
+//   1️⃣ Known by everyone else
+//   2️⃣ Knows no one in return
+//
+// Your task: find the index of the celebrity if one exists, otherwise return -1.
+//
+// ----------------------------------------------------------
+// 🧠 Approach (Stack Elimination Technique):
+//
+// Intuition: If A knows B → A **cannot** be a celebrity.
+//            If A does not know B → B **cannot** be a celebrity.
+//
+// 1️⃣ Push all people (indices 0 to N-1) into a stack.
+// 2️⃣ Pop two people at a time: `first` and `second`.
+//     - If `first` knows `second`, `first` cannot be celebrity → push `second` back.
+//     - Else if `second` knows `first`, `second` cannot be celebrity → push `first` back.
+// 3️⃣ Continue until only one person remains → that’s our *potential celebrity*.
+// 4️⃣ Validate this person by checking:
+//     - They know nobody: `mat[first][k] == 0` for all k != first
+//     - Everyone knows them: `mat[k][first] == 1` for all k != first
+// 5️⃣ If both conditions hold, return index `first`, else return -1.
+//
+// ----------------------------------------------------------
+// ✨ Example:
+//
+// Input:
+// mat = [[0, 1, 0],
+//        [0, 0, 0],
+//        [0, 1, 0]]
+//
+// Step 1: Push all → stack = [2, 1, 0]
+// Step 2: Compare (0, 1): 0 knows 1 → pop 0 → push 1
+// Step 3: Compare (1, 2): 2 knows 1 → pop 2 → push 1
+// Stack → [1]
+// Step 4: Verify 1 → 
+//          1 knows nobody ✅
+//          everyone knows 1 ✅
+// Output: 1 (Celebrity)
+//
+// ----------------------------------------------------------
+// ⏱️ Time Complexity: O(N)
+// Each pair is compared once + O(N) verification.
+// 💾 Space Complexity: O(N) for the stack.
+//
+// ----------------------------------------------------------
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+  public:
+    int celebrity(vector<vector<int>>& mat) {
+        int n = mat.size();
+        stack<int> st;
+
+        // Step 1️⃣: Push all people into the stack
+        for (int i = n - 1; i >= 0; i--)
+            st.push(i);
+        
+        int first, second;
+
+        // Step 2️⃣: Eliminate non-celebrities using pairwise comparison
+        while (!st.empty()) {
+            first = st.top();
+            st.pop();
+            if (st.empty()) break;
+            second = st.top();
+            st.pop();
+
+            // Case 1: first knows second → first cannot be celebrity
+            if (mat[first][second] && !mat[second][first])
+                st.push(second);
+
+            // Case 2: second knows first → second cannot be celebrity
+            if (!mat[first][second] && mat[second][first])
+                st.push(first);
+        }
+
+        // Step 3️⃣: Verify the potential celebrity
+        for (int k = 0; k < n; k++) {
+            if (first != k) {
+                if (mat[first][k] || !mat[k][first])
+                    return -1; // fails the celebrity condition
+            }
+        }
+
+        // Step 4️⃣: Return the celebrity index
+        return first;
+    }
+};
