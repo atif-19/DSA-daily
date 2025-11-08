@@ -1,0 +1,83 @@
+/**
+ * @file MinStack.cpp
+ * @brief Implementation of a stack that supports retrieving the minimum element in O(1) time.
+ * 
+ * This class defines a MinStack data structure that behaves like a regular stack
+ * but also allows constant-time retrieval of the minimum element present in the stack.
+ * It uses two stacks internally:
+ *   - st1: to store all elements (main stack)
+ *   - st2: to track the minimum element at each level of the stack
+ * 
+ * Methods:
+ *  - push(x): Pushes an element onto the stack and updates the minimum tracker.
+ *  - pop(): Removes the top element from both stacks.
+ *  - top(): Returns the top element of the main stack.
+ *  - getMin(): Returns the current minimum element from the stack.
+ * 
+ * Time Complexity: O(1) for all operations.
+ * Space Complexity: O(n) due to the use of two stacks.
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class MinStack {
+public:
+    // Constructor: Initializes two empty stacks
+    MinStack() {}
+
+    stack<int> st1; // Main stack to store elements
+    stack<int> st2; // Helper stack to store current minimums
+
+    /**
+     * @brief Pushes a value onto the stack.
+     * If the stack is empty, push the value into both stacks.
+     * Otherwise, push the value to st1 and the minimum of the new value and
+     * the current minimum to st2.
+     */
+    void push(int x) {
+        if (st1.empty()) {
+            st1.push(x);
+            st2.push(x);
+        } else {
+            st1.push(x);
+            st2.push(min(x, st2.top()));
+        }
+    }
+
+    /**
+     * @brief Removes the top element from the stack.
+     */
+    void pop() {
+        st1.pop();
+        st2.pop();
+    }
+
+    /**
+     * @brief Returns the top element of the stack.
+     */
+    int top() {
+        return st1.top();
+    }
+
+    /**
+     * @brief Returns the current minimum element in the stack.
+     */
+    int getMin() {
+        return st2.top();
+    }
+};
+
+/**
+ * Example usage:
+ * 
+ * MinStack* obj = new MinStack();
+ * obj->push(5);
+ * obj->push(2);
+ * obj->push(8);
+ * cout << obj->getMin(); // Output: 2
+ * obj->pop();
+ * cout << obj->top();    // Output: 2
+ * cout << obj->getMin(); // Output: 2
+ */
+
