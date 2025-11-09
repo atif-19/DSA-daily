@@ -1,0 +1,124 @@
+#include <bits/stdc++.h> 
+using namespace std;
+
+/*
+==================================================================
+🧠 CLASS NAME: NStack
+==================================================================
+💡 PURPOSE:
+Implements **N stacks** using **linked lists**, each stack represented
+by a separate linked list inside a vector.
+
+This version focuses on clarity and flexibility — each stack grows
+independently without interfering with others. 
+
+⚙️ KEY PARAMETERS:
+- N → Number of stacks.
+- S → Total maximum capacity (shared limit across all stacks).
+
+Each push consumes 1 unit of the shared space, and each pop frees 1 unit.
+If total elements exceed `S`, further pushes are rejected.
+------------------------------------------------------------------
+🧩 CORE OPERATIONS:
+1️⃣ push(x, m) → Push element `x` into Mth stack.
+2️⃣ pop(m) → Pop top element from Mth stack.
+------------------------------------------------------------------
+🕒 TIME COMPLEXITY:
+- Push: O(1)
+- Pop: O(1)
+------------------------------------------------------------------
+📦 SPACE COMPLEXITY:
+O(N + S) — For vector of stack heads + linked list nodes.
+==================================================================
+*/
+
+
+// ---------------------------------------------------------------
+// 🧩 Node class: represents each element in a stack
+// ---------------------------------------------------------------
+class Node {
+public:
+    int data;      // Value stored in the node
+    Node* next;    // Pointer to next node
+
+    Node(int val) {
+        data = val;
+        next = nullptr;
+    }
+};
+
+
+// ---------------------------------------------------------------
+// 🧠 NStack class: manages multiple stacks using linked lists
+// ---------------------------------------------------------------
+class NStack {
+public:
+    vector<Node*> arr;   // Vector storing head pointer of each stack
+    int size;            // Total remaining capacity across all stacks
+
+    // -----------------------------------------------------------
+    // 🏗️ Constructor: initializes N stacks and shared capacity S
+    // -----------------------------------------------------------
+    NStack(int N, int S) {
+        size = S;
+        arr = vector<Node*>(N + 1, nullptr);  // 1-indexed for convenience
+    }
+
+    // -----------------------------------------------------------
+    // ➕ Push 'x' into Mth stack
+    // -----------------------------------------------------------
+    bool push(int x, int m) {
+        if (size == 0) 
+            return false;   // No space left to push
+
+        Node* temp = new Node(x);
+        
+        // If stack is empty, assign directly
+        if (arr[m] == nullptr)
+            arr[m] = temp;
+        else {
+            // Insert new node at the top (LIFO)
+            temp->next = arr[m];
+            arr[m] = temp;
+        }
+
+        size--;   // Decrease total free space
+        return true;
+    }
+
+    // -----------------------------------------------------------
+    // ➖ Pop top element from Mth stack
+    // -----------------------------------------------------------
+    int pop(int m) {
+        if (arr[m] == nullptr)
+            return -1;  // Stack underflow
+
+        int ele = arr[m]->data;
+        Node* temp = arr[m];
+        arr[m] = arr[m]->next;
+
+        delete temp;    // Free memory
+        size++;         // Restore free space
+        return ele;
+    }
+};
+
+
+// ---------------------------------------------------------------
+// 🧪 Example Usage (Optional for testing/demo)
+// ---------------------------------------------------------------
+int main() {
+    NStack st(3, 6);  // 3 stacks, total capacity 6
+
+    st.push(10, 1);
+    st.push(20, 1);
+    st.push(30, 2);
+    st.push(40, 3);
+
+    cout << "Pop from Stack 1: " << st.pop(1) << endl; // 20
+    cout << "Pop from Stack 2: " << st.pop(2) << endl; // 30
+    cout << "Pop from Stack 3: " << st.pop(3) << endl; // 40
+
+    return 0;
+}
+
