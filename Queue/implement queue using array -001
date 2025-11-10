@@ -1,0 +1,120 @@
+/**
+ * @file myQueue.cpp
+ * @brief Implementation of a Circular Queue using an Array in C++.
+ *
+ * This program defines a `myQueue` class that implements a queue data structure
+ * using a fixed-size circular array. It supports common queue operations:
+ * enqueue, dequeue, getFront, getRear, isEmpty, and isFull.
+ *
+ * Circular implementation ensures efficient use of space by reusing freed positions
+ * after dequeue operations, preventing overflow issues common in linear queues.
+ *
+ * Example operations:
+ *  - enqueue(x): Adds an element to the rear.
+ *  - dequeue(): Removes the front element.
+ *  - getFront(): Returns the front element or -1 if empty.
+ *  - getRear(): Returns the last element or -1 if empty.
+ *  - isEmpty(): Checks if queue is empty.
+ *  - isFull(): Checks if queue is full.
+ *
+ * Time Complexity:
+ *  - All operations run in O(1)
+ * Space Complexity:
+ *  - O(n)
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * @class myQueue
+ * @brief A class representing a circular queue implemented using an array.
+ */
+class myQueue {
+
+public:
+    int front;       ///< Index of the front element
+    int rear;        ///< Index of the rear element
+    int size;        ///< Maximum size of the queue
+    vector<int> arr; ///< Container for queue elements
+
+    /**
+     * @brief Constructor to initialize the queue with a given size.
+     * @param n Maximum size of the queue.
+     */
+    myQueue(int n) {
+        arr = vector<int>(n);
+        front = -1;
+        rear = -1;
+        size = n;
+    }
+
+    /**
+     * @brief Checks if the queue is empty.
+     * @return True if empty, false otherwise.
+     */
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    /**
+     * @brief Checks if the queue is full.
+     * @return True if full, false otherwise.
+     */
+    bool isFull() {
+        return (front == 0 && rear == size - 1) || (rear + 1 == front);
+    }
+
+    /**
+     * @brief Adds an element to the rear of the queue.
+     * @param x The element to be added.
+     */
+    void enqueue(int x) {
+        if (isFull())
+            return; // Cannot add element if queue is full
+
+        if (isEmpty()) {
+            front = 0;
+            rear = 0;
+        } else {
+            rear = (rear + 1) % size;
+        }
+        arr[rear] = x;
+    }
+
+    /**
+     * @brief Removes the front element of the queue.
+     */
+    void dequeue() {
+        if (isEmpty())
+            return; // No elements to remove
+
+        if (front == rear) {
+            // Queue becomes empty after removing the last element
+            front = -1;
+            rear = -1;
+        } else {
+            front = (front + 1) % size;
+        }
+    }
+
+    /**
+     * @brief Returns the element at the front of the queue.
+     * @return Front element or -1 if queue is empty.
+     */
+    int getFront() {
+        if (isEmpty())
+            return -1;
+        return arr[front];
+    }
+
+    /**
+     * @brief Returns the element at the rear of the queue.
+     * @return Rear element or -1 if queue is empty.
+     */
+    int getRear() {
+        if (isEmpty())
+            return -1;
+        return arr[rear];
+    }
+};
