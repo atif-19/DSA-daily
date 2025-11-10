@@ -1,0 +1,127 @@
+/**
+ * @file myQueue_linkedlist.cpp
+ * @brief Implementation of a Queue using a Linked List in C++.
+ *
+ * This file defines a `myQueue` class that implements a queue data structure
+ * using a singly linked list. It supports standard queue operations such as
+ * enqueue, dequeue, getFront, isEmpty, and size.
+ *
+ * The linked list implementation provides dynamic memory allocation, meaning
+ * the queue can grow or shrink as needed without a fixed-size limit.
+ *
+ * Operations:
+ *  - enqueue(x): Insert an element at the rear of the queue.
+ *  - dequeue(): Remove the front element of the queue.
+ *  - getFront(): Return the front element if present, otherwise -1.
+ *  - isEmpty(): Return true if the queue is empty.
+ *  - size(): Return the total number of elements currently in the queue.
+ *
+ * Time Complexity:
+ *  - enqueue(): O(1)
+ *  - dequeue(): O(1)
+ *  - getFront(): O(1)
+ *  - isEmpty(): O(1)
+ *  - size(): O(1)
+ *
+ * Space Complexity:
+ *  - O(n) — where n is the number of elements in the queue.
+ */
+
+#include <bits/stdc++.h>
+using namespace std;
+
+/**
+ * @class Node
+ * @brief A node of a singly linked list used to implement the queue.
+ */
+class Node {
+public:
+    int data;   ///< Value stored in the node
+    Node* next; ///< Pointer to the next node
+
+    /**
+     * @brief Constructs a new node with the given data.
+     * @param new_data The integer value to store in the node.
+     */
+    Node(int new_data) {
+        data = new_data;
+        next = nullptr;
+    }
+};
+
+/**
+ * @class myQueue
+ * @brief A queue implemented using a singly linked list.
+ */
+class myQueue {
+
+public:
+    Node* front; ///< Pointer to the front node
+    Node* rear;  ///< Pointer to the rear node
+    int s;       ///< Current size of the queue
+
+    /**
+     * @brief Default constructor. Initializes an empty queue.
+     */
+    myQueue() {
+        front = nullptr;
+        rear = nullptr;
+        s = 0;
+    }
+
+    /**
+     * @brief Checks whether the queue is empty.
+     * @return True if the queue is empty, false otherwise.
+     */
+    bool isEmpty() {
+        return front == nullptr;
+    }
+
+    /**
+     * @brief Adds an element to the rear of the queue.
+     * @param x The element to be added.
+     */
+    void enqueue(int x) {
+        if (isEmpty()) {
+            front = new Node(x);
+            rear = front;
+        } else {
+            Node* n = new Node(x);
+            rear->next = n;
+            rear = rear->next;
+        }
+        s++;
+    }
+
+    /**
+     * @brief Removes the element at the front of the queue.
+     */
+    void dequeue() {
+        if (isEmpty()) {
+            return;
+        } else {
+            Node* n = front;
+            front = front->next;
+            delete n;
+        }
+        s--;
+    }
+
+    /**
+     * @brief Returns the front element of the queue.
+     * @return The data at the front if not empty, otherwise -1.
+     */
+    int getFront() {
+        if (isEmpty())
+            return -1;
+        return front->data;
+    }
+
+    /**
+     * @brief Returns the number of elements currently in the queue.
+     * @return The size of the queue.
+     */
+    int size() {
+        return s;
+    }
+};
