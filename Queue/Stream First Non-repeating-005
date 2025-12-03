@@ -1,0 +1,79 @@
+/*
+------------------------------------------------------------
+🧩 Problem: First Non-Repeating Character in a Stream
+------------------------------------------------------------
+
+Given a stream of lowercase characters (string `s`),  
+for each position `i`, you must find the first character  
+that has **not appeared more than once** in the substring  
+`s[0...i]`.
+
+If at any point there is **no non-repeating character**,  
+append `#` to the answer.
+
+Example:
+Input:  "aabc"
+Output: "a#bb"
+
+------------------------------------------------------------
+💡 Approach: Queue + Frequency Array
+------------------------------------------------------------
+
+We maintain:
+1. **Frequency array (size 26)**  
+   - Tracks how many times each character has appeared.
+
+2. **Queue**  
+   - Stores characters that *might* be the first 
+     non-repeating character.
+   - We push a character only on its **first appearance**.
+
+🔹 For each character:
+   - If it's the first time → push into queue.  
+   - Increase its frequency.  
+   - Remove elements from queue front that are now repeating.  
+   - If queue is empty → append `#`.  
+   - Else → append `queue.front()`.
+
+This ensures each character is processed in **O(1)**,  
+and every character is pushed/popped at most once.
+
+------------------------------------------------------------
+⏱ Time Complexity:  O(n)
+💾 Space Complexity: O(26 + queue size) → O(n)
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    string firstNonRepeating(string &s) {
+
+        vector<int> count(26, 0); // frequency of each character
+        string ans = "";
+        queue<char> q;            // stores potential non-repeating chars
+
+        for (int i = 0; i < s.size(); i++) {
+
+            // Push into queue only on first occurrence
+            if (count[s[i] - 'a'] == 0) {
+                q.push(s[i]);
+            }
+
+            // Increase frequency
+            count[s[i] - 'a']++;
+
+            // Clean the queue: remove repeated chars
+            while (!q.empty() && count[q.front() - 'a'] > 1) {
+                q.pop();
+            }
+
+            // Append result for this step
+            if (q.empty())
+                ans += '#';
+            else
+                ans += q.front();
+        }
+
+        return ans;
+    }
+};
