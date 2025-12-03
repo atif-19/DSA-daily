@@ -1,0 +1,32 @@
+// Online C++ compiler to run C++ program online
+#include <iostream>
+#include <queue>
+#include <vector>
+using namespace std;
+void printEveryWindow(vector<int>arr,int k){
+    queue<int>q;
+    int iter;
+    for(iter=0;iter<k;iter++)
+        q.push(arr[iter]);
+    while(iter<=arr.size()){
+    int j = 1;
+    for(int i=0;i<k;i++){
+        if(j==1){
+            cout<<q.front()<<" ";
+            q.pop();
+            j++;
+        }
+        else{
+            cout<<q.front()<<" ";
+            q.push(q.front());
+            q.pop();
+        }
+    }
+    q.push(arr[iter++]);
+    cout<<endl;
+    }
+}
+int main() {
+    vector<int>arr = {2,5,3,5,4,7};
+    printEveryWindow(arr,4);
+}
