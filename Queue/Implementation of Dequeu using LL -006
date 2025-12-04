@@ -1,0 +1,134 @@
+// Deque Implementation using Doubly Linked List
+// Author: Atif
+// Description:
+// This code implements a Deque (Double Ended Queue) using a doubly linked list.
+// Supports: push_front, push_back, pop_front, pop_back, start(), end()
+
+#include <iostream>
+using namespace std;
+
+// Node structure for DLL
+class Node {
+public:
+    int data;
+    Node* prev;
+    Node* next;
+
+    // Constructor
+    Node(int val) {
+        data = val;
+        prev = next = NULL;
+    }
+};
+
+// Deque class using DLL
+class dequeue {
+    Node* front;  // Points to the first element
+    Node* rear;   // Points to the last element
+
+public:
+
+    // Constructor — initializes an empty deque
+    dequeue() {
+        front = rear = NULL;
+    }
+
+    // Insert at the front (O(1))
+    void push_front(int x) {
+        Node* temp = new Node(x);
+
+        if (front == NULL) {          // If deque is empty
+            front = rear = temp;
+        } else {
+            temp->next = front;       // Link new node to old front
+            front->prev = temp;
+            front = temp;             // Move front pointer
+        }
+    }
+
+    // Insert at the back (O(1))
+    void push_back(int x) {
+        Node* temp = new Node(x);
+
+        if (front == NULL) {          // If deque is empty
+            front = rear = temp;
+        } else {
+            rear->next = temp;        // Link new node after rear
+            temp->prev = rear;
+            rear = temp;              // Move rear pointer
+        }
+    }
+
+    // Remove from front (O(1))
+    void pop_front() {
+        if (front == NULL) {
+            cout << "Queue underflow" << endl;
+            return;
+        }
+
+        Node* temp = front;
+        front = front->next;          // Move front forward
+
+        if (front) {
+            front->prev = NULL;       // Fix backward link
+        } else {
+            rear = NULL;              // If deque becomes empty
+        }
+
+        delete temp;                  // Free memory
+    }
+
+    // Remove from back (O(1))
+    void pop_back() {
+        if (front == NULL) {
+            cout << "Queue underflow" << endl;
+            return;
+        }
+
+        Node* temp = rear;
+        rear = rear->prev;            // Move rear backward
+
+        if (rear) {
+            rear->next = NULL;        // Fix forward link
+        } else {
+            front = NULL;             // If deque becomes empty
+        }
+
+        delete temp;                  // Free memory
+    }
+
+    // Returns the front element
+    int start() {
+        if (front == NULL) return -1;
+        return front->data;
+    }
+
+    // Returns the last element
+    int end() {
+        if (rear == NULL) return -1;
+        return rear->data;
+    }
+
+    // Destructor — deletes all nodes to prevent memory leaks
+    ~dequeue() {
+        while (front != NULL) {
+            pop_front();
+        }
+    }
+};
+
+int main() {
+    dequeue q;
+
+    q.push_front(1);
+    q.push_front(2);
+    q.push_front(3);
+    q.push_front(4);
+    q.push_front(5);
+
+    q.pop_front();  // removes 5
+    q.pop_back();   // removes 1
+
+    cout << q.start() << endl; // Output: 4 (front)
+    cout << q.end() << endl;   // Output: 2 (rear)
+}
