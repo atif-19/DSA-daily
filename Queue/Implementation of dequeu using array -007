@@ -1,0 +1,120 @@
+// Implementation of Deque using Circular Array
+#include <iostream>
+using namespace std;
+
+// Deque class using circular array
+class dequeue {
+    int front, rear, size;
+    int* arr;
+
+public:
+    // Constructor: initializes front, rear and allocates memory
+    dequeue(int n) {
+        front = rear = -1;
+        size = n;
+        arr = new int[n];
+    }
+
+    // Check if deque is empty
+    bool isEmpty() {
+        return front == -1;
+    }
+
+    // Check if deque is full (circular condition)
+    bool isFull() {
+        return (rear + 1) % size == front;
+    }
+
+    // Insert element at front
+    void push_front(int x) {
+        if (isFull()) {
+            cout << "Queue overflow" << endl;
+            return;
+        }
+        else if (isEmpty()) {
+            front = rear = 0;
+            arr[0] = x;
+        }
+        else {
+            front = (front - 1 + size) % size; // circular backward shift
+            arr[front] = x;
+        }
+    }
+
+    // Insert element at back
+    void push_back(int x) {
+        if (isFull()) {
+            cout << "Queue overflow" << endl;
+            return;
+        }
+        else if (isEmpty()) {
+            front = rear = 0;
+            arr[0] = x;
+        }
+        else {
+            rear = (rear + 1) % size; // circular forward shift
+            arr[rear] = x;
+        }
+    }
+
+    // Remove element from front
+    void pop_front() {
+        if (isEmpty()) {
+            cout << "Queue underflow" << endl;
+            return;
+        }
+        // Only one element left
+        if (front == rear) {
+            front = rear = -1;
+        }
+        else {
+            front = (front + 1) % size; // move front forward
+        }
+    }
+
+    // Remove element from back
+    void pop_back() {
+        if (isEmpty()) {
+            cout << "Queue underflow" << endl;
+            return;
+        }
+        // Only one element left
+        if (front == rear) {
+            front = rear = -1;
+        }
+        else {
+            rear = (rear - 1 + size) % size; // move rear backward
+        }
+    }
+
+    // Get front element
+    int start() {
+        if (isEmpty()) return -1;
+        return arr[front];
+    }
+
+    // Get last element
+    int end() {
+        if (isEmpty()) return -1;
+        return arr[rear];
+    }
+};
+
+// Example usage
+int main() {
+    dequeue q(100);
+
+    // Insert elements at front
+    q.push_front(1);
+    q.push_front(2);
+    q.push_front(3);
+    q.push_front(4);
+    q.push_front(5);
+
+    q.pop_front(); // removes 5
+    q.pop_back();  // removes 1
+
+    cout << q.start() << endl; // Output: 4
+    cout << q.end() << endl;   // Output: 2
+}
+
