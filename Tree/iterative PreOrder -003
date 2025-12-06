@@ -1,0 +1,59 @@
+// ---------------------------------------------------------------------------
+//                Iterative Preorder Traversal of a Binary Tree
+// ---------------------------------------------------------------------------
+// Preorder Traversal: ROOT → LEFT → RIGHT
+//
+// This implementation uses a stack to avoid recursion.
+// Steps:
+//   1. Push root into the stack.
+//   2. Pop the top node, record its value.
+//   3. Push RIGHT child first, then LEFT child — so LEFT is processed first.
+//   4. Continue until stack becomes empty.
+//
+// Time Complexity:  O(n)
+// Space Complexity: O(n)  (stack can hold up to all nodes in worst case)
+// ---------------------------------------------------------------------------
+
+/*
+class Node {
+  public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    vector<int> preOrder(Node* root) {
+        // If tree is empty
+        if (root == NULL) return {};
+
+        stack<Node*> st;       // Stack to simulate recursive calls
+        vector<int> ans;       // Stores preorder traversal result
+
+        st.push(root);
+
+        while (!st.empty()) {
+            Node* temp = st.top();
+            st.pop();
+
+            // Visit the current node
+            ans.push_back(temp->data);
+
+            // Push right child first, so left child is processed first
+            if (temp->right)
+                st.push(temp->right);
+
+            if (temp->left)
+                st.push(temp->left);
+        }
+
+        return ans;
+    }
+};
