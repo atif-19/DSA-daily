@@ -1,0 +1,53 @@
+// ---------------------------------------------------------------------------
+//                Iterative Postorder Traversal of a Binary Tree
+// ---------------------------------------------------------------------------
+// Postorder Traversal: LEFT → RIGHT → ROOT
+//
+// Trick Used:
+//   Instead of writing a complicated two-stack or visited-pointer solution,
+//   we do this:
+//      1. Perform modified preorder: ROOT → RIGHT → LEFT
+//      2. Reverse the result → becomes LEFT → RIGHT → ROOT (postorder)
+//
+// Time Complexity:  O(n)
+// Space Complexity: O(n)  (stack + output vector)
+// ---------------------------------------------------------------------------
+
+/* Tree Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+
+class Solution {
+public:
+    vector<int> postOrder(Node* node) {
+        if (node == NULL) return {};
+
+        stack<Node*> st;
+        vector<int> ans;
+
+        st.push(node);
+
+        while (!st.empty()) {
+            Node* temp = st.top();
+            st.pop();
+
+            // Add current node value
+            ans.push_back(temp->data);
+
+            // Push LEFT first, so RIGHT gets processed first
+            if (temp->left)
+                st.push(temp->left);
+
+            if (temp->right)
+                st.push(temp->right);
+        }
+
+        // Reverse to convert from (root-right-left) -> postorder
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
