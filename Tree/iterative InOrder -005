@@ -1,0 +1,79 @@
+// ---------------------------------------------------------------------------
+//                Iterative Inorder Traversal Using One Stack
+// ---------------------------------------------------------------------------
+// Inorder Traversal: LEFT → ROOT → RIGHT
+//
+// Technique Used:
+//   Instead of the classic two-pointer "go left" approach, this solution
+//   simulates recursion using:
+//      • A stack<Node*> to store nodes
+//      • A parallel stack<bool> to indicate whether the node is visited
+//
+// Logic:
+//   - Push nodes into the stack with `visited = false` initially.
+//   - When popped:
+//        If visited == true  → process (print) the node
+//        If visited == false → push right, self (marked visited), then left
+//
+// This perfectly mirrors the recursive order of operations.
+//
+// Time Complexity:  O(n)
+// Space Complexity: O(n)
+// ---------------------------------------------------------------------------
+
+/* Tree Node
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+
+class Solution {
+public:
+    vector<int> inOrder(Node* root) {
+        if (root == NULL) return {};
+
+        stack<Node*> st;
+        stack<bool> visited;
+        vector<int> ans;
+
+        // Initially, root is not visited
+        st.push(root);
+        visited.push(false);
+
+        while (!st.empty()) {
+            Node* temp = st.top();
+            st.pop();
+
+            bool flag = visited.top();
+            visited.pop();
+
+            if (flag == true) {
+                // Node is ready to be processed (middle step in inorder)
+                ans.push_back(temp->data);
+            } 
+            else {
+                // Simulate recursive structure: Left → Root → Right
+
+                // Push right child (if exists)
+                if (temp->right) {
+                    st.push(temp->right);
+                    visited.push(false);
+                }
+
+                // Push current node with visited = true
+                st.push(temp);
+                visited.push(true);
+
+                // Push left child (if exists)
+                if (temp->left) {
+                    st.push(temp->left);
+                    visited.push(false);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
