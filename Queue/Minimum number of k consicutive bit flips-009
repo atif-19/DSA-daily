@@ -1,0 +1,75 @@
+/*
+---------------------------------------------------------------------
+🧩 Problem: Minimum Number of K Consecutive Bit Flips
+---------------------------------------------------------------------
+
+You are given a binary array `nums` and an integer `k`.
+
+In one operation, you can choose a starting index `i` and flip the 
+bits in range [i, i + k - 1]. (0 → 1 and 1 → 0)
+
+Return the minimum number of operations needed to make the entire 
+array all 1s. If it is impossible, return -1.
+
+---------------------------------------------------------------------
+💡 Approach: Greedy + Flip Parity Using Queue
+---------------------------------------------------------------------
+
+Key Observations:
+
+1️⃣ Instead of flipping bits explicitly (which is expensive),
+    we track how many flips affect the current index.
+
+2️⃣ A **queue** stores the end positions of active flips.
+    - When `q.front() < i`, it means that flip no longer affects `i`.
+      So we pop it.
+
+3️⃣ The parity of flips affecting position `i` is:
+       currentEffectiveValue = nums[i] ^ (q.size() % 2)
+
+    → If this is 0, then we need to flip starting at index `i`.
+
+4️⃣ If we need to flip but `i + k - 1` goes out of bounds,
+    it's impossible → return -1.
+
+5️⃣ Otherwise:
+    - Increment flip count
+    - Push the end index `(i + k - 1)` into the queue
+
+This greedy strategy guarantees minimal flips because we always fix 
+the earliest possible position.
+
+---------------------------------------------------------------------
+⏱ Time Complexity:  O(n)
+💾 Space Complexity: O(k)  (queue stores flip boundaries)
+---------------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    int minKBitFlips(vector<int>& nums, int k) {
+        int flip = 0;               // total flips performed
+        queue<int> q;               // stores end index of flips
+
+        for (int i = 0; i < nums.size(); i++) {
+
+            // Remove flips that no longer affect current index
+            while (!q.empty() && q.front() < i)
+                q.pop();
+
+            // Effective value after considering previous flips
+            // If effective value is 0, we need to flip
+            if (q.size() % 2 == nums[i]) {
+
+                // Not enough space to flip k bits
+                if (i + k - 1 >= nums.size())
+                    return -1;
+
+                flip++;
+                q.push(i + k - 1); // Flip ends at i+k-1
+            }
+        }
+
+        return flip;
+    }
+};
