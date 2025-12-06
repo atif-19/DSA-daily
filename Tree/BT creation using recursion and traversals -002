@@ -1,0 +1,111 @@
+// ---------------------------------------------------------------------------
+//                 Binary Tree Creation Using Recursion (C++)
+// ---------------------------------------------------------------------------
+// This program constructs a binary tree using recursive input and then prints
+// its Preorder, Inorder, and Postorder traversals.
+//
+// INPUT RULES:
+//   • Enter any integer to create a node.
+//   • Enter -1 when a node does not exist (NULL child).
+//
+// Example Flow:
+//   Enter the root node:
+//   1
+//   Enter the left child of 1:
+//   2
+//   Enter the left child of 2:
+//   -1
+//   Enter the right child of 2:
+//   -1
+//   Enter the right child of 1:
+//   3
+//   Enter the left child of 3:
+//   -1
+//   Enter the right child of 3:
+//   -1
+// ---------------------------------------------------------------------------
+
+#include <iostream>
+using namespace std;
+
+// ------------------------- Node Structure ----------------------------------
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int x) {
+        data = x;
+        left = right = NULL;
+    }
+};
+
+// ---------------------- Build Tree Recursively -----------------------------
+// Creates a new node for the given input.
+// Recursively asks for left and right children.
+//
+// -1 indicates no child.
+Node* BinaryTree() {
+    int x;
+    cin >> x;
+
+    if (x == -1)
+        return NULL;
+
+    Node* temp = new Node(x);
+
+    cout << "Enter the left child of " << x << ": ";
+    temp->left = BinaryTree();
+
+    cout << "Enter the right child of " << x << ": ";
+    temp->right = BinaryTree();
+
+    return temp;
+}
+
+// ---------------------------- Traversals -----------------------------------
+
+// Preorder: Root → Left → Right
+void preorder(Node* root) {
+    if (root != NULL) {
+        cout << root->data << ' ';
+        preorder(root->left);
+        preorder(root->right);
+    }
+}
+
+// Postorder: Left → Right → Root
+void postorder(Node* root) {
+    if (root != NULL) {
+        postorder(root->left);
+        postorder(root->right);
+        cout << root->data << ' ';
+    }
+}
+
+// Inorder: Left → Root → Right
+void inorder(Node* root) {
+    if (root != NULL) {
+        inorder(root->left);
+        cout << root->data << ' ';
+        inorder(root->right);
+    }
+}
+
+// ------------------------------- Main --------------------------------------
+int main() {
+    cout << "Enter the root node: ";
+    Node* root = BinaryTree();
+
+    cout << "\nPreorder Traversal:\n";
+    preorder(root);
+
+    cout << "\n\nPostorder Traversal:\n";
+    postorder(root);
+
+    cout << "\n\nInorder Traversal:\n";
+    inorder(root);
+
+    return 0;
+}
