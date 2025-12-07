@@ -1,0 +1,52 @@
+// -----------------------------------------------------------------------------
+//                             Sum of All Nodes in a Binary Tree
+// -----------------------------------------------------------------------------
+// Problem:
+//   Given the root of a binary tree, return the sum of all node values.
+//
+// Approach (Recursive DFS):
+//   - Use a simple recursive depth-first traversal.
+//   - For each node:
+//        sum = node->data 
+//              + sum of left subtree 
+//              + sum of right subtree
+//   - Base Case: If the node is NULL, contribute 0.
+//
+// Why This Works:
+//   Recursion naturally traverses all nodes in the tree, ensuring each value
+//   is included exactly once.
+//
+// Time Complexity:  O(n)
+//     Each node is visited one time.
+//
+// Space Complexity: O(h)
+//     h = height of the tree
+//     Worst case (skewed): O(n)
+//     Best case (balanced): O(log n)
+// -----------------------------------------------------------------------------
+
+/* Binary Tree Node Structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int x){
+        data = x;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+    // Returns the sum of all nodes in the binary tree
+    int sumBT(Node* root) {
+        if (root == NULL)
+            return 0;
+
+        return root->data 
+             + sumBT(root->left) 
+             + sumBT(root->right);
+    }
+};
