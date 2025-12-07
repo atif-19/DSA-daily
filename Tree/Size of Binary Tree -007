@@ -1,0 +1,57 @@
+// -----------------------------------------------------------------------------
+//                         Size of a Binary Tree (Recursive)
+// -----------------------------------------------------------------------------
+// Problem:
+//   Given the root of a binary tree, return the total number of nodes in it.
+//
+// Approach:
+//   - Use simple DFS (Depth-First Search)
+//   - Traverse each node exactly once
+//   - Maintain a reference variable `size` that increments for every visited node
+//
+// Why This Works:
+//   Recursion naturally explores the entire tree (Left → Right).
+//   Each node visited contributes 1 to the total count.
+//
+// Time Complexity:  O(n)
+//     Each node is visited exactly once.
+//
+// Space Complexity: O(h)
+//     Due to recursion stack, where h = height of the tree.
+//     In worst case (skewed tree): O(n)
+//     In best case (balanced tree): O(log n)
+// -----------------------------------------------------------------------------
+
+/*
+Definition for Binary Tree Node:
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int x) {
+        data = x;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+public:
+
+    // DFS helper to count nodes
+    void Traverse(Node* node, int &size) {
+        if (node) {
+            size++;
+            Traverse(node->left, size);
+            Traverse(node->right, size);
+        }
+    }
+
+    // Returns the total number of nodes in the tree
+    int getSize(Node* node) {
+        int size = 0;
+        Traverse(node, size);
+        return size;
+    }
+};
