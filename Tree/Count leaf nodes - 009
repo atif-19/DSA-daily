@@ -1,0 +1,50 @@
+// -----------------------------------------------------------------------------
+//                         Count Leaf Nodes in a Binary Tree
+// -----------------------------------------------------------------------------
+// Problem:
+//   Given the root of a binary tree, return the total number of leaf nodes.
+//   A leaf node is a node that has no left or right child.
+//
+// Approach (Recursive DFS):
+//   - If the node is NULL → return 0
+//   - If the node has no left and no right child → it's a leaf → return 1
+//   - Otherwise, recursively count leaves in left and right subtrees and add them.
+//
+// Why This Works:
+//   Each call checks exactly one node and determines whether it's a leaf.
+//   Perfect use of recursion for hierarchical tree structure.
+//
+// Time Complexity:  O(n)
+//     Each node is checked once.
+//
+// Space Complexity: O(h)
+//     Due to recursion stack (h = height of the tree).
+//     Worst case: O(n), Best case: O(log n)
+// -----------------------------------------------------------------------------
+
+/*
+Binary Tree Node Structure:
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+
+class Solution {
+public:
+    // Returns the number of leaf nodes in the binary tree
+    int countLeaves(Node* root) {
+
+        // Base case: empty node contributes 0 leaves
+        if (root == NULL)
+            return 0;
+
+        // Leaf node condition
+        if (!root->left && !root->right)
+            return 1;
+
+        // Recursively count leaves on both sides
+        return countLeaves(root->left) + countLeaves(root->right);
+    }
+};
