@@ -1,0 +1,50 @@
+/* 
+Structure of the node of the tree is as:
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+*/
+
+// Class: Solution
+// Functionality: Count the number of NON-leaf nodes in a binary tree.
+class Solution {
+  public:
+
+    /*
+        Function: countNonLeafNodes
+        ---------------------------
+        Counts all non-leaf nodes in a binary tree.
+
+        A non-leaf node is defined as any node that has 
+        **at least one child** (left or right).
+
+        Approach:
+        ---------
+        - If the root is NULL → return 0 (empty tree has no non-leaf nodes)
+        - If the node has **no left and no right child** → return 0
+            (it's a leaf node, not counted)
+        - Otherwise:
+            - count this node (add 1)
+            - recursively count in left subtree
+            - recursively count in right subtree
+
+        Parameters:
+        -----------
+        - root : pointer to the root node of the binary tree
+
+        Returns:
+        --------
+        - Integer count of non-leaf nodes
+    */
+    int countNonLeafNodes(Node* root) {
+
+        // Base case: empty tree OR a leaf node → not a non-leaf
+        if ((root == NULL) || (!root->left && !root->right))
+            return 0;
+
+        // Count this node + recursive counts from left and right subtree
+        return 1 + countNonLeafNodes(root->left) + countNonLeafNodes(root->right);
+    }
+};
