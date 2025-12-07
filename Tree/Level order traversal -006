@@ -1,0 +1,71 @@
+// -----------------------------------------------------------------------------
+//                     Level Order Traversal (Breadth-First Search)
+// -----------------------------------------------------------------------------
+// This solution performs a classic BFS traversal on a binary tree to produce a
+// level-by-level list of node values.
+//
+// Approach:
+//   - Use a queue to process nodes level by level.
+//   - For each level:
+//        1. Determine the number of nodes in the level (queue size)
+//        2. Pop all nodes of that level
+//        3. Push their children into the queue
+//        4. Store the current level in the result
+//
+// Time Complexity:  O(n)
+//     Every node is visited exactly once.
+//
+// Space Complexity: O(n)
+//     Due to the queue storing up to n/2 nodes in the worst case (last level).
+//
+// This is the standard BFS implementation for level order traversal.
+// -----------------------------------------------------------------------------
+
+/* Binary Tree Node Structure
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = nullptr;
+    }
+};
+*/
+
+class Solution {
+public:
+    vector<vector<int>> levelOrder(Node *root) {
+        if (root == nullptr) return {};
+
+        queue<Node*> q;
+        vector<vector<int>> ans;
+
+        q.push(root);
+
+        while (!q.empty()) {
+            int size = q.size();
+            vector<int> level;
+
+            // Process all nodes of current level
+            for (int i = 0; i < size; i++) {
+                Node* temp = q.front();
+                q.pop();
+
+                level.push_back(temp->data);
+
+                if (temp->left)
+                    q.push(temp->left);
+
+                if (temp->right)
+                    q.push(temp->right);
+            }
+
+            ans.push_back(level);
+        }
+
+        return ans;
+    }
+};
