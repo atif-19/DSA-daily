@@ -1,0 +1,78 @@
+// User function Template for C++
+
+/*
+    Function: largestValues
+    -----------------------
+    Returns a vector containing the largest value at each level
+    of a binary tree.
+
+    Idea:
+    -----
+    - Perform a **level order traversal** using a queue.
+    - For each level:
+        • Track the maximum value (initialize with INT_MIN)
+        • Traverse all nodes of that level
+        • Push their children into the queue for the next level
+    - Store the maximum value of every level in the answer vector.
+
+    Example:
+    --------
+    For the tree:
+           1
+         /   \
+        3     2
+       / \     \
+      5   3     9
+
+    Output: [1, 3, 9]
+
+    Parameters:
+    -----------
+    - root : pointer to the root node of the binary tree
+
+    Returns:
+    --------
+    - vector<int> : largest element from each level
+*/
+
+class Solution {
+  public:
+    vector<int> largestValues(Node* root) {
+
+        vector<int> ans;
+
+        // If tree is empty → return empty vector
+        if (!root)
+            return ans;
+
+        queue<Node*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+
+            int maxi = INT_MIN;      // Track maximum of current level
+            int size = q.size();     // Number of nodes at this level
+
+            for (int i = 0; i < size; i++) {
+
+                Node* temp = q.front();
+                q.pop();
+
+                // Update max value for this level
+                maxi = max(maxi, temp->data);
+
+                // Add children for next level
+                if (temp->left)
+                    q.push(temp->left);
+
+                if (temp->right)
+                    q.push(temp->right);
+            }
+
+            // Store largest value of this level
+            ans.push_back(maxi);
+        }
+
+        return ans;
+    }
+};
