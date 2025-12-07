@@ -1,0 +1,71 @@
+/*
+    Definition of Binary Tree Node:
+    --------------------------------
+    class Node {
+    public:
+        int data;
+        Node* left;
+        Node* right;
+
+        Node(int val) {
+            data = val;
+            left = right = NULL;
+        }
+    };
+*/
+
+/*
+    Function: height
+    ----------------
+    Computes the **height of a binary tree**.
+
+    Height Definition Used Here:
+    ----------------------------
+    - Height is defined as the **number of edges** on the longest path
+      from the root to a leaf.
+    - This means:
+        • A NULL node → height = 0
+        • A leaf node → height = 0
+
+    Approach:
+    ---------
+    - Recursively compute the height of the left and right subtree.
+    - The height of the current node = 
+          1 + max(height(left subtree), height(right subtree))
+    - Base cases handle empty tree and leaf nodes.
+
+    Example:
+    --------
+            1
+          /   \
+         2     3
+        / \
+       4   5
+
+    Height = 2 (edges: 1→2→4)
+
+    Parameters:
+    -----------
+    - root : pointer to the root of the binary tree.
+
+    Returns:
+    --------
+    - int : height of the tree (based on edge count)
+*/
+
+class Solution {
+  public:
+    int height(Node* root) {
+
+        // Empty tree → height is 0
+        if (root == NULL)
+            return 0;
+
+        // Leaf node → height is 0
+        if (!root->left && !root->right)
+            return 0;
+
+        // Height = 1 + max height of subtrees
+        return 1 + max(height(root->left), height(root->right));
+    }
+};
