@@ -1,0 +1,78 @@
+/*
+    Definition for Binary Tree Node:
+    ---------------------------------
+    class Node {
+    public:
+        int data;
+        Node* left;
+        Node* right;
+
+        Node(int x) {
+            data = x;
+            left = nullptr;
+            right = nullptr;
+        }
+    };
+*/
+
+/*
+    Function: isIdentical
+    ----------------------
+    Checks whether two binary trees are **identical**.
+
+    Two trees are considered identical if:
+    ---------------------------------------
+    1. They have the exact same structure.
+    2. Corresponding nodes contain the same values.
+
+    Approach:
+    ---------
+    - Use recursion to compare:
+        • If both nodes are NULL → trees match at this branch.
+        • If one is NULL and the other is not → mismatch.
+        • If data differs → mismatch.
+    - Recursively compare left subtrees and right subtrees.
+
+    Base Cases:
+    -----------
+    - Both nodes NULL → return true.
+    - One NULL, one non-NULL → return false.
+    - Node values differ → return false.
+
+    Final Result:
+    --------------
+    - Return true only if left subtree and right subtree
+      are both identical.
+
+    Time Complexity:
+    ----------------
+    O(n), where n is the number of nodes (each node compared once).
+
+    Space Complexity:
+    -----------------
+    O(h), where h is height of the tree (recursion stack).
+*/
+
+class Solution {
+  public:
+    bool isIdentical(Node* r1, Node* r2) {
+
+        // Both nodes NULL → identical
+        if (!r1 && !r2)
+            return 1;
+
+        // One NULL, one not → not identical
+        if (!r1 && r2)
+            return 0;
+        if (r1 && !r2)
+            return 0;
+
+        // Data mismatch → not identical
+        if (r1->data != r2->data)
+            return 0;
+
+        // Recursively check left and right subtrees
+        return isIdentical(r1->left, r2->left) &&
+               isIdentical(r1->right, r2->right);
+    }
+};
