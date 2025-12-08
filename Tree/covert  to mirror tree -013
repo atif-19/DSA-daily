@@ -1,0 +1,66 @@
+/*
+    Definition for Binary Tree Node:
+    ---------------------------------
+    class Node {
+    public:
+        int data;
+        Node *left;
+        Node *right;
+
+        Node(int x) {
+            data = x;
+            left = right = NULL;
+        }
+    };
+*/
+
+/*
+    Function: mirror
+    -----------------
+    Converts a given binary tree into its **mirror image**.
+
+    What is a Mirror Tree?
+    -----------------------
+    - For every node, its left and right child pointers are swapped.
+    - Essentially: left subtree ↔ right subtree at every level.
+
+    Approach:
+    ---------
+    1. If the node is NULL → nothing to mirror.
+    2. Swap the left and right child pointers.
+    3. Recursively mirror the left subtree.
+    4. Recursively mirror the right subtree.
+
+    Example:
+    --------
+            1                   1
+           / \       →         / \
+          2   3               3   2
+
+    Time Complexity:
+    ----------------
+    O(n) — each node visited once.
+
+    Space Complexity:
+    -----------------
+    O(h) — recursion stack height (h = height of tree).
+*/
+
+class Solution {
+  public:
+    void mirror(Node* root) {
+
+        // Base case: empty tree
+        if (root == NULL)
+            return;
+
+        // Swap left and right pointers
+        Node* r = root->right;
+        root->right = root->left;
+        root->left = r;
+
+        // Recursively mirror subtrees
+        mirror(root->left);
+        mirror(root->right);
+    }
+};
