@@ -1,0 +1,75 @@
+/*Complete the function below
+Node is as follows:
+struct Node {
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    
+    // Function to check if two nodes (x and y) are cousins in a binary tree.
+    // Cousins = same level + different parents.
+    bool isCousins(Node* root, int x, int y) {
+
+        // Queue for BFS (level order traversal)
+        queue<Node*> q;
+        q.push(root);
+
+        // These will store the parents of x and y if found
+        Node* parent_x = NULL;
+        Node* parent_y = NULL;
+
+        while (!q.empty()) {
+
+            int size = q.size();   // Number of nodes in the current level
+
+            // Traverse the current level
+            for (int i = 0; i < size; i++) {
+
+                Node* temp = q.front();
+                q.pop();
+
+                // Check if x is a child of current node
+                if (temp->right && temp->right->data == x)
+                    parent_x = temp;
+
+                if (temp->left && temp->left->data == x)
+                    parent_x = temp;
+
+                // Check if y is a child of current node
+                if (temp->left && temp->left->data == y)
+                    parent_y = temp;
+
+                if (temp->right && temp->right->data == y)
+                    parent_y = temp;
+
+                // Push children into queue for BFS
+                if (temp->left)
+                    q.push(temp->left);
+                
+                if (temp->right)
+                    q.push(temp->right);
+            }
+
+            // After finishing a whole level:
+            // If both parents found → check if they are different
+            if (parent_x && parent_y)
+                return parent_x != parent_y;
+
+            // If only one found at this level → they can't be cousins
+            if (parent_x || parent_y)
+                return false;
+        }
+
+        // If tree ends without finding both → not cousins
+        return false;
+    }
+};
