@@ -1,0 +1,65 @@
+/*
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int x) {
+        data = x;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+    // Function to return the spiral (zig-zag) level order traversal of a binary tree.
+    vector<int> findSpiral(Node* root) {
+        // Two stacks:
+        // st1 -> will store nodes of one level (to be printed right-to-left)
+        // st2 -> will store nodes of next level (to be printed left-to-right)
+        stack<Node*> st1;
+        stack<Node*> st2;
+        
+        // Push root to the first stack
+        st1.push(root);
+
+        vector<int> ans;
+
+        // Continue until both stacks are empty
+        while (!st1.empty() || !st2.empty()) {
+            
+            // ----------- STEP 1: Process st1 (Right-to-Left order) -----------
+            while (!st1.empty()) {
+                Node* temp = st1.top();
+                st1.pop();
+
+                ans.push_back(temp->data);
+
+                // For the next level, push children in reverse order:
+                // Right child first, then left child
+                if (temp->right)
+                    st2.push(temp->right);
+                if (temp->left)
+                    st2.push(temp->left);
+            }
+
+            // ----------- STEP 2: Process st2 (Left-to-Right order) -----------
+            while (!st2.empty()) {
+                Node* temp = st2.top();
+                st2.pop();
+
+                ans.push_back(temp->data);
+
+                // For the next level, push left child first, then right child
+                if (temp->left)
+                    st1.push(temp->left);
+                if (temp->right)
+                    st1.push(temp->right);
+            }
+        }
+
+        return ans;
+    }
+};
