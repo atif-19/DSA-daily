@@ -1,0 +1,50 @@
+/*
+class Node {
+public:
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+*/
+
+class Solution {
+  public:
+  
+    // Preorder DFS helper:
+    // root  → current node
+    // ans   → stores the first element of each level (i.e., left view)
+    // level → current depth
+    void preorder(Node* root, vector<int>& ans, int level) {
+
+        // Base case
+        if (root == NULL)
+            return;
+
+        // If this is the first time we reach this level,
+        // the node is the leftmost node of that level.
+        if (level >= ans.size())
+            ans.push_back(root->data);
+
+        // Go left first (to ensure left view)
+        preorder(root->left, ans, level + 1);
+
+        // Then go right
+        preorder(root->right, ans, level + 1);
+    }
+
+    // Function to return the left view of the binary tree
+    vector<int> leftView(Node *root) {
+        vector<int> ans;
+
+        // DFS preorder call starting from level 0
+        preorder(root, ans, 0);
+
+        return ans;
+    }
+};
