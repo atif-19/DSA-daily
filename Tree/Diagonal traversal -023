@@ -1,0 +1,86 @@
+/* 
+    -------------------------------------------------------
+    Diagonal Traversal of a Binary Tree
+    -------------------------------------------------------
+
+    Problem:
+    --------
+    Given a binary tree, return its diagonal traversal.
+    A diagonal in a binary tree is formed by:
+        - Moving right → stays in the same diagonal
+        - Moving left  → goes to the next diagonal
+
+    Approach:
+    ---------
+    1. First count how many diagonals are needed.
+       - Every time we move to a left child, we increase diagonal depth.
+    
+    2. Create a 2D vector "diag" where each index stores 
+       all nodes of that diagonal.
+    
+    3. Use a modified preorder traversal:
+          - Add current node to its diagonal (l)
+          - Left subtree goes to diagonal l+1
+          - Right subtree stays in the same diagonal l
+    
+    4. Flatten the 2D diagonal list into a final 1D answer.
+
+    Time Complexity:
+        O(N) – each node processed once
+
+    Space Complexity:
+        O(N) – storing all nodes in diagonals
+*/
+
+class Solution {
+  public:
+
+    // Count number of left edges -> determines number of diagonals
+    void find(Node* root, int &l) {
+        if (root == NULL)
+            return;
+
+        // Each left child means we are going to a new diagonal
+        if (root->left)
+            l++;
+        
+        find(root->left, l);
+        find(root->right, l);
+    }
+
+    // Modified preorder traversal to fill diagonals
+    void Dtraverse(Node* root, vector<vector<int>> &diag, int l) {
+        if (root == NULL)
+            return;
+        
+        // Push current node into its diagonal
+        diag[l].push_back(root->data);
+
+        // Going left -> diagonal level increases
+        Dtraverse(root->left, diag, l + 1);
+
+        // Going right -> remains in the same diagonal
+        Dtraverse(root->right, diag, l);
+    }
+
+    vector<int> diagonal(Node *root) {
+        
+        // Step 1: Find number of diagonals
+        int l = 0;
+        find(root, l);
+
+        // Step 2: Create diagonal container (0 to l)
+        vector<vector<int>> diag(l + 1);
+
+        // Step 3: Fill diagonals using preorder traversal
+        Dtraverse(root, diag, 0);
+
+        // Step 4: Flatten 2D diagonal list into final output
+        vector<int> ans;
+        for (int i = 0; i < diag.size(); i++)
+            for (int j = 0; j < diag[i].size(); j++)
+                ans.push_back(diag[i][j]);
+
+        return ans;
+    }
+};
