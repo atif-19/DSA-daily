@@ -1,0 +1,108 @@
+/*
+    -------------------------------------------
+    Build Binary Tree from Inorder + Postorder
+    -------------------------------------------
+
+    Given two arrays:
+      - inorder[]    → Left, Root, Right
+      - postorder[]  → Left, Right, Root
+
+    We reconstruct the unique binary tree that produces
+    these traversal sequences.
+
+    Key Insight:
+    ---------------------------------------------
+    In postorder, the last element is always the root.
+    Once the root is found in inorder[], everything
+    left of it belongs to the left subtree, and
+    everything right belongs to the right subtree.
+    ---------------------------------------------
+*/
+
+class Solution {
+  public:
+
+    /*
+        Utility function to find the index of `target`
+        in the inorder[] array within the given range.
+
+        Time: O(n) per search (can be optimized using a map)
+    */
+    int find(vector<int> &inorder, int start, int end, int target) {
+        for (int i = start; i <= end; i++) {
+            if (inorder[i] == target)
+                return i;
+        }
+        return -1;
+    }
+
+    /*
+        Recursively builds the binary tree using:
+
+        - inorder:   [Left subtree | Root | Right subtree]
+        - postorder: [Left | Right | Root]
+
+        Parameters:
+            inorder   → inorder traversal array
+            postorder → postorder traversal array
+            InStart   → start index of inorder segment
+            InEnd     → end index of inorder segment
+            index     → current index in postorder[] representing root
+
+        Returns:
+            Pointer to the constructed subtree's root.
+    */
+    Node* Tree(vector<int> &inorder, vector<int> &postorder,
+               int InStart, int InEnd, int index) {
+
+        // Base case: invalid range → no tree
+        if (InStart > InEnd)
+            return NULL;
+
+        // The current root comes from postorder[index]
+        Node* temp = new Node(postorder[index]);
+
+        // Find the root in inorder[] to split left/right subtrees
+        int pos = find(inorder, InStart, InEnd, postorder[index]);
+
+        /*
+            Important:
+            ----------------------------------------------
+            Elements RIGHT of pos in inorder[]
+            belong to the RIGHT subtree.
+
+            We build right subtree first because
+            postorder is processed from RIGHT to LEFT.
+            ----------------------------------------------
+        */
+
+        temp->right = Tree(inorder, postorder,
+                           pos + 1, InEnd,
+                           index - 1);
+
+        /*
+            Left subtree index calculation:
+            Size of right subtree = (InEnd - pos)
+            So left subtree root is located at:
+                index - (size_of_right_subtree) - 1
+        */
+        temp->left = Tree(inorder, postorder,
+                          InStart, pos - 1,
+                          index - (InEnd - pos + 1));
+
+        return temp;
+    }
+
+    /*
+        Main build function:
+        ---------------------------------------
+        Starts recursion with the full range and
+        last postorder element as root.
+        ---------------------------------------
+    */
+    Node* buildTree(vector<int> &inorder, vector<int> &postorder) {
+        return Tree(inorder, postorder,
+                    0, inorder.size() - 1,
+                    postorder.size() - 1);
+    }
+};
