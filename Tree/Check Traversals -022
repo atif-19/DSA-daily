@@ -1,0 +1,164 @@
+/*
+    ---------------------------------------------------------------------
+    Validate Binary Tree Using Preorder + Inorder And Postorder + Inorder
+    ---------------------------------------------------------------------
+
+    Goal:
+    -----
+    Given three traversal arrays:
+       - preorder[]
+       - inorder[]
+       - postorder[]
+       - N (size)
+
+    We must check whether **all three traversals belong to the same tree**.
+
+    Approach:
+    ---------
+    1. Reconstruct Tree A using:
+          preorder[] + inorder[]
+    2. Reconstruct Tree B using:
+          postorder[] + inorder[]
+    3. Compare both trees using an "IsIdentical" function.
+
+    If both trees are identical → all three traversals represent the same tree.
+*/
+
+class Node {
+public:
+    int data;
+    Node *left, *right;
+
+    Node(int val) : data(val), left(NULL), right(NULL) {}
+};
+
+class Solution {
+  public:
+
+    /*
+        Linear search to find index of `target` in inorder[]
+        within range [start, end]
+
+        Time: O(n)
+    */
+    int find(int in[], int start, int end, int target) {
+        for (int i = start; i <= end; i++) {
+            if (in[i] == target)
+                return i;
+        }
+        return -1;
+    }
+
+    /*
+        Build tree using:
+           Preorder: Root | Left | Right
+           Inorder:  Left | Root | Right
+
+        Parameters:
+            pre[]     → preorder array
+            in[]      → inorder array
+            InStart   → start index of inorder range
+            InEnd     → end index of inorder range
+            index     → current root index in preorder
+            valid     → flag to mark invalid cases (duplicates, mismatch)
+    */
+    Node* preTree(int pre[], int in[], int InStart, int InEnd,
+                  int index, int &valid) {
+
+        if (valid == 0) return NULL;
+        if (InEnd < InStart) return NULL;
+
+        Node* root = new Node(pre[index]);
+
+        int pos = find(in, InStart, InEnd, pre[index]);
+        if (pos == -1) {       // mismatch → not possible to build
+            valid = 0;
+            return NULL;
+        }
+
+        // Left subtree root index = index + 1
+        root->left = preTree(pre, in, InStart, pos - 1, index + 1, valid);
+
+        // Right subtree root index = index + (size_of_left_subtree) + 1
+        root->right = preTree(pre, in, pos + 1, InEnd,
+                              index + (pos - InStart) + 1, valid);
+
+        return root;
+    }
+
+    /*
+        Build tree using:
+           Postorder: Left | Right | Root
+           Inorder:   Left | Root | Right
+
+        Parameters similar to preTree()
+    */
+    Node* postTree(int post[], int in[], int InStart, int InEnd,
+                   int index, int &valid) {
+
+        if (valid == 0) return NULL;
+        if (InEnd < InStart) return NULL;
+
+        Node* root = new Node(post[index]);
+
+        int pos = find(in, InStart, InEnd, post[index]);
+        if (pos == -1) {
+            valid = 0;
+            return NULL;
+        }
+
+        // Right subtree root index = index - 1
+        root->right = postTree(post, in, pos + 1, InEnd,
+                               index - 1, valid);
+
+        // Left subtree root index = index - (size_of_right_subtree) - 1
+        root->left = postTree(post, in, InStart, pos - 1,
+                              index - (InEnd - pos + 1), valid);
+
+        return root;
+    }
+
+    /*
+        Check if two trees are structurally identical
+        and have the same data.
+    */
+    bool IsIdentical(Node* root1, Node* root2) {
+
+        // Both null → identical
+        if (!root1 && !root2)
+            return true;
+
+        // Only one null → not identical
+        if ((!root1 && root2) || (root1 && !root2))
+            return false;
+
+        // Data mismatch
+        if (root1->data != root2->data)
+            return false;
+
+        // Recurse left + right
+        return IsIdentical(root1->left, root2->left) &&
+               IsIdentical(root1->right, root2->right);
+    }
+
+    /*
+        Main function:
+        --------------
+        Build from preorder+inorder
+        Build from postorder+inorder
+        Compare both trees
+    */
+    bool checktree(int preorder[], int inorder[],
+                   int postorder[], int N) {
+
+        int valid = 1;
+
+        Node* root1 = preTree(preorder, inorder, 0, N - 1, 0, valid);
+        if (!valid) return false;
+
+        Node* root2 = postTree(postorder, inorder, 0, N - 1, N - 1, valid);
+        if (!valid) return false;
+
+        return IsIdentical(root1, root2);
+    }
+};
