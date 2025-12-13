@@ -1,0 +1,147 @@
+// ============================================================================
+// Morris Traversal (Inorder, Preorder, Postorder)
+// ============================================================================
+// Key Idea:
+// ---------
+// Morris Traversal allows tree traversal with:
+// ✅ O(n) Time Complexity
+// ✅ O(1) Extra Space (no recursion, no stack)
+//
+// It works by temporarily modifying the tree using "threads"
+// and restoring it back after traversal.
+//
+// Tree Node Structure:
+// --------------------
+/*
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+// ============================================================================
+
+class Solution {
+  public:
+
+    // ========================================================================
+    // 1️⃣ MORRIS INORDER TRAVERSAL (Left → Root → Right)
+    // ========================================================================
+    vector<int> inOrder(Node* root) {
+        Node* curr = root;
+        vector<int> ans;
+
+        while (curr) {
+            // If left subtree exists
+            if (curr->left) {
+                // Find the rightmost node of left subtree
+                Node* temp = curr->left;
+                while (temp->right && temp->right != curr)
+                    temp = temp->right;
+
+                // If thread already exists → break it and visit current
+                if (temp->right) {
+                    temp->right = NULL;
+                    ans.push_back(curr->data);
+                    curr = curr->right;
+                }
+                // Create thread and move left
+                else {
+                    temp->right = curr;
+                    curr = curr->left;
+                }
+            }
+            // If no left subtree, visit and move right
+            else {
+                ans.push_back(curr->data);
+                curr = curr->right;
+            }
+        }
+        return ans;
+    }
+
+    // ========================================================================
+    // 2️⃣ MORRIS PREORDER TRAVERSAL (Root → Left → Right)
+    // ========================================================================
+    vector<int> preOrder(Node* root) {
+        Node* curr = root;
+        vector<int> ans;
+
+        while (curr) {
+            // If left subtree exists
+            if (curr->left) {
+                // Find the rightmost node of left subtree
+                Node* temp = curr->left;
+                while (temp->right && temp->right != curr)
+                    temp = temp->right;
+
+                // If thread already exists → break it
+                if (temp->right) {
+                    temp->right = NULL;
+                    curr = curr->right;
+                }
+                // First time visiting node → record it
+                else {
+                    ans.push_back(curr->data);
+                    temp->right = curr;
+                    curr = curr->left;
+                }
+            }
+            // If no left subtree, visit and move right
+            else {
+                ans.push_back(curr->data);
+                curr = curr->right;
+            }
+        }
+        return ans;
+    }
+
+    // ========================================================================
+    // 3️⃣ MORRIS POSTORDER TRAVERSAL (Left → Right → Root)
+    // ========================================================================
+    vector<int> postOrder(Node* root) {
+        Node* curr = root;
+        vector<int> ans;
+
+        while (curr) {
+            // If right subtree exists
+            if (curr->right) {
+                // Find the leftmost node of right subtree
+                Node* temp = curr->right;
+                while (temp->left && temp->left != curr)
+                    temp = temp->left;
+
+                // If thread already exists → break it
+                if (temp->left) {
+                    temp->left = NULL;
+                    curr = curr->left;
+                }
+                // First time visiting node → record it
+                else {
+                    ans.push_back(curr->data);
+                    temp->left = curr;
+                    curr = curr->right;
+                }
+            }
+            // If no right subtree
+            else {
+                ans.push_back(curr->data);
+                curr = curr->left;
+            }
+        }
+
+        // Reverse result because traversal is Root → Right → Left
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
+
+// ============================================================================
+// Summary:
+// --------
+// Inorder   → Morris with left subtree threading
+// Preorder  → Record node before creating thread
+// Postorder → Reverse modified traversal (NRL → LRN)
+//
+// Perfect for interviews & space-optimized tree traversal questions 🚀
+// ============================================================================
