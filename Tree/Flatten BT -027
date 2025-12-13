@@ -1,0 +1,74 @@
+// ============================================================================
+// Flatten Binary Tree to Linked List (In-Place)
+// ============================================================================
+// Problem:
+// --------
+// Convert a binary tree into a linked list following **preorder traversal**
+// (Root → Left → Right).
+//
+// Constraints:
+// ------------
+// ✅ Modify the tree in-place
+// ✅ No extra data structures
+// ✅ Resulting structure uses only right pointers
+//
+// This solution uses a **Morris-style traversal** idea.
+//
+// Tree Node Structure:
+// --------------------
+/*
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+};
+*/
+// ============================================================================
+
+class Solution {
+  public:
+    void flatten(Node* root) {
+        Node* curr = root;
+
+        // Traverse the tree using current pointer
+        while (curr) {
+
+            // If left subtree exists
+            if (curr->left) {
+
+                // Find the rightmost node of left subtree
+                Node* temp = curr->left;
+                while (temp->right)
+                    temp = temp->right;
+
+                // Connect right subtree to the rightmost node
+                temp->right = curr->right;
+
+                // Move left subtree to the right
+                curr->right = curr->left;
+                curr->left = NULL;
+            }
+
+            // Move to next node (always right)
+            curr = curr->right;
+        }
+    }
+};
+
+// ============================================================================
+// Key Insights:
+// ------------
+// 1️⃣ We attach the original right subtree to the rightmost node of left subtree
+// 2️⃣ Then shift left subtree to the right
+// 3️⃣ Set left pointer to NULL to maintain linked-list structure
+//
+// Time Complexity  : O(n)
+// Space Complexity : O(1)
+//
+// Interview Tip 💡:
+// -----------------
+// This is essentially **Morris traversal for flattening**
+// — no recursion, no stack, pure pointer manipulation.
+//
+// Clean. Optimal. Interview-ready. 😤🔥
+// ============================================================================
