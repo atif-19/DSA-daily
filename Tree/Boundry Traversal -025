@@ -1,0 +1,121 @@
+/*
+================================================================================
+Boundary Traversal of a Binary Tree
+================================================================================
+
+Problem:
+---------
+Return the boundary traversal of a binary tree in anti-clockwise order.
+
+Boundary traversal includes:
+1. Root node
+2. Left boundary (excluding leaf nodes)
+3. All leaf nodes (from left to right)
+4. Right boundary (excluding leaf nodes, in reverse order)
+
+--------------------------------------------------------------------------------
+Approach:
+---------
+We split the problem into 3 clean helper traversals:
+
+1️⃣ Add Left Boundary
+   - Start from root->left
+   - Prefer left child, otherwise right child
+   - Do NOT include leaf nodes
+
+2️⃣ Add Leaf Nodes
+   - Traverse entire tree
+   - Add only nodes with no left and right child
+
+3️⃣ Add Right Boundary
+   - Start from root->right
+   - Prefer right child, otherwise left child
+   - Do NOT include leaf nodes
+   - Add nodes AFTER recursion to get reverse order
+
+Finally:
+- Root is added once at the beginning
+- Combine results in anti-clockwise order
+
+--------------------------------------------------------------------------------
+Time Complexity:
+----------------
+O(n)  -> Each node is visited once
+
+Space Complexity:
+-----------------
+O(n)  -> Recursion stack + result storage
+
+--------------------------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    
+    // Adds all leaf nodes (left to right)
+    void Addleaf(Node* root, vector<int>& ans) {
+        if (root == NULL) return;
+        
+        if (!root->left && !root->right) {
+            ans.push_back(root->data);
+            return;
+        }
+        
+        Addleaf(root->left, ans);
+        Addleaf(root->right, ans);
+    }
+    
+    // Adds left boundary nodes (excluding leaf nodes)
+    void Addleft(Node* root, vector<int>& ans) {
+        if (root == NULL) return;
+        
+        // Skip leaf nodes
+        if (!root->left && !root->right) return;
+        
+        ans.push_back(root->data);
+        
+        if (root->left)
+            Addleft(root->left, ans);
+        else
+            Addleft(root->right, ans);
+    }
+    
+    // Adds right boundary nodes (excluding leaf nodes) in reverse order
+    void Addright(Node* root, vector<int>& ans) {
+        if (root == NULL) return;
+        
+        // Skip leaf nodes
+        if (!root->left && !root->right) return;
+        
+        if (root->right)
+            Addright(root->right, ans);
+        else
+            Addright(root->left, ans);
+        
+        // Add after recursion to reverse the order
+        ans.push_back(root->data);
+    }
+    
+    // Main function for boundary traversal
+    vector<int> boundaryTraversal(Node *root) {
+        // Edge case: single node tree
+        if (!root->left && !root->right)
+            return {root->data};
+        
+        vector<int> ans;
+        
+        // Step 1: Add root
+        ans.push_back(root->data);
+        
+        // Step 2: Add left boundary
+        Addleft(root->left, ans);
+        
+        // Step 3: Add all leaf nodes
+        Addleaf(root, ans);
+        
+        // Step 4: Add right boundary
+        Addright(root->right, ans);
+        
+        return ans;
+    }
+};
