@@ -1,0 +1,102 @@
+/*
+Problem:
+Given a binary tree and a target node, find the minimum time required
+to burn the entire tree if fire starts from the target node.
+Fire spreads to left child, right child, and parent in 1 unit time.
+
+Approach:
+1. Convert the tree into a graph-like structure by mapping each node to its parent.
+2. Find the target node.
+3. Perform BFS starting from the target node.
+4. At each second, spread fire to all unvisited adjacent nodes
+   (left child, right child, and parent).
+5. Count time only when at least one new node burns in that second.
+
+Time Complexity: O(N)
+Space Complexity: O(N)
+*/
+
+class Solution {
+  public:
+
+    // Maps each node to its parent using DFS
+    void MapParent(Node* root, unordered_map<Node*, Node*>& parent) {
+        if (root == NULL) return;
+
+        if (root->left)
+            parent[root->left] = root;
+        if (root->right)
+            parent[root->right] = root;
+
+        MapParent(root->left, parent);
+        MapParent(root->right, parent);
+    }
+
+    // Finds and returns the pointer to the target node
+    Node* find(Node* root, int target) {
+        if (root == NULL) return NULL;
+
+        if (root->data == target)
+            return root;
+
+        Node* left = find(root->left, target);
+        if (left) return left;
+
+        return find(root->right, target);
+    }
+
+    // Returns minimum time to burn the entire tree
+    int minTime(Node* root, int target) {
+        // Step 1: Map each node to its parent
+        unordered_map<Node*, Node*> parent;
+        MapParent(root, parent);
+
+        // Step 2: Find the target node
+        Node* curr = find(root, target);
+
+        // Step 3: BFS to simulate fire spreading
+        unordered_map<Node*, bool> visited;
+        queue<Node*> q;
+
+        q.push(curr);
+        visited[curr] = true;
+
+        int sec = 0;
+
+        while (!q.empty()) {
+            int size = q.size();
+            bool burned = false;
+
+            for (int i = 0; i < size; i++) {
+                Node* temp = q.front();
+                q.pop();
+
+                // Spread fire to left child
+                if (temp->left && !visited[temp->left]) {
+                    burned = true;
+                    visited[temp->left] = true;
+                    q.push(temp->left);
+                }
+
+                // Spread fire to right child
+                if (temp->right && !visited[temp->right]) {
+                    burned = true;
+                    visited[temp->right] = true;
+                    q.push(temp->right);
+                }
+
+                // Spread fire to parent
+                if (parent[temp] && !visited[parent[temp]]) {
+                    burned = true;
+                    visited[parent[temp]] = true;
+                    q.push(parent[temp]);
+                }
+            }
+
+            // Increment time only if fire spread in this second
+            if (burned) sec++;
+        }
+
+        return sec;
+    }
+};
