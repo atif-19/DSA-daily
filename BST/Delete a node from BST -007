@@ -1,0 +1,122 @@
+/*
+📌 Question:
+Given the root of a Binary Search Tree (BST) and a target value,
+delete the node with that value while maintaining BST properties.
+Return the root of the modified BST.
+
+------------------------------------------------------------
+
+🧠 Approach:
+Deletion in BST depends on the number of children the target node has.
+
+Step-by-step:
+1. Traverse the tree to find the target node:
+   - If target is greater → go right
+   - If target is smaller → go left
+
+2. Once the target node is found, handle 3 cases:
+
+   ✅ Case 1: Leaf Node (no children)
+      - Simply delete the node and return NULL.
+
+   ✅ Case 2: Node with only one child
+      - Replace the node with its child.
+      - Delete the current node.
+
+   ✅ Case 3: Node with two children
+      - Find the inorder predecessor (maximum node in left subtree).
+      - Replace the current node with this predecessor.
+      - Adjust pointers to maintain BST structure.
+
+The recursion ensures the tree remains connected correctly.
+
+------------------------------------------------------------
+
+🔍 Analogy:
+Think of removing a folder from a sorted file system 📁:
+- If the folder is empty → delete it.
+- If it has one subfolder → promote the subfolder.
+- If it has multiple subfolders → replace it with the closest suitable folder
+  that keeps the system sorted.
+
+BST deletion works the same way.
+
+------------------------------------------------------------
+
+⏱️ Time Complexity:
+- Best Case: O(log N)
+- Average Case: O(log N)
+- Worst Case: O(N) (skewed BST)
+
+------------------------------------------------------------
+
+💾 Space Complexity:
+- O(H), where H is the height of the tree (recursive stack)
+- Worst Case: O(N)
+- Average Case: O(log N)
+
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    Node* delNode(Node* root, int target) {
+        // Base condition
+        if (!root)
+            return NULL;
+        
+        // Traverse the tree
+        if (root->data < target) {
+            root->right = delNode(root->right, target);
+            return root;
+        }
+        if (root->data > target) {
+            root->left = delNode(root->left, target);
+            return root;
+        }
+        
+        // root->data == target (node found)
+
+        // Case 1: Leaf node
+        if (!root->left && !root->right) {
+            delete root;
+            return NULL;
+        }
+
+        // Case 2: One child exists
+        else if (!root->right) { // only left child
+            Node* temp = root->left;
+            delete root;
+            return temp;
+        }
+        else if (!root->left) { // only right child
+            Node* temp = root->right;
+            delete root;
+            return temp;
+        }
+
+        // Case 3: Two children exist
+        else {
+            Node* parent = root;
+            Node* child = root->left; // inorder predecessor
+            
+            while (child->right) {
+                parent = child;
+                child = child->right;
+            }
+
+            if (parent == root) {
+                child->right = root->right;
+                delete root;
+                return child;
+            }
+            else {
+                parent->right = child->left;
+                child->left = root->left;
+                child->right = root->right;
+                delete root;
+                return child;
+            }
+        }
+    }
+};
