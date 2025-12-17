@@ -1,0 +1,68 @@
+/*
+📌 Question:
+Given the root of a Binary Search Tree (BST) and an integer key,
+insert the key into the BST while maintaining BST properties.
+Return the root of the modified BST.
+
+------------------------------------------------------------
+
+🧠 Approach:
+A Binary Search Tree follows these rules:
+- Left subtree contains values smaller than the node
+- Right subtree contains values greater than the node
+
+Insertion logic:
+1. If the current root is NULL → create a new node and return it.
+2. If key is greater than current node’s value → insert into right subtree.
+3. If key is smaller than current node’s value → insert into left subtree.
+4. Always return the root to maintain tree connections during recursion.
+
+The recursion automatically finds the correct leaf position
+where the new node should be inserted.
+
+------------------------------------------------------------
+
+🔍 Analogy:
+Imagine inserting a new book into a perfectly sorted bookshelf 📚:
+- If the book name comes later alphabetically → move right.
+- If it comes earlier → move left.
+- When you find an empty spot → place the book there.
+
+BST insertion works exactly like this.
+
+------------------------------------------------------------
+
+⏱️ Time Complexity:
+- Best Case: O(1)  (tree empty)
+- Average Case: O(log N)  (balanced BST)
+- Worst Case: O(N)  (skewed BST)
+
+------------------------------------------------------------
+
+💾 Space Complexity:
+- O(H), where H is the height of the tree
+- Due to recursive call stack
+- Worst Case: O(N)
+- Average Case: O(log N)
+
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    Node* insert(Node* root, int key) {
+        if (root == NULL) {
+            Node* temp = new Node(key);
+            return temp;
+        }
+
+        if (root->data < key) {
+            root->right = insert(root->right, key);
+        }
+        else if (root->data > key) {
+            root->left = insert(root->left, key);
+        }
+
+        return root;
+    }
+};
