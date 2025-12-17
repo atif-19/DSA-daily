@@ -1,0 +1,63 @@
+/*
+📌 Question:
+Given the root of a Binary Search Tree (BST) and an integer key, 
+determine whether the key exists in the BST or not.
+
+------------------------------------------------------------
+
+🧠 Approach:
+A Binary Search Tree has a special property:
+- Left subtree contains values smaller than the node
+- Right subtree contains values greater than the node
+
+Using this property:
+1. If the current node is NULL → the key does not exist.
+2. If current node's value is equal to the key → key found.
+3. If key is greater than current node's value → search in right subtree.
+4. If key is smaller than current node's value → search in left subtree.
+
+This eliminates half of the tree at every step, making the search efficient.
+
+------------------------------------------------------------
+
+🔍 Analogy:
+Think of searching a word in a dictionary 📖:
+- You open the middle page.
+- If your word comes after it → move right.
+- If it comes before it → move left.
+- Repeat until you find the word or pages end.
+
+BST search works the exact same way.
+
+------------------------------------------------------------
+
+⏱️ Time Complexity:
+- Best Case: O(1)  (key found at root)
+- Average Case: O(log N)  (balanced BST)
+- Worst Case: O(N)  (skewed BST)
+
+------------------------------------------------------------
+
+💾 Space Complexity:
+- O(H), where H is the height of the tree
+- Due to recursive function call stack
+- Worst Case: O(N)
+- Best/Average Case: O(log N)
+
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    bool search(Node* root, int key) {
+        if (root == NULL)
+            return false;
+        
+        if (root->data < key)
+            return search(root->right, key);
+        else if (root->data > key)
+            return search(root->left, key);
+        else
+            return true;
+    }
+};
