@@ -1,0 +1,69 @@
+/*
+📌 Question:
+Given an array representing the preorder traversal of a binary tree,
+determine whether it can represent the preorder traversal of a
+Binary Search Tree (BST).
+
+Return 1 if it can represent a BST, otherwise return 0.
+
+------------------------------------------------------------
+
+🧠 Approach (Optimal without building BST):
+This solution validates preorder traversal using BST constraints
+instead of constructing the actual tree.
+
+Key ideas:
+1. Use a single index to traverse the preorder array.
+2. Maintain a valid range [lower, upper] for each subtree.
+3. If the current value lies outside the allowed range,
+   it cannot be part of a BST at that position.
+4. Recursively validate:
+   - Left subtree with range [lower, current value]
+   - Right subtree with range [current value, upper]
+5. If all elements are consumed successfully, the preorder is valid.
+
+This avoids extra memory for tree construction.
+
+------------------------------------------------------------
+
+🔍 Analogy:
+Imagine checking if a sequence of people can sit in a BST-ordered hall 🎭:
+- Each seat allows only people within a specific height range.
+- If someone doesn’t fit the range, they must belong elsewhere.
+- If everyone fits correctly, the seating arrangement is valid.
+
+------------------------------------------------------------
+
+⏱️ Time Complexity:
+- O(N), where N is the number of elements
+- Each element is visited once
+
+------------------------------------------------------------
+
+💾 Space Complexity:
+- O(H), where H is the height of the tree
+- Due to recursive call stack
+- Worst Case: O(N)
+- Average Case: O(log N)
+
+------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    void BST(int pre[], int size, int &index, int lower, int upper) {
+        if (index == size || pre[index] < lower || pre[index] > upper)
+            return;
+        
+        int value = pre[index++];
+        
+        BST(pre, size, index, lower, value);
+        BST(pre, size, index, value, upper);
+    }
+
+    int canRepresentBST(int arr[], int N) {
+        int index = 0;
+        BST(arr, N, index, INT_MIN, INT_MAX);
+        return index == N;
+    }
+};
