@@ -1,0 +1,64 @@
+/*
+📌 Question:
+Given an array representing the postorder traversal of a Binary Search Tree (BST),
+construct and return the BST.
+
+------------------------------------------------------------
+
+🧠 Approach (Optimal O(N) Solution):
+This solution leverages:
+- Postorder traversal (Left → Right → Root)
+- BST value constraints (left < root < right)
+
+Key ideas:
+1. Start from the last index of postorder (because root appears at the end).
+2. Maintain a valid value range [lower, upper] for each subtree.
+3. If the current value is outside the allowed range, it cannot belong to this subtree.
+4. Create the node and recursively build:
+   - Right subtree first (because in postorder, right comes before root when traversing backwards)
+   - Left subtree afterward
+
+Each element is used exactly once, making the solution optimal.
+
+------------------------------------------------------------
+
+🔍 Analogy:
+Think of rebuilding a family tree from the last signed document 📝:
+- The last signer is always the head (root).
+- You assign members to the right or left only if they fit the allowed hierarchy.
+- You never search again — you just place them correctly once.
+
+------------------------------------------------------------
+
+⏱️ Time Complexity:
+- O(N), where N is the number of nodes
+- Each element is processed exactly once
+
+------------------------------------------------------------
+
+💾 Space Complexity:
+- O(H), where H is the height of the tree
+- Due to recursive call stack
+- Worst Case: O(N) (skewed BST)
+- Average Case: O(log N)
+
+------------------------------------------------------------
+*/
+
+Node* BST(int post[], int size, int &index, int lower, int upper) {
+    if (index == -1 || post[index] < lower || post[index] > upper)
+        return NULL;
+    
+    Node* root = new Node(post[index--]);
+
+    // Build right subtree first (postorder traversal property)
+    root->right = BST(post, size, index, root->data, upper);
+    root->left = BST(post, size, index, lower, root->data);
+
+    return root;
+}
+
+Node* constructTree(int post[], int size) {
+    int index = size - 1;
+    return BST(post, size, index, INT_MIN, INT_MAX);
+}
