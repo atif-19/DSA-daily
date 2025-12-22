@@ -1,0 +1,83 @@
+/*
+📌 Problem: Print all nodes in a BST that lie within a given range [low, high]
+
+Given a Binary Search Tree and two integers low and high,
+return all node values that lie in the inclusive range [low, high],
+in sorted order.
+
+------------------------------------------------------------
+💡 Approach (BST Pruning + Inorder Traversal):
+
+Key BST Properties:
+- Left subtree contains smaller values
+- Right subtree contains larger values
+- Inorder traversal of BST gives sorted order
+
+We use inorder traversal with intelligent pruning:
+1. Traverse LEFT subtree only if current node value >= low
+   → Otherwise, left subtree cannot contain valid values
+2. Include current node if it lies within [low, high]
+3. Traverse RIGHT subtree only if current node value < high
+   → Otherwise, right subtree cannot contain valid values
+
+This avoids unnecessary traversal and keeps the solution efficient.
+
+------------------------------------------------------------
+🧠 Analogy:
+
+Imagine searching for house numbers between 20 and 50 in a city:
+- If you’re at house 10 → no need to check smaller lanes
+- If you’re at house 60 → no need to go further
+You only explore areas where valid houses can exist.
+
+That’s exactly what BST pruning does 🪜
+
+------------------------------------------------------------
+⏱️ Time Complexity:
+- Best / Average case: O(K)
+  where K = number of nodes in range
+- Worst case: O(N) (if entire tree lies in range)
+
+⚠️ This is optimal — you cannot do better in worst case.
+
+------------------------------------------------------------
+🧮 Space Complexity:
+- O(H) for recursion stack
+  where H = height of BST
+- Output vector is required by problem
+
+------------------------------------------------------------
+✅ Why this solution is optimal:
+- Uses BST properties correctly
+- Avoids unnecessary traversal
+- Produces sorted output without extra sorting
+- Clean, readable, and interview-ready
+*/
+
+class Solution {
+  public:
+    void BST(Node* root, vector<int>& ans, int low, int high) {
+        if (!root)
+            return;
+
+        // Explore left subtree only if it can contain valid nodes
+        if (root->data >= low)
+            BST(root->left, ans, low, high);
+
+        // Include node if it lies within range
+        if (root->data >= low && root->data <= high)
+            ans.push_back(root->data);
+
+        // Prune right subtree if values will exceed range
+        if (root->data >= high)
+            return;
+
+        BST(root->right, ans, low, high);
+    }
+
+    vector<int> printNearNodes(Node* root, int low, int high) {
+        vector<int> ans;
+        BST(root, ans, low, high);
+        return ans;
+    }
+};
