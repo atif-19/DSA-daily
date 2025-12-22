@@ -1,0 +1,113 @@
+/*
+📌 Problem: Find Common Nodes in Two Binary Search Trees
+
+Given two BSTs, return all nodes that are common to both trees,
+in sorted order.
+
+------------------------------------------------------------
+💡 Optimized Approach (Simultaneous Inorder Traversal using Stacks):
+
+Key Insight:
+- Inorder traversal of a BST produces a sorted sequence.
+- Instead of storing both inorder traversals in arrays,
+  we traverse both BSTs simultaneously and compare values on the fly.
+
+Steps:
+1. Use two stacks (st1, st2) to simulate iterative inorder traversal.
+2. Push all left children of both trees initially.
+3. Compare the top elements of both stacks:
+   - If equal → common node found → add to answer
+   - If smaller → move forward in that tree
+4. After processing a node, move to its right subtree
+   and again push all left children.
+5. Continue until either stack becomes empty.
+
+This is similar to merging two sorted lists,
+but without explicitly storing the lists.
+
+------------------------------------------------------------
+🧠 Analogy:
+
+Imagine two sorted bookshelves.
+You scan both shelves page by page:
+- If both pages match → keep it
+- If one page is smaller → move forward in that book
+You never rewind or reread pages.
+
+That’s exactly what this solution does 📚
+
+------------------------------------------------------------
+⏱️ Time Complexity:
+- O(N + M)
+  where N and M are the number of nodes in the two BSTs
+- Each node is visited once
+
+------------------------------------------------------------
+🧮 Space Complexity:
+- O(H1 + H2)
+  where H1 and H2 are heights of the two BSTs (stack space)
+- No extra arrays used (space-optimized)
+
+------------------------------------------------------------
+✅ Why this solution is optimal:
+- Optimal time complexity
+- Better space usage than array-based approach
+- Preserves sorted order naturally
+- Uses BST properties effectively
+- Fully interview-ready and scalable
+*/
+
+class Solution {
+  public:
+    vector<int> findCommon(Node *r1, Node *r2) {
+        vector<int> ans;
+        stack<Node*> st1, st2;
+
+        // Push all left nodes of first BST
+        while (r1) {
+            st1.push(r1);
+            r1 = r1->left;
+        }
+
+        // Push all left nodes of second BST
+        while (r2) {
+            st2.push(r2);
+            r2 = r2->left;
+        }
+
+        // Traverse both BSTs simultaneously
+        while (!st1.empty() && !st2.empty()) {
+
+            // If both nodes are equal, it's a common node
+            if (st1.top()->data == st2.top()->data) {
+                ans.push_back(st1.top()->data);
+
+                r1 = st1.top()->right;
+                r2 = st2.top()->right;
+
+                st1.pop();
+                st2.pop();
+            }
+            // Move forward in the BST with smaller value
+            else if (st1.top()->data < st2.top()->data) {
+                r1 = st1.top()->right;
+                st1.pop();
+            }
+            else {
+                r2 = st2.top()->right;
+                st2.pop();
+            }
+
+            // Push left children again after moving right
+            while (r1) {
+                st1.push(r1);
+                r1 = r1->left;
+            }
+            while (r2) {
+                st2.push(r2);
+                r2 = r2->left;
+            }
+        }
+        return ans;
+    }
+};
