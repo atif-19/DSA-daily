@@ -1,0 +1,85 @@
+/*
+📌 Problem: Check whether a Binary Search Tree contains a Dead End
+
+A Dead End in a BST is a leaf node such that no further node can be inserted
+at that position while still maintaining BST properties.
+
+In other words:
+- For a leaf node with value X
+- If all possible values that could go to its left or right are blocked,
+  then that leaf is a dead end.
+
+------------------------------------------------------------
+💡 Approach (Range-based DFS on BST):
+
+We use the BST property along with value ranges.
+
+Idea:
+- Every node in a BST lies within a valid range (lower, upper)
+- For the root, this range is initially (0, +∞)
+- While traversing:
+  - Left child range  = (lower, root->data)
+  - Right child range = (root->data, upper)
+
+Key Observation:
+- A leaf node is a DEAD END if:
+    root->data - lower <= 1  AND  upper - root->data <= 1
+  Meaning:
+  - No integer value can be inserted on either side.
+
+We perform DFS traversal and stop early as soon as a dead end is found.
+
+------------------------------------------------------------
+🧠 Analogy:
+
+Think of the BST as parking slots.
+Each node reserves a range of parking numbers.
+If a car (leaf node) is parked in such a way that:
+- No slot is free on the left
+- No slot is free on the right
+Then that car is stuck forever → DEAD END 🚫
+
+------------------------------------------------------------
+⏱️ Time Complexity:
+- O(N), where N is the number of nodes
+- Each node is visited once
+
+🧮 Space Complexity:
+- O(H), where H is the height of the tree (recursion stack)
+- Worst case: O(N) for skewed BST
+
+------------------------------------------------------------
+✅ Final Verdict:
+- Optimal solution
+- Uses BST properties correctly
+- No extra data structures
+- Clean and interview-ready
+*/
+
+class Solution {
+  public:
+    void FindDeadEnd(Node* root, bool &ans, int lower, int upper) {
+        if (!root || ans)
+            return;
+
+        // Traverse left subtree
+        FindDeadEnd(root->left, ans, lower, root->data);
+
+        // Check for dead end at leaf node
+        if (!root->left && !root->right) {
+            if ((root->data - lower <= 1) && (upper - root->data <= 1)) {
+                ans = true;
+                return;
+            }
+        }
+
+        // Traverse right subtree
+        FindDeadEnd(root->right, ans, root->data, upper);
+    }
+
+    bool isDeadEnd(Node *root) {
+        bool ans = false;
+        FindDeadEnd(root, ans, 0, 100000);
+        return ans;
+    }
+};
