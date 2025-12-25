@@ -1,0 +1,88 @@
+/*
+---------------------------------------------------------
+Largest BST in a Binary Tree (Optimized Bottom-Up)
+---------------------------------------------------------
+
+Idea:
+- For every node, return a structure (Box) that stores:
+    1) isBST  -> whether the subtree is a BST
+    2) size   -> size of the subtree if it is a BST
+    3) min    -> minimum value in the subtree
+    4) max    -> maximum value in the subtree
+- Solve bottom-up using postorder traversal.
+
+Logic:
+- An empty tree is a BST of size 0.
+- A subtree rooted at `root` is a BST if:
+    left.isBST == true
+    right.isBST == true
+    root->data > left.max
+    root->data < right.min
+- If BST:
+    size = left.size + right.size + 1
+    update min and max
+    update global answer
+- If not BST:
+    mark subtree as invalid
+
+Time Complexity:
+- O(n)  (each node processed once)
+
+Space Complexity:
+- O(h) recursion stack (h = height of tree)
+---------------------------------------------------------
+*/
+
+class Box {
+  public:
+    bool isBST;
+    int size;
+    int max;
+    int min;
+
+    Box() {
+        isBST = true;
+        size = 0;
+        max = INT_MIN;
+        min = INT_MAX;
+    }
+};
+
+class Solution {
+  public:
+    Box* find(Node* root, int &TotalSize) {
+        // Base case: empty subtree
+        if (!root) {
+            return new Box();
+        }
+
+        // Get info from left and right subtrees
+        Box* leftHead  = find(root->left, TotalSize);
+        Box* rightHead = find(root->right, TotalSize);
+
+        // Check BST condition
+        if (leftHead->isBST && rightHead->isBST &&
+            root->data > leftHead->max &&
+            root->data < rightHead->min) {
+
+            Box* head = new Box();
+            head->size = leftHead->size + rightHead->size + 1;
+            head->min  = min(leftHead->min, root->data);
+            head->max  = max(rightHead->max, root->data);
+
+            // Update maximum BST size found so far
+            TotalSize = max(TotalSize, head->size);
+            return head;
+        }
+
+        // Not a BST
+        leftHead->isBST = false;
+        return leftHead;
+    }
+
+    int largestBst(Node *root) {
+        int TotalSize = 1;
+        find(root, TotalSize);
+        return TotalSize;
+    }
+};
