@@ -1,0 +1,55 @@
+/*
+---------------------------------------------------------
+Convert Sorted Linked List to Balanced BST
+---------------------------------------------------------
+
+Approach:
+1. Traverse the sorted linked list and store all elements in a vector.
+2. Use the middle element of the vector as the root to construct
+   a height-balanced BST.
+3. Recursively apply the same logic to left and right subarrays.
+
+Why this works:
+- The input list is already sorted.
+- Choosing the middle element ensures the BST remains balanced.
+
+Time Complexity:
+- O(n): Traversing the linked list + building the BST
+
+Space Complexity:
+- O(n): Extra space for the array and recursion stack
+---------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    // Builds a height-balanced BST from a sorted array
+    TNode* BuildBst(vector<int>& arr, int start, int end) {
+        if (start > end) {
+            return NULL;
+        }
+
+        int mid = start + (end - start) / 2;
+        TNode* root = new TNode(arr[mid]);
+
+        root->left = BuildBst(arr, start, mid - 1);
+        root->right = BuildBst(arr, mid + 1, end);
+
+        return root;
+    }
+
+    // Converts a sorted linked list into a balanced BST
+    TNode* sortedListToBST(LNode* head) {
+        vector<int> arr;
+        LNode* curr = head;
+
+        // Store linked list elements in array
+        while (curr) {
+            arr.push_back(curr->data);
+            curr = curr->next;
+        }
+
+        // Build BST from sorted array
+        return BuildBst(arr, 0, arr.size() - 1);
+    }
+};
