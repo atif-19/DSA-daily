@@ -1,0 +1,84 @@
+/*
+---------------------------------------------------------
+Maximum Sum BST in Binary Tree
+---------------------------------------------------------
+
+Approach:
+- Use postorder traversal (bottom-up).
+- For each node, return a Box containing:
+    1) isBST -> whether the subtree is a BST
+    2) sum   -> sum of all nodes in the subtree
+    3) min   -> minimum value in the subtree
+    4) max   -> maximum value in the subtree
+- Track the maximum sum of any BST subtree using a reference variable.
+
+BST Conditions at a node:
+- Left subtree must be BST
+- Right subtree must be BST
+- left.max < root->val < right.min
+
+If valid BST:
+- sum = left.sum + right.sum + root->val
+- update global maximum sum
+
+Time Complexity:
+- O(n) — each node visited once
+
+Space Complexity:
+- O(h) — recursion stack (h = height of tree)
+---------------------------------------------------------
+*/
+
+class Box {
+  public:
+    int sum;
+    int max;
+    int min;
+    bool isBST;
+
+    Box() {
+        isBST = true;
+        sum = 0;
+        max = INT_MIN;
+        min = INT_MAX;
+    }
+};
+
+class Solution {
+public:
+    Box* find(TreeNode* root, int &TotalSum) {
+        // Base case: empty subtree
+        if (!root) {
+            return new Box();
+        }
+
+        // Process left and right subtrees
+        Box* leftHead = find(root->left, TotalSum);
+        Box* rightHead = find(root->right, TotalSum);
+
+        // Check BST condition
+        if (leftHead->isBST && rightHead->isBST &&
+            leftHead->max < root->val &&
+            rightHead->min > root->val) {
+
+            Box* head = new Box();
+            head->sum = root->val + leftHead->sum + rightHead->sum;
+            head->min = min(leftHead->min, root->val);
+            head->max = max(rightHead->max, root->val);
+
+            // Update maximum BST sum found
+            TotalSum = max(TotalSum, head->sum);
+            return head;
+        }
+
+        // Not a BST
+        leftHead->isBST = false;
+        return leftHead;
+    }
+
+    int maxSumBST(TreeNode* root) {
+        int TotalSum = 0;
+        find(root, TotalSum);
+        return TotalSum;
+    }
+};
