@@ -1,0 +1,95 @@
+/*
+---------------------------------------------------------
+Correct a BST with Two Nodes Swapped
+(using Morris Inorder Traversal)
+---------------------------------------------------------
+
+Problem:
+- In a BST, exactly two nodes are swapped by mistake.
+- Restore the BST without changing its structure.
+
+Approach:
+- Use Morris Inorder Traversal to get inorder sequence
+  in O(1) extra space.
+- In a valid BST, inorder traversal is sorted.
+- If two nodes are swapped, there will be inversions:
+    prev->data > curr->data
+- First inversion gives:
+    first = prev, second = curr
+- Second inversion (if any) updates:
+    second = curr
+- Finally, swap values of first and second.
+
+Why Morris Traversal?
+- No recursion
+- No stack
+- O(1) auxiliary space
+
+Time Complexity:
+- O(n)
+
+Space Complexity:
+- O(1)
+---------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    void correctBST(Node* root) {
+        Node* curr = root;
+        Node* first = NULL;
+        Node* second = NULL;
+        Node* prev = NULL;
+
+        while (curr) {
+            // Case 1: Left subtree does not exist
+            if (!curr->left) {
+                // Check for violation
+                if (prev && prev->data > curr->data) {
+                    if (!first) {
+                        first = prev;
+                        second = curr;
+                    } else {
+                        second = curr;
+                    }
+                }
+                prev = curr;
+                curr = curr->right;
+            }
+            // Case 2: Left subtree exists
+            else {
+                Node* temp = curr->left;
+                // Find inorder predecessor
+                while (temp->right && temp->right != curr)
+                    temp = temp->right;
+
+                // Create thread
+                if (!temp->right) {
+                    temp->right = curr;
+                    curr = curr->left;
+                }
+                // Remove thread
+                else {
+                    temp->right = NULL;
+
+                    // Check for violation
+                    if (prev && prev->data > curr->data) {
+                        if (!first) {
+                            first = prev;
+                            second = curr;
+                        } else {
+                            second = curr;
+                        }
+                    }
+                    prev = curr;
+                    curr = curr->right;
+                }
+            }
+        }
+
+        // Swap the misplaced nodes
+        int temp = first->data;
+        first->data = second->data;
+        second->data = temp;
+    }
+};
