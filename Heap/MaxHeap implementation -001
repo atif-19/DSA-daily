@@ -1,0 +1,186 @@
+/*
+===========================================================
+📌 Max Heap Implementation in C++
+-----------------------------------------------------------
+Author      : Atif
+Description :
+    This program demonstrates a complete implementation
+    of a Max Heap using an array-based approach.
+
+    Supported Operations:
+    - Insert an element into the heap
+    - Delete (remove) the maximum element (root)
+    - Heapify a subtree to maintain heap property
+    - Print heap elements
+
+    Heap Property:
+    - Parent node is always greater than or equal to
+      its child nodes.
+
+    Index Rules:
+    - Parent Index      = (i - 1) / 2
+    - Left Child Index  = 2*i + 1
+    - Right Child Index = 2*i + 2
+===========================================================
+*/
+
+#include <iostream>
+using namespace std;
+
+/*
+-----------------------------------------------------------
+📦 MaxHeap Class
+-----------------------------------------------------------
+This class encapsulates all heap-related operations
+including insertion, deletion, and heapify logic.
+-----------------------------------------------------------
+*/
+class MaxHeap {
+public:
+    int* arr;          // Pointer to dynamically allocated array
+    int size;          // Current number of elements in heap
+    int total_size;    // Maximum capacity of heap
+
+    /*
+    -------------------------------------------------------
+    🛠️ Constructor
+    -------------------------------------------------------
+    Initializes the heap with a given capacity.
+    -------------------------------------------------------
+    */
+    MaxHeap(int n) {
+        arr = new int[n];
+        size = 0;
+        total_size = n;
+    }
+
+    /*
+    -------------------------------------------------------
+    ➕ Insert Operation
+    -------------------------------------------------------
+    Inserts a new element into the heap and maintains
+    the max heap property using upward heapification.
+    -------------------------------------------------------
+    */
+    void insert(int value) {
+        if (size == total_size) {
+            cout << "Heap Overflow" << endl;
+            return;
+        }
+
+        // Insert value at the end
+        arr[size] = value;
+        int index = size;
+        size++;
+
+        // Move element up to maintain max heap property
+        while (index > 0 && arr[(index - 1) / 2] < arr[index]) {
+            swap(arr[(index - 1) / 2], arr[index]);
+            index = (index - 1) / 2;
+        }
+
+        cout << value << " is inserted into the heap" << endl;
+    }
+
+    /*
+    -------------------------------------------------------
+    🖨️ Print Heap
+    -------------------------------------------------------
+    Prints all elements of the heap in array form.
+    -------------------------------------------------------
+    */
+    void print() {
+        for (int i = 0; i < size; i++)
+            cout << arr[i] << " ";
+        cout << endl;
+    }
+
+    /*
+    -------------------------------------------------------
+    🔁 Heapify Operation
+    -------------------------------------------------------
+    Restores the max heap property for a subtree
+    rooted at the given index.
+    -------------------------------------------------------
+    */
+    void Heapify(int index) {
+        int largest = index;
+        int left = 2 * index + 1;
+        int right = 2 * index + 2;
+
+        // Check if left child is larger
+        if (left < size && arr[left] > arr[largest])
+            largest = left;
+
+        // Check if right child is larger
+        if (right < size && arr[right] > arr[largest])
+            largest = right;
+
+        // If largest is not root, swap and heapify again
+        if (largest != index) {
+            swap(arr[index], arr[largest]);
+            Heapify(largest);
+        }
+    }
+
+    /*
+    -------------------------------------------------------
+    ❌ Delete Operation
+    -------------------------------------------------------
+    Removes the maximum element (root) from the heap
+    and restores heap property.
+    -------------------------------------------------------
+    */
+    void Delete() {
+        if (size == 0) {
+            cout << "Heap Underflow" << endl;
+            return;
+        }
+
+        cout << arr[0] << " is removed from the heap" << endl;
+
+        // Replace root with last element
+        swap(arr[0], arr[size - 1]);
+        size--;
+
+        // Heapify from root if heap is not empty
+        if (size > 0)
+            Heapify(0);
+    }
+};
+
+/*
+-----------------------------------------------------------
+🚀 Main Function
+-----------------------------------------------------------
+Demonstrates usage of MaxHeap class by performing
+insertions and deletions.
+-----------------------------------------------------------
+*/
+int main() {
+
+    // Create a Max Heap with capacity 5
+    MaxHeap h1(5);
+
+    // Insert elements
+    h1.insert(20);
+    h1.insert(40);
+    h1.insert(80);
+    h1.insert(2);
+    h1.insert(10);
+
+    // Delete elements one by one
+    h1.Delete();
+    h1.Delete();
+    h1.Delete();
+    h1.Delete();
+    h1.Delete();
+
+    // Attempting extra delete (underflow case)
+    h1.Delete();
+
+    // Print remaining heap
+    h1.print();
+
+    return 0;
+}
