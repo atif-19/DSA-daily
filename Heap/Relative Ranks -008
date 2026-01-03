@@ -1,0 +1,44 @@
+class Solution {
+public:
+    vector<string> findRelativeRanks(vector<int>& score) {
+        // Max heap to sort scores in descending order
+        priority_queue<int> pq;
+
+        // Push all scores into the heap
+        for (int i = 0; i < score.size(); i++) {
+            pq.push(score[i]);
+        }
+
+        // Map to store rank for each score
+        // key   -> score
+        // value -> rank (1-based)
+        unordered_map<int, int> mp;
+        int rank = 1;
+
+        // Assign ranks based on descending order of scores
+        while (!pq.empty()) {
+            int element = pq.top();
+            pq.pop();
+            mp[element] = rank;
+            rank++;
+        }
+
+        // Prepare the answer array in original order
+        vector<string> ans;
+        for (int i = 0; i < score.size(); i++) {
+            ans.push_back(to_string(mp[score[i]]));
+        }
+
+        // Replace top 3 ranks with medal names
+        for (int i = 0; i < ans.size(); i++) {
+            if (ans[i] == "1")
+                ans[i] = "Gold Medal";
+            else if (ans[i] == "2")
+                ans[i] = "Silver Medal";
+            else if (ans[i] == "3")
+                ans[i] = "Bronze Medal";
+        }
+
+        return ans;
+    }
+};
