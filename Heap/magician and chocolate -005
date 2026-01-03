@@ -1,0 +1,50 @@
+/**
+ * Problem:
+ * There are N bags, each containing Bi chocolates.
+ * In one unit of time:
+ *  - The kid picks the bag with the maximum chocolates.
+ *  - Eats all chocolates from that bag.
+ *  - The magician refills that bag with floor(Bi / 2) chocolates.
+ *
+ * Goal:
+ * Maximize the total chocolates eaten in A units of time.
+ *
+ * Approach (Greedy + Max Heap):
+ * - To maximize chocolates, always pick the bag with the maximum chocolates.
+ * - A max heap (priority_queue) allows us to get the largest bag efficiently.
+ * - After eating, push back floor(chocolates / 2).
+ *
+ * Time Complexity:
+ * - O((A + N) log N)
+ *
+ * Space Complexity:
+ * - O(N)
+ */
+
+int nchoc(int A, int* B, int n2) {
+    const int MOD = 1000000007;
+
+    // Max heap to always get the bag with maximum chocolates
+    priority_queue<int> pq;
+
+    // Push all bag sizes into the heap
+    for (int i = 0; i < n2; i++) {
+        pq.push(B[i]);
+    }
+
+    long long ans = 0;
+
+    // Perform A operations
+    while (A--) {
+        int chocolate = pq.top();
+        pq.pop();
+
+        // Add chocolates eaten (modulo applied)
+        ans = (ans + chocolate) % MOD;
+
+        // Magician refills the bag
+        pq.push(chocolate / 2);
+    }
+
+    return ans;
+}
