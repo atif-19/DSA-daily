@@ -1,0 +1,33 @@
+class Solution {
+public:
+    long long pickGifts(vector<int>& gifts, int k) {
+        // Max heap to always pick the pile with maximum gifts
+        priority_queue<int> pq;
+
+        // Insert all gift piles into the max heap
+        for (int i = 0; i < gifts.size(); i++) {
+            pq.push(gifts[i]);
+        }
+
+        // Perform the operation k times
+        // Each time:
+        // 1. Take the maximum pile
+        // 2. Replace it with floor(sqrt(pile))
+        for (int i = 0; i < k; i++) {
+            int gift = pq.top();
+            pq.pop();
+
+            gift = floor(sqrt(gift));
+            pq.push(gift);
+        }
+
+        // Sum all remaining gifts
+        long long ans = 0;
+        while (!pq.empty()) {
+            ans += pq.top();
+            pq.pop();
+        }
+
+        return ans;
+    }
+};
