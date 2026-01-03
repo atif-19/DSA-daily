@@ -1,0 +1,32 @@
+class Solution {
+public:
+    int lastStoneWeight(vector<int>& stones) {
+        // Max heap to always get the two heaviest stones
+        priority_queue<int> pq;
+
+        // Insert all stone weights into the max heap
+        for (int i = 0; i < stones.size(); i++) {
+            pq.push(stones[i]);
+        }
+
+        // Keep smashing stones until at most one stone remains
+        while (pq.size() > 1) {
+            // Heaviest stone
+            int y = pq.top();
+            pq.pop();
+
+            // Second heaviest stone
+            int x = pq.top();
+            pq.pop();
+
+            // If they are not equal, push the remaining weight back
+            if (y != x) {
+                pq.push(y - x);
+            }
+            // If equal, both stones are destroyed (nothing to push)
+        }
+
+        // If one stone is left, return its weight; otherwise return 0
+        return pq.empty() ? 0 : pq.top();
+    }
+};
