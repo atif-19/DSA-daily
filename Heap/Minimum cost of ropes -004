@@ -1,0 +1,60 @@
+class Solution {
+public:
+    /*
+        Problem:
+        Given an array where each element represents the cost of a rope,
+        connect all ropes into one rope with minimum total cost.
+
+        Rule:
+        - When two ropes of cost x and y are connected, the cost incurred is (x + y).
+        - This cost is added back as a new rope.
+
+        Greedy Strategy (Optimal Merge Pattern):
+        - Always merge the two smallest ropes first.
+        - This minimizes the total accumulated cost.
+
+        Data Structure Used:
+        - Min Heap (Priority Queue) to always access the smallest elements efficiently.
+
+        Time Complexity:
+        - O(n log n), where n is the number of ropes.
+
+        Space Complexity:
+        - O(n), for the priority queue.
+    */
+
+    int minCost(vector<int>& arr) {
+
+        // Min-heap to store rope costs
+        priority_queue<int, vector<int>, greater<int>> pq;
+
+        // Insert all rope costs into the min heap
+        for (int cost : arr) {
+            pq.push(cost);
+        }
+
+        int totalCost = 0;
+
+        // Continue merging until only one rope remains
+        while (pq.size() > 1) {
+
+            // Extract two smallest ropes
+            int first = pq.top(); 
+            pq.pop();
+
+            int second = pq.top(); 
+            pq.pop();
+
+            // Cost of merging the two ropes
+            int mergedCost = first + second;
+
+            // Add merge cost to total
+            totalCost += mergedCost;
+
+            // Push merged rope back into heap
+            pq.push(mergedCost);
+        }
+
+        return totalCost;
+    }
+};
