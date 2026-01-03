@@ -1,0 +1,35 @@
+/**
+ * @input A : Integer array
+ * @input n1 : Integer array's ( A ) length
+ * @input B : Integer
+ *
+ * @Output Integer
+ */
+int solve(int* A, int n1, int B) {
+    // Max heap to always sell a ticket from the row
+    // with the maximum number of vacant seats
+    priority_queue<int> pq;
+
+    // Push all seat counts into the max heap
+    for (int i = 0; i < n1; i++) {
+        pq.push(A[i]);
+    }
+
+    long long ans = 0;
+
+    // Sell tickets to B people
+    while (B-- && !pq.empty()) {
+        // Row with maximum vacant seats
+        int profit = pq.top();
+        pq.pop();
+
+        // Add profit (current number of vacant seats)
+        ans += profit;
+
+        // After selling one ticket, seats in that row decrease by 1
+        if (profit > 0)
+            pq.push(profit - 1);
+    }
+
+    return ans;
+}
