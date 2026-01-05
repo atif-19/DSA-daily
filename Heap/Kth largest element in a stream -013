@@ -1,0 +1,69 @@
+/*
+Problem:
+---------
+Given an integer array `arr` of size `n` and an integer `k`,
+for every index `i (0-based)`, find the k-th largest element
+in the subarray arr[0...i].
+
+If i < k-1, the k-th largest element does not exist, so return -1.
+
+Approach (Greedy + Heap):
+-------------------------
+We maintain a MIN HEAP (priority_queue with greater<int>) of size k.
+
+Why min heap?
+- The heap stores the k largest elements seen so far.
+- The smallest element in this heap (top) is the k-th largest overall.
+
+Steps:
+1. Traverse the array from left to right.
+2. Insert the first k elements into the min heap.
+3. From index k onwards:
+   - If the current element is larger than the heap top,
+     replace the heap top with this element.
+4. At each index i >= k-1, the heap top gives the k-th largest element.
+
+Time Complexity:
+----------------
+O(n log k)
+- Each insertion/deletion in the heap takes log k time.
+
+Space Complexity:
+-----------------
+O(k)
+- Heap stores only k elements.
+*/
+
+class Solution {
+public:
+    vector<int> kthLargest(int k, int arr[], int n) {
+        // Result array initialized with -1
+        vector<int> ans(n, -1);
+
+        // Min heap to store k largest elements
+        priority_queue<int, vector<int>, greater<int>> pq;
+
+        // Push first k elements
+        for (int i = 0; i < k; i++) {
+            pq.push(arr[i]);
+        }
+
+        // k-th largest element at index k-1
+        ans[k - 1] = pq.top();
+
+        // Process remaining elements
+        for (int i = k; i < n; i++) {
+            // If current element is larger than the smallest
+            // among k largest, replace it
+            if (arr[i] > pq.top()) {
+                pq.pop();
+                pq.push(arr[i]);
+            }
+
+            // Heap top is the k-th largest element so far
+            ans[i] = pq.top();
+        }
+
+        return ans;
+    }
+};
