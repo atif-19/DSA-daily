@@ -1,0 +1,71 @@
+/*
+Problem:
+---------
+Given an array `arr` of size `N` and two integers `K1` and `K2`,
+find the sum of all elements that lie strictly between the
+K1-th smallest and K2-th smallest elements in the array.
+
+Note:
+- K1 < K2
+- We do NOT include the K1-th and K2-th smallest elements themselves.
+
+Approach (Heap-based / Greedy):
+-------------------------------
+1. To get elements up to the K2-th smallest, we use a MAX HEAP of size K2.
+2. The heap will store the K2 smallest elements seen so far.
+3. After processing all elements:
+   - The heap contains the K2 smallest elements.
+4. Remove the K2-th smallest element (heap top).
+5. Sum the next (K2 - K1 - 1) elements from the heap.
+   These elements lie strictly between K1-th and K2-th smallest.
+
+Why Max Heap?
+-------------
+- We want to efficiently maintain the K2 smallest elements.
+- The largest among these K2 elements (heap top) represents the K2-th smallest overall.
+
+Time Complexity:
+----------------
+O(N log K2)
+
+Space Complexity:
+-----------------
+O(K2)
+*/
+
+class Solution {
+public:
+    long long sumBetweenTwoKth(long long arr[], long long N, long long K1, long long K2) {
+        long long ans = 0;
+
+        // Max heap to store K2 smallest elements
+        priority_queue<long long> pq;
+
+        // Push first K2 elements
+        for (int i = 0; i < K2; i++) {
+            pq.push(arr[i]);
+        }
+
+        // Maintain K2 smallest elements
+        for (int i = K2; i < N; i++) {
+            if (arr[i] < pq.top()) {
+                pq.pop();
+                pq.push(arr[i]);
+            }
+        }
+
+        // Remove the K2-th smallest element
+        pq.pop();
+
+        // Number of elements between K1-th and K2-th
+        int count = K2 - K1 - 1;
+
+        // Sum elements strictly between K1-th and K2-th smallest
+        while (count--) {
+            ans += pq.top();
+            pq.pop();
+        }
+
+        return ans;
+    }
+};
