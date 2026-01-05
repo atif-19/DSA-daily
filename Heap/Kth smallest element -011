@@ -1,0 +1,26 @@
+class Solution {
+public:
+    int kthSmallest(vector<int> &arr, int k) {
+        // Max heap of size k
+        // It stores the k smallest elements seen so far
+        priority_queue<int> pq;
+
+        // Push first k elements into the heap
+        for (int i = 0; i < k; i++) {
+            pq.push(arr[i]);
+        }
+
+        // For remaining elements, maintain k smallest elements
+        for (int i = k; i < arr.size(); i++) {
+            // If current element is smaller than the largest
+            // among the k smallest, replace it
+            if (arr[i] < pq.top()) {
+                pq.pop();
+                pq.push(arr[i]);
+            }
+        }
+
+        // Top of the max heap is the kth smallest element
+        return pq.top();
+    }
+};
