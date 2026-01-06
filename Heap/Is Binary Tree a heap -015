@@ -1,0 +1,119 @@
+/*
+========================================================
+Problem:
+Check whether a given Binary Tree is a Max Heap.
+
+A Binary Tree is a Max Heap if:
+1. It is a Complete Binary Tree (CBT)
+2. Every node follows the Max Heap property:
+   parent.data >= left.data and parent.data >= right.data
+
+--------------------------------------------------------
+Approach:
+
+We split the problem into two independent checks:
+
+1️⃣ Check Complete Binary Tree (CBT)
+   - Perform level order traversal (BFS)
+   - Once a NULL child is encountered, all following
+     nodes must be leaf nodes
+   - If any node violates this rule → not CBT
+
+2️⃣ Check Max Heap Property
+   - Recursively ensure that every parent node has
+     a value greater than or equal to its children
+
+Only if BOTH conditions are true, the tree is a heap.
+
+--------------------------------------------------------
+Time Complexity:
+- CBT Check (BFS): O(n)
+- Max Heap Check (DFS): O(n)
+- Total: O(n)
+
+--------------------------------------------------------
+Space Complexity:
+- Queue for BFS: O(n)
+- Recursion stack: O(h) → worst case O(n)
+
+--------------------------------------------------------
+Why this is Optimal:
+- Every node must be visited at least once
+- No extra unnecessary data structures
+- Clean separation of concerns (CBT + Heap property)
+
+========================================================
+*/
+
+/*
+class Node {
+   public:
+    int data;
+    Node *left;
+    Node *right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+*/
+
+class Solution {
+  public:
+
+    // Check if Binary Tree is Complete Binary Tree (CBT)
+    bool isCBT(Node* root) {
+        bool incomplete = false;
+        queue<Node*> q;
+        q.push(root);
+
+        while (!q.empty()) {
+            Node* temp = q.front();
+            q.pop();
+
+            // Left child check
+            if (temp->left) {
+                if (incomplete)
+                    return false;
+                q.push(temp->left);
+            } else {
+                incomplete = true;
+            }
+
+            // Right child check
+            if (temp->right) {
+                if (incomplete)
+                    return false;
+                q.push(temp->right);
+            } else {
+                incomplete = true;
+            }
+        }
+        return true;
+    }
+
+    // Check Max Heap property recursively
+    bool isMaxHeap(Node* root) {
+        // Empty tree or leaf node is a valid heap
+        if (!root || (!root->left && !root->right))
+            return true;
+
+        // Parent must be greater than both children
+        if ((root->left && root->left->data > root->data) ||
+            (root->right && root->right->data > root->data))
+            return false;
+
+        // Recursively check subtrees
+        return isMaxHeap(root->left) && isMaxHeap(root->right);
+    }
+
+    // Main function to check if tree is a Heap
+    bool isHeap(Node* tree) {
+        // Must satisfy both CBT and Max Heap property
+        if (!isCBT(tree))
+            return false;
+
+        return isMaxHeap(tree);
+    }
+};
