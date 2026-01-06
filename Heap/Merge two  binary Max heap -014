@@ -1,0 +1,91 @@
+/*
+========================================================
+Problem:
+Merge two Max Heaps.
+
+You are given two arrays `a` and `b` which represent
+valid Max Heaps. Your task is to merge both heaps into
+a single Max Heap and return the resulting heap.
+
+--------------------------------------------------------
+Approach (Optimal | Linear Time):
+
+1. Copy all elements of heap `a` and heap `b` into a
+   single array.
+2. Convert this combined array into a Max Heap using
+   Bottom-Up Heap Construction (Build Heap).
+3. Bottom-up heapify runs in linear time O(n).
+
+--------------------------------------------------------
+Why this works:
+- Both input arrays already satisfy heap properties.
+- Building a heap from an array using heapify from
+  the last non-leaf node guarantees a valid Max Heap.
+- This avoids repeated insertions which would be slower.
+
+--------------------------------------------------------
+Time Complexity:
+- Copy elements: O(n + m)
+- Build Heap (heapify): O(n + m)
+- Total Time: O(n + m)
+
+--------------------------------------------------------
+Space Complexity:
+- Extra array to store merged heaps: O(n + m)
+
+--------------------------------------------------------
+Key Insight:
+This is the most optimal solution possible because
+every element must be read at least once.
+
+========================================================
+*/
+
+class Solution {
+  public:
+
+    // Heapify function to maintain Max Heap property
+    void Heapify(vector<int>& arr, int index) {
+        int largest = index;
+        int left = index * 2 + 1;
+        int right = index * 2 + 2;
+
+        if (left < arr.size() && arr[left] > arr[largest])
+            largest = left;
+
+        if (right < arr.size() && arr[right] > arr[largest])
+            largest = right;
+
+        if (largest != index) {
+            swap(arr[index], arr[largest]);
+            Heapify(arr, largest);
+        }
+    }
+
+    // Build Max Heap using Bottom-Up approach (O(n))
+    void BuildHeap(vector<int>& arr) {
+        for (int i = (arr.size() / 2) - 1; i >= 0; i--) {
+            Heapify(arr, i);
+        }
+    }
+
+    // Function to merge two Max Heaps
+    vector<int> mergeHeaps(vector<int>& a, vector<int>& b, int n, int m) {
+        vector<int> ans(n + m);
+
+        int idx = 0;
+
+        // Copy elements of heap a
+        for (int i = 0; i < n; i++)
+            ans[idx++] = a[i];
+
+        // Copy elements of heap b
+        for (int i = 0; i < m; i++)
+            ans[idx++] = b[i];
+
+        // Convert merged array into a Max Heap
+        BuildHeap(ans);
+
+        return ans;
+    }
+};
