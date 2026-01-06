@@ -1,0 +1,102 @@
+/*
+========================================================
+Problem:
+Convert a given Binary Search Tree (BST) into a
+Max Heap such that:
+
+1. The structure of the tree remains unchanged.
+2. The resulting tree satisfies the Max Heap property.
+3. All original values of the BST are preserved.
+
+--------------------------------------------------------
+Key Observations:
+
+- Inorder traversal of a BST gives elements in
+  sorted (ascending) order.
+- Postorder traversal ensures children are filled
+  before the parent, which is ideal for Max Heap
+  construction (parent >= children).
+
+--------------------------------------------------------
+Approach:
+
+1️⃣ Perform inorder traversal of the BST and store
+   all node values in a vector.
+   → This gives a sorted array.
+
+2️⃣ Perform a postorder-like traversal of the tree
+   and replace node values using the sorted array.
+   - Since postorder visits children first, assigning
+     values from smallest to largest guarantees
+     Max Heap property.
+
+--------------------------------------------------------
+Why this works:
+
+- Smallest values go to leaf nodes.
+- Largest values are assigned last to root.
+- Structure remains unchanged.
+- Heap property is naturally enforced.
+
+--------------------------------------------------------
+Time Complexity:
+- Inorder traversal: O(n)
+- Postorder assignment: O(n)
+- Total: O(n)
+
+--------------------------------------------------------
+Space Complexity:
+- Extra array for inorder values: O(n)
+- Recursion stack: O(h), worst case O(n)
+
+--------------------------------------------------------
+This is the MOST optimal approach possible.
+
+========================================================
+*/
+
+// User function Template for C++
+
+/*struct Node {
+    int data;
+    Node *left, *right;
+};*/
+
+class Solution {
+  public:
+
+    // Fill the tree using postorder traversal
+    // Assign values from sorted array
+    void buildHeap(Node* root, vector<int>& arr, int& index) {
+        if (!root)
+            return;
+
+        buildHeap(root->left, arr, index);
+        buildHeap(root->right, arr, index);
+
+        // Assign next smallest value
+        root->data = arr[index++];
+    }
+
+    // Inorder traversal to collect BST values
+    void inorder(Node* root, vector<int>& arr) {
+        if (!root)
+            return;
+
+        inorder(root->left, arr);
+        arr.push_back(root->data);
+        inorder(root->right, arr);
+    }
+
+    // Main function to convert BST to Max Heap
+    void convertToMaxHeapUtil(Node* root) {
+        vector<int> arr;
+
+        // Step 1: Store inorder traversal (sorted values)
+        inorder(root, arr);
+
+        // Step 2: Replace values using postorder traversal
+        int index = 0;
+        buildHeap(root, arr, index);
+    }
+};
