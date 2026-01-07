@@ -1,0 +1,74 @@
+/*
+Problem:
+Find the k-th smallest element in a sorted matrix.
+
+Description:
+Given an n x n matrix where each row and each column is sorted in ascending order,
+find the k-th smallest element in the matrix.
+
+Approach:
+Binary Search on Answer (Value Space)
+
+- The smallest possible value is mat[0][0]
+- The largest possible value is mat[n-1][n-1]
+- Use binary search on this range
+- For each mid, count how many elements are <= mid in O(n) time
+  using matrix sorted properties (top-right traversal)
+
+Algorithm:
+1. Set low = mat[0][0], high = mat[n-1][n-1]
+2. While low <= high:
+   - mid = (low + high) / 2
+   - Count elements <= mid
+   - If count >= k, store mid as answer and search left
+   - Else search right
+3. Return answer
+
+Time Complexity:
+- Counting elements: O(n)
+- Binary search range: O(log(max - min))
+- Total: O(n log(max - min))
+
+Space Complexity:
+- O(1) extra space
+*/
+
+class Solution {
+  public:
+    // Counts elements less than or equal to mid in O(n)
+    int find(vector<vector<int>>& mat, int mid) {
+        int n = mat.size();
+        int i = 0, j = n - 1;
+        int count = 0;
+
+        while (i < n && j >= 0) {
+            if (mat[i][j] <= mid) {
+                count += (j + 1); // all elements to the left are <= mid
+                i++;
+            } else {
+                j--;
+            }
+        }
+        return count;
+    }
+
+    int kthSmallest(vector<vector<int>> &mat, int k) {
+        int n = mat.size();
+        int low = mat[0][0];
+        int high = mat[n - 1][n - 1];
+        int ans = -1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+            int count = find(mat, mid);
+
+            if (count >= k) {
+                ans = mid;
+                high = mid - 1;
+            } else {
+                low = mid + 1;
+            }
+        }
+        return ans;
+    }
+};
