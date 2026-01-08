@@ -1,0 +1,92 @@
+/*
+==========================================================
+Question:
+----------------------------------------------------------
+Given K sorted arrays (matrix form), merge them into a
+single sorted array and return the result.
+
+Each row of the matrix represents a sorted array.
+
+==========================================================
+Approach (Min Heap / K-Way Merge):
+----------------------------------------------------------
+1. Use a min heap to keep track of the smallest current
+   element among all K arrays.
+2. Initially, push the first element of each array into
+   the heap along with its row and column index.
+3. Repeatedly:
+   - Extract the minimum element from the heap.
+   - Add it to the answer array.
+   - Push the next element from the same row (if exists)
+     into the heap.
+4. Continue until the heap becomes empty.
+
+This is a classic K-way merge approach.
+
+==========================================================
+Time Complexity:
+----------------------------------------------------------
+Let:
+- K = number of arrays
+- M = number of elements per array
+- N = total elements = K * M
+
+Each element is pushed and popped once from the heap.
+Heap size is at most K.
+
+Total Time: O(N log K)
+
+==========================================================
+Space Complexity:
+----------------------------------------------------------
+- Min heap stores at most K elements.
+
+Auxiliary Space: O(K)
+Output array stores N elements.
+
+==========================================================
+*/
+
+class Solution {
+  public:
+    vector<int> mergeArrays(vector<vector<int>> &mat) {
+
+        // Min heap storing:
+        // {value, {row_index, column_index}}
+        priority_queue<
+            pair<int, pair<int, int>>,
+            vector<pair<int, pair<int, int>>>,
+            greater<pair<int, pair<int, int>>>
+        > pq;
+
+        // Push the first element of each array into the heap
+        for (int i = 0; i < mat.size(); i++) {
+            if (!mat[i].empty())
+                pq.push({mat[i][0], {i, 0}});
+        }
+
+        vector<int> ans;
+
+        // Process elements until heap is empty
+        while (!pq.empty()) {
+
+            // Get the smallest element
+            auto element = pq.top();
+            pq.pop();
+
+            int value = element.first;
+            int row   = element.second.first;
+            int col   = element.second.second;
+
+            // Add the smallest element to result
+            ans.push_back(value);
+
+            // Push the next element from the same array
+            if (col + 1 < mat[row].size()) {
+                pq.push({mat[row][col + 1], {row, col + 1}});
+            }
+        }
+
+        return ans;
+    }
+};
