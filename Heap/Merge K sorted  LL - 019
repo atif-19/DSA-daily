@@ -1,0 +1,110 @@
+/*
+==========================================================
+Question:
+----------------------------------------------------------
+Given K sorted linked lists, merge them into a single
+sorted linked list and return its head.
+
+Each linked list is sorted in ascending order.
+
+==========================================================
+Approach (Min Heap / K-Way Merge):
+----------------------------------------------------------
+1. Use a min heap (priority queue) to always get the
+   smallest current node among the K linked lists.
+2. Push the head node of each linked list into the heap.
+3. Repeatedly:
+   - Extract the smallest node from the heap.
+   - Attach it to the result linked list.
+   - Push the next node of the extracted node into the heap
+     (if it exists).
+4. Continue until the heap becomes empty.
+
+This approach is similar to merging K sorted arrays or
+K sorted streams.
+
+==========================================================
+Time Complexity:
+----------------------------------------------------------
+Let:
+- K = number of linked lists
+- N = total number of nodes across all lists
+
+Each node is pushed and popped once from the heap.
+Heap operations take O(log K).
+
+Total Time: O(N log K)
+
+==========================================================
+Space Complexity:
+----------------------------------------------------------
+- Min heap stores at most K nodes at any time.
+
+Auxiliary Space: O(K)
+
+==========================================================
+*/
+
+// Node structure for singly linked list
+class Node {
+  public:
+    int data;
+    Node* next;
+
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+
+// Custom comparator to create a min heap based on node data
+class Compare {
+  public:
+    bool operator()(Node* a, Node* b) {
+        return a->data > b->data;
+    }
+};
+
+class Solution {
+  public:
+    // Function to merge K sorted linked lists
+    Node* mergeKLists(vector<Node*>& arr) {
+
+        // Min heap to store the smallest current node
+        // from each linked list
+        priority_queue<Node*, vector<Node*>, Compare> pq;
+
+        // Push head of each linked list into the heap
+        for (int i = 0; i < arr.size(); i++) {
+            if (arr[i])
+                pq.push(arr[i]);
+        }
+
+        // Dummy node to handle edge cases easily
+        Node* head = new Node(0);
+        Node* tail = head;
+
+        // Process until all nodes are merged
+        while (!pq.empty()) {
+
+            // Extract the smallest node
+            Node* temp = pq.top();
+            pq.pop();
+
+            // Push next node of the extracted node into heap
+            if (temp->next)
+                pq.push(temp->next);
+
+            // Attach the node to the result list
+            temp->next = NULL;
+            tail->next = temp;
+            tail = tail->next;
+        }
+
+        // Remove dummy node and return actual head
+        Node* result = head->next;
+        delete head;
+
+        return result;
+    }
+};
