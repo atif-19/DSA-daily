@@ -1,0 +1,106 @@
+/*
+==========================================================
+Question:
+----------------------------------------------------------
+Given K sorted lists of integers, find the smallest range
+[L, R] such that the range includes at least one number
+from each of the K lists.
+
+If there are multiple answers, return the one with the
+smallest range (R - L).
+
+==========================================================
+Approach (Min Heap + Sliding Window on K Lists):
+----------------------------------------------------------
+1. Use a min heap to always access the smallest current
+   element among the K lists.
+2. Track the maximum element (maxi) among the elements
+   currently present in the heap.
+3. Initialize the heap with the first element of each list
+   and compute the initial maximum.
+4. At each step:
+   - The current range is [minElement, maxi].
+   - Update the answer if this range is smaller than the
+     previously recorded range.
+   - Remove the minimum element from the heap.
+   - Insert the next element from the same list into the
+     heap and update maxi.
+5. Stop when any list runs out of elements, since a valid
+   range must include at least one element from each list.
+
+==========================================================
+Time Complexity:
+----------------------------------------------------------
+Let:
+- K = number of lists
+- N = total number of elements across all lists
+
+Each element is pushed and popped once from the heap.
+Heap operations take O(log K).
+
+Total Time: O(N log K)
+
+==========================================================
+Space Complexity:
+----------------------------------------------------------
+- Min heap stores at most K elements.
+
+Auxiliary Space: O(K)
+
+==========================================================
+*/
+
+class Solution {
+public:
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+
+        // Stores the final answer range [L, R]
+        vector<int> ans(2);
+        ans[0] = INT_MAX;
+
+        // Tracks the maximum element among the heap elements
+        int maxi = INT_MIN;
+
+        // Min heap storing:
+        // {value, {row_index, column_index}}
+        priority_queue<
+            pair<int, pair<int, int>>,
+            vector<pair<int, pair<int, int>>>,
+            greater<pair<int, pair<int, int>>>
+        > pq;
+
+        // Initialize heap with the first element of each list
+        for (int i = 0; i < nums.size(); i++) {
+            pq.push({nums[i][0], {i, 0}});
+            maxi = max(maxi, nums[i][0]);
+        }
+
+        // Process until one list is exhausted
+        while (!pq.empty()) {
+
+            auto element = pq.top();
+            pq.pop();
+
+            int value = element.first;
+            int row   = element.second.first;
+            int col   = element.second.second;
+
+            // Update answer if the current range is smaller
+            if (ans[0] == INT_MAX || maxi - value < ans[1] - ans[0]) {
+                ans[0] = value;
+                ans[1] = maxi;
+            }
+
+            // Push the next element from the same list
+            if (col + 1 < nums[row].size()) {
+                pq.push({nums[row][col + 1], {row, col + 1}});
+                maxi = max(maxi, nums[row][col + 1]);
+            } else {
+                // Cannot form a valid range if any list is exhausted
+                break;
+            }
+        }
+
+        return ans;
+    }
+};
