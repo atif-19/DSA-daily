@@ -1,0 +1,75 @@
+/*
+==========================================================
+Question:
+----------------------------------------------------------
+Given an integer array, count the number of subarrays
+whose sum is equal to 0.
+
+==========================================================
+Approach (Prefix Sum + Hash Map):
+----------------------------------------------------------
+1. Use a prefix sum to keep track of the cumulative sum
+   of elements while traversing the array.
+2. If two prefix sums are equal at different indices,
+   it means the subarray between those indices has sum 0.
+3. Use a hash map to store the frequency of each prefix sum.
+4. For every prefix sum:
+   - If it already exists in the map, it means that many
+     zero-sum subarrays can be formed ending at this index.
+   - Add its frequency to the total count.
+   - Increment the frequency of the current prefix sum.
+
+==========================================================
+Time Complexity:
+----------------------------------------------------------
+Let N be the size of the array.
+
+Each element is processed once.
+
+Total Time: O(N)
+
+==========================================================
+Space Complexity:
+----------------------------------------------------------
+Hash map stores prefix sums.
+
+Auxiliary Space: O(N)
+
+==========================================================
+*/
+
+class Solution {
+  public:
+    int findSubarray(vector<int> &arr) {
+
+        // Stores the total number of subarrays with sum = 0
+        int total = 0;
+
+        // Hash map to store frequency of prefix sums
+        unordered_map<long long, int> mp;
+
+        // Initialize prefix sum
+        long long prefixSum = 0;
+
+        // Base case: prefix sum 0 occurs once
+        mp[0] = 1;
+
+        // Traverse the array
+        for (int i = 0; i < arr.size(); i++) {
+
+            // Update prefix sum
+            prefixSum += arr[i];
+
+            // If this prefix sum appeared before,
+            // those many subarrays have sum 0
+            if (mp[prefixSum]) {
+                total += mp[prefixSum];
+            }
+
+            // Increase frequency of current prefix sum
+            mp[prefixSum]++;
+        }
+
+        return total;
+    }
+};
