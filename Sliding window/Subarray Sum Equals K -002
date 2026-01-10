@@ -1,0 +1,75 @@
+/*
+==========================================================
+Question:
+----------------------------------------------------------
+Given an integer array nums and an integer k, return the
+total number of continuous subarrays whose sum equals k.
+
+==========================================================
+Approach (Prefix Sum + Hash Map):
+----------------------------------------------------------
+1. Maintain a running prefix sum while iterating.
+2. If at any index:
+      prefixSum - k
+   has appeared before, it means a subarray ending at the
+   current index has sum k.
+3. Use a hash map to store how many times each prefix sum
+   has appeared.
+4. For every prefix sum:
+   - Add the frequency of (prefixSum - k) to the answer.
+   - Store/update the current prefix sum in the map.
+
+==========================================================
+Time Complexity:
+----------------------------------------------------------
+Let N be the size of the array.
+
+Each element is processed once.
+
+Total Time: O(N)
+
+==========================================================
+Space Complexity:
+----------------------------------------------------------
+Hash map stores prefix sums.
+
+Auxiliary Space: O(N)
+
+==========================================================
+*/
+
+class Solution {
+public:
+    int subarraySum(vector<int>& nums, int k) {
+
+        // Stores running sum of elements
+        long long prefixSum = 0;
+
+        // Hash map to store frequency of prefix sums
+        unordered_map<long long, int> mp;
+
+        // Base case: prefix sum 0 occurs once
+        mp[0] = 1;
+
+        // Stores total number of subarrays with sum = k
+        int total = 0;
+
+        // Traverse the array
+        for (int i = 0; i < nums.size(); i++) {
+
+            // Update prefix sum
+            prefixSum += nums[i];
+
+            // If (prefixSum - k) exists,
+            // those many subarrays have sum k
+            if (mp[prefixSum - k]) {
+                total += mp[prefixSum - k];
+            }
+
+            // Store current prefix sum
+            mp[prefixSum]++;
+        }
+
+        return total;
+    }
+};
