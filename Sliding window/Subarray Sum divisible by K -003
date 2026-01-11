@@ -1,0 +1,68 @@
+/*
+========================================================
+Problem: Subarrays Divisible by K
+========================================================
+Given an integer array nums and an integer k, return the
+number of non-empty subarrays whose sum is divisible by k.
+
+--------------------------------------------------------
+Approach: Prefix Sum + Hash Map
+--------------------------------------------------------
+If two prefix sums have the same remainder when divided by k,
+then the subarray between them has a sum divisible by k.
+
+Let:
+prefixSum[i] % k = r
+prefixSum[j] % k = r
+
+Then:
+(prefixSum[j] - prefixSum[i]) % k = 0
+=> subarray (i+1 ... j) is divisible by k
+
+We keep track of how many times each remainder has occurred.
+For every new prefix sum remainder, all previous occurrences
+of that remainder form valid subarrays.
+
+--------------------------------------------------------
+Algorithm
+--------------------------------------------------------
+1. Initialize prefixSum = 0
+2. Use a hashmap to store frequency of remainders
+3. Store mp[0] = 1 (empty prefix)
+4. For every element:
+   - Add it to prefixSum
+   - Compute remainder = prefixSum % k
+   - Fix negative remainder
+   - If remainder exists in map, add its count to answer
+   - Increment remainder frequency in map
+
+--------------------------------------------------------
+Time Complexity:  O(N)
+Space Complexity: O(K)
+--------------------------------------------------------
+*/
+
+class Solution {
+public:
+    int subarraysDivByK(vector<int>& nums, int k) {
+        int total = 0;
+        long long prefixSum = 0;
+        unordered_map<int,int> mp;
+        mp[0] = 1;
+
+        for(int i = 0; i < nums.size(); i++) {
+            prefixSum += nums[i];
+            int rem = prefixSum % k;
+
+            if(rem < 0) 
+                rem += k;
+
+            if(mp[rem])
+                total += mp[rem];
+
+            mp[rem]++;
+        }
+
+        return total;
+    }
+};
