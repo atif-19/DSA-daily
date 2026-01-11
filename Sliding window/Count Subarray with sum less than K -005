@@ -1,0 +1,65 @@
+/*
+------------------------------------------------------------
+Problem:
+Count Subarrays With Score Less Than K
+
+You are given an array nums and an integer k.
+The score of a subarray is defined as:
+    score = (length of subarray) * (sum of elements in subarray)
+
+Return the number of subarrays whose score is strictly less than k.
+
+------------------------------------------------------------
+Approach (Sliding Window):
+
+We use a two-pointer (sliding window) technique.
+
+Idea:
+- Maintain a window [start ... end]
+- Keep track of the sum of elements inside the window
+- Calculate score = (window length) * (sum)
+
+If score becomes >= k:
+    shrink the window from the left until score < k again
+
+For each valid window ending at index `end`,
+all subarrays starting from `start` to `end` are valid.
+Number of such subarrays = end - start + 1
+
+------------------------------------------------------------
+Time Complexity:
+O(n)  
+Each element enters and leaves the window once.
+
+Space Complexity:
+O(1)  
+Only a few variables are used.
+
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    long long countSubarrays(vector<int>& nums, long long k) {
+        long long start = 0, end = 0;
+        long long sum = 0;
+        long long ans = 0;
+
+        while (end < nums.size()) {
+            sum += nums[end];
+
+            // Shrink window until score < k
+            while ((end - start + 1) * sum >= k && start <= end) {
+                sum -= nums[start];
+                start++;
+            }
+
+            // All subarrays ending at `end` and starting from `start` to `end` are valid
+            ans += (end - start + 1);
+
+            end++;
+        }
+
+        return ans;
+    }
+};
