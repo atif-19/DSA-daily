@@ -1,0 +1,131 @@
+/*
+========================================================
+📌 Problem: 4Sum
+========================================================
+
+Given an integer array `nums` and an integer `target`,
+return all unique quadruplets [nums[i], nums[j], nums[k], nums[l]]
+such that:
+
+    i ≠ j, j ≠ k, k ≠ l
+    nums[i] + nums[j] + nums[k] + nums[l] == target
+
+The result must not contain duplicate quadruplets.
+
+
+========================================================
+🧠 Approach: Sorting + Two Pointers (k-Sum Pattern)
+========================================================
+
+1. Sort the array.
+   This allows:
+   - Efficient two-pointer scanning
+   - Easy duplicate elimination
+
+2. Fix the first two numbers:
+   - Loop with index `i`
+   - Loop with index `j` (i + 1)
+
+3. For each (i, j) pair:
+   Use two pointers:
+      start = j + 1
+      end   = last index
+
+4. Compute:
+   sum = nums[i] + nums[j] + nums[start] + nums[end]
+
+   If sum == target:
+       → Valid quadruplet found
+       → Store it
+       → Move both pointers
+       → Skip duplicate values
+
+   If sum < target:
+       → Increase sum → move `start`
+
+   If sum > target:
+       → Decrease sum → move `end`
+
+5. Skip duplicates for:
+   - `i`
+   - `j`
+   - `start`
+   - `end`
+   to ensure unique quadruplets only.
+
+
+========================================================
+⏱ Time Complexity
+========================================================
+O(n³)
+
+Outer loop for i → O(n)
+Inner loop for j → O(n)
+Two-pointer scan → O(n)
+
+Total = O(n³)
+
+
+========================================================
+📦 Space Complexity
+========================================================
+O(1) extra space (excluding output)
+Only pointers and variables are used
+
+
+========================================================
+✅ C++ Implementation
+========================================================
+*/
+
+class Solution {
+public:
+    vector<vector<int>> fourSum(vector<int>& nums, int target) {
+        if(nums.size() < 4)
+            return {};
+
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+
+        for(int i = 0; i <= nums.size() - 4; i++) {
+            // Skip duplicate values for first number
+            if(i > 0 && nums[i] == nums[i - 1])
+                continue;
+
+            for(int j = i + 1; j <= nums.size() - 3; j++) {
+                // Skip duplicate values for second number
+                if(j > i + 1 && nums[j] == nums[j - 1])
+                    continue;
+
+                int start = j + 1;
+                int end = nums.size() - 1;
+
+                while(start < end) {
+                    long long sum = (long long)nums[i] + nums[j] + nums[start] + nums[end];
+
+                    if(sum == target) {
+                        ans.push_back({nums[i], nums[j], nums[start], nums[end]});
+                        start++;
+                        end--;
+
+                        // Skip duplicate third number
+                        while(start < end && nums[start] == nums[start - 1])
+                            start++;
+
+                        // Skip duplicate fourth number
+                        while(start < end && nums[end] == nums[end + 1])
+                            end--;
+                    }
+                    else if(sum > target) {
+                        end--;
+                    }
+                    else {
+                        start++;
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+};
