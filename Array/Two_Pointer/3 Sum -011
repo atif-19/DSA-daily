@@ -1,0 +1,117 @@
+/*
+================================================
+📌 Problem: 3Sum
+================================================
+
+Given an integer array `nums`, return all the
+unique triplets [nums[i], nums[j], nums[k]] such that:
+
+    i ≠ j, j ≠ k, i ≠ k
+    nums[i] + nums[j] + nums[k] == 0
+
+The solution set must not contain duplicate triplets.
+
+
+================================================
+🧠 Approach: Sorting + Two Pointers
+================================================
+
+1. Sort the array.
+   This allows us to:
+   - Use the two-pointer technique
+   - Easily skip duplicate values
+
+2. Iterate through the array using index `i`:
+   - Treat nums[i] as the first element of the triplet
+   - For every i, search for two numbers after it
+     whose sum is `-nums[i]`
+
+3. Use two pointers:
+   - `start` = i + 1
+   - `end` = last index
+
+4. Compute:
+   sum = nums[i] + nums[start] + nums[end]
+
+   If sum == 0:
+       → Found a valid triplet
+       → Store it
+       → Move both pointers and skip duplicates
+
+   If sum < 0:
+       → Increase the sum → move `start`
+
+   If sum > 0:
+       → Decrease the sum → move `end`
+
+5. Skip duplicate values of `i`, `start`, and `end`
+   to avoid repeated triplets.
+
+
+================================================
+⏱ Time Complexity
+================================================
+O(n²)
+
+Sorting takes O(n log n)
+The outer loop runs n times
+The two-pointer scan runs in O(n)
+
+Total = O(n²)
+
+
+================================================
+📦 Space Complexity
+================================================
+O(1) extra space (excluding output)
+Only pointers and variables are used
+
+
+================================================
+✅ C++ Implementation
+================================================
+*/
+
+class Solution {
+public:
+    vector<vector<int>> threeSum(vector<int>& nums) {
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> ans;
+
+        for (int i = 0; i < nums.size(); i++) {
+
+            // Skip duplicate values for the first number
+            if (i > 0 && nums[i] == nums[i - 1])
+                continue;
+
+            int start = i + 1;
+            int end = nums.size() - 1;
+
+            while (start < end) {
+                long long sum = (long long)nums[i] + nums[start] + nums[end];
+
+                if (sum == 0) {
+                    ans.push_back({nums[i], nums[start], nums[end]});
+                    start++;
+                    end--;
+
+                    // Skip duplicate values for start pointer
+                    while (start < end && nums[start] == nums[start - 1])
+                        start++;
+
+                    // Skip duplicate values for end pointer
+                    while (start < end && nums[end] == nums[end + 1])
+                        end--;
+                }
+                else if (sum < 0) {
+                    start++;
+                }
+                else {
+                    end--;
+                }
+            }
+        }
+
+        return ans;
+    }
+};
