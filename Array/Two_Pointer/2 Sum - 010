@@ -1,0 +1,93 @@
+/*
+===========================================
+📌 Problem: Two Sum (Sorted Array Version)
+===========================================
+
+Given a sorted array of integers `nums` and an integer `target`,
+return the 1-based indices of the two numbers such that they add
+up to `target`.
+
+Constraints:
+- Exactly one valid solution exists
+- You cannot use the same element twice
+- The array is sorted in non-decreasing order
+
+
+===========================================
+🧠 Approach: Two Pointers
+===========================================
+
+Because the array is already sorted, we can use two pointers to
+solve the problem efficiently.
+
+1. Initialize:
+   - `start` pointer at the beginning (index 0)
+   - `end` pointer at the last index
+
+2. While start < end:
+   - Compute sum = nums[start] + nums[end]
+
+   - If sum == target:
+       We found the required pair → return their 1-based indices
+
+   - If sum < target:
+       We need a bigger sum → move start pointer forward
+
+   - If sum > target:
+       We need a smaller sum → move end pointer backward
+
+This works because moving pointers in a sorted array changes the
+sum in a predictable way.
+
+
+===========================================
+⏱ Time Complexity
+===========================================
+O(n)  
+Each pointer moves at most `n` times, so total operations are linear.
+
+
+===========================================
+📦 Space Complexity
+===========================================
+O(1)  
+Only a constant amount of extra space is used.
+
+
+===========================================
+✅ C++ Implementation
+===========================================
+*/
+
+class Solution {
+public:
+    vector<int> twoSum(vector<int>& nums, int target) {
+        int start = 0;
+        int end = nums.size() - 1;
+        int sum;
+
+        // To store the 1-based indices of the result
+        vector<int> ans(2, -1);
+
+        while (start < end) {
+            sum = nums[start] + nums[end];
+
+            if (sum == target) {
+                // Convert 0-based indices to 1-based
+                ans[0] = start + 1;
+                ans[1] = end + 1;
+                return ans;
+            }
+            else if (sum < target) {
+                // Need a larger sum
+                start++;
+            }
+            else {
+                // Need a smaller sum
+                end--;
+            }
+        }
+
+        return ans; // will never be reached since one solution always exists
+    }
+};
