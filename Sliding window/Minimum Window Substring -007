@@ -1,0 +1,97 @@
+/*
+Problem:
+---------
+Minimum Window Substring
+
+Given two strings `s` and `t`, return the smallest substring of `s`
+that contains all the characters of `t` (including duplicates).
+If no such substring exists, return an empty string.
+
+
+Approach:
+---------
+Sliding Window + Frequency Map
+
+We use an unordered_map to store the frequency of characters needed from `t`.
+
+`total` represents how many characters from `t` are still required
+to make the current window valid.
+
+1. Expand the window by moving `end` and decreasing the count of s[end] in the map.
+2. If the character was needed (mp[s[end]] >= 0), decrease `total`.
+3. When `total == 0`, the window contains all characters of `t`.
+   Try to shrink it from the left to get the minimum length.
+4. Update the best answer whenever a smaller valid window is found.
+
+
+Time Complexity:
+----------------
+O(n), where n is the length of string `s`.
+Each character is processed at most twice.
+
+Space Complexity:
+-----------------
+O(k), where k is the number of unique characters in `t`.
+*/
+
+class Solution {
+public:
+    string minWindow(string s, string t) {
+        // if t is longer than s, no valid window is possible
+        if (t.size() > s.size()) {
+            return "";
+        }
+
+        int index = -1;            // starting index of the best window
+        int ans = INT_MAX;         // length of the best window
+        int start = 0, end = 0;    // sliding window pointers
+        int total = t.size();     // total characters still needed
+
+        unordered_map<char, int> mp;
+
+        // count frequency of characters in t
+        for (int i = 0; i < t.size(); i++) {
+            mp[t[i]]++;
+        }
+
+        while (end < s.size()) {
+            // include s[end] in the window
+            mp[s[end]]--;
+
+            // if this character was needed, decrease total
+            if (mp[s[end]] >= 0)
+                total--;
+
+            // when all characters are found, try to shrink the window
+            while (total == 0 && start <= end) {
+                // update the smallest window
+                if (ans > end - start + 1) {
+                    ans = end - start + 1;
+                    index = start;
+                }
+
+                // remove s[start] from the window
+                mp[s[start]]++;
+
+                // if removing this makes it needed again, increase total
+                if (mp[s[start]] > 0)
+                    total++;
+
+                start++;
+            }
+
+            end++;
+        }
+
+        // if no valid window was found
+        if (index == -1)
+            return "";
+
+        // build and return the answer substring
+        string temp = "";
+        for (int i = index; i < index + ans; i++)
+            temp += s[i];
+
+        return temp;
+    }
+};
