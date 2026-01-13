@@ -1,0 +1,62 @@
+/*
+Problem:
+---------
+Minimum Size Subarray Sum
+
+Given an array of positive integers `nums` and an integer `target`,
+find the minimum length of a contiguous subarray whose sum is >= target.
+If no such subarray exists, return 0.
+
+
+Approach:
+---------
+Sliding Window (Two Pointers)
+
+We maintain a window [start ... end] and keep track of the sum of elements
+inside the window.
+
+1. Expand the window by moving `end` and adding nums[end] to `sum`.
+2. When `sum >= target`, the window is valid, so:
+   - Update the answer with the window size.
+   - Shrink the window from the left (move `start`) to find a smaller valid window.
+3. Repeat until `end` reaches the end of the array.
+
+
+Time Complexity:
+----------------
+O(n)
+Each element is added and removed from the window at most once.
+
+Space Complexity:
+-----------------
+O(1)
+Only constant extra space is used.
+*/
+
+class Solution {
+public:
+    int minSubArrayLen(int target, vector<int>& nums) {
+        int ans = INT_MAX;        // stores the minimum subarray length
+        int start = 0, end = 0;   // sliding window pointers
+        long long sum = 0;       // sum of the current window
+
+        while (end < nums.size()) {
+            sum += nums[end];    // expand window
+
+            // try to shrink window while it's valid
+            while (sum >= target && start <= end) {
+                ans = min(ans, end - start + 1);  // update best answer
+                sum -= nums[start];              // remove leftmost element
+                start++;
+            }
+
+            end++;
+        }
+
+        // if no valid subarray was found
+        if (ans == INT_MAX)
+            return 0;
+
+        return ans;
+    }
+};
