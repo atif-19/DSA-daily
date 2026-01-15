@@ -1,0 +1,95 @@
+/*
+Problem:
+---------
+Subarrays With K Distinct Integers
+
+Given an integer array `nums` and an integer `k`,
+return the number of subarrays that contain exactly `k` distinct integers.
+
+
+Approach:
+---------
+Using the identity:
+    subarrays with exactly k distinct =
+    subarrays with at least k distinct -
+    subarrays with at least (k + 1) distinct
+
+So we count:
+1) Number of subarrays having at least k distinct elements.
+2) Number of subarrays having at least (k + 1) distinct elements.
+Their difference gives the number of subarrays with exactly k distinct elements.
+
+To count "at least X distinct", we use a sliding window.
+
+
+How "At Least X" is counted:
+---------------------------
+We maintain a window [start ... end] and a frequency map.
+`total` keeps track of how many distinct elements are in the window.
+
+When total >= X, the window is valid.
+All subarrays starting at `start` and ending from `end` to `n-1` are valid,
+so we add (n - end) to the answer.
+Then we shrink the window from the left to find more valid windows.
+
+
+Time Complexity:
+----------------
+O(n), where n is the size of the array.
+Each element is added and removed from the window at most once.
+
+Space Complexity:
+-----------------
+O(n) in the worst case for the hash map.
+*/
+
+class Solution {
+public:
+    int subarraysWithKDistinct(vector<int>& nums, int k) {
+
+        // count subarrays with at least k distinct elements
+        int start = 0, end = 0, total = 0;
+        int Atleastk = 0;
+        unordered_map<int, int> mp;
+
+        while (end < nums.size()) {
+            mp[nums[end]]++;
+            if (mp[nums[end]] == 1)
+                total++;  // new distinct element added
+
+            while (total == k && start <= end) {
+                Atleastk += nums.size() - end;  // all subarrays from this start are valid
+                mp[nums[start]]--;
+                if (mp[nums[start]] == 0)
+                    total--;
+                start++;
+            }
+            end++;
+        }
+
+        // count subarrays with at least (k + 1) distinct elements
+        start = 0;
+        end = 0;
+        total = 0;
+        int Atleastk1 = 0;
+        unordered_map<int, int> mp1;
+
+        while (end < nums.size()) {
+            mp1[nums[end]]++;
+            if (mp1[nums[end]] == 1)
+                total++;
+
+            while (total == k + 1 && start <= end) {
+                Atleastk1 += nums.size() - end;
+                mp1[nums[start]]--;
+                if (mp1[nums[start]] == 0)
+                    total--;
+                start++;
+            }
+            end++;
+        }
+
+        // exactly k distinct = at least k - at least (k + 1)
+        return Atleastk - Atleastk1;
+    }
+};
