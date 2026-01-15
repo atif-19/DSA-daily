@@ -1,0 +1,69 @@
+/*
+Problem:
+---------
+Count Subarrays Where the Maximum Element Appears At Least K Times
+
+Given an integer array `nums` and an integer `k`,
+count the number of contiguous subarrays in which the maximum
+element of the entire array appears at least `k` times.
+
+
+Approach:
+---------
+Sliding Window + Counting
+
+1. First, find the maximum element `maxi` in the array.
+2. Use a sliding window [start ... end] to traverse the array.
+3. Maintain a variable `count` that stores how many times `maxi`
+   appears inside the current window.
+4. When `count >= k`, the current window is valid.
+   Since extending the window to the right will still keep
+   at least `k` occurrences of `maxi`, all subarrays that start
+   at `start` and end from `end` to `n-1` are valid.
+   Therefore, we add `n - end` to the answer.
+5. Shrink the window from the left to find other valid windows.
+
+
+Time Complexity:
+----------------
+O(n), where n is the size of the array.
+Each element is processed at most once.
+
+Space Complexity:
+-----------------
+O(1), only constant extra space is used.
+*/
+
+class Solution {
+public:
+    long long countSubarrays(vector<int>& nums, int k) {
+        int start = 0, end = 0;
+        int maxi = 0;       // maximum element in the array
+        int count = 0;     // count of maxi in the current window
+        long long ans = 0;
+
+        // find the maximum element in the array
+        for (int i = 0; i < nums.size(); i++)
+            maxi = max(maxi, nums[i]);
+
+        // sliding window
+        while (end < nums.size()) {
+            if (nums[end] == maxi)
+                count++;
+
+            // when window has at least k max elements
+            while (count >= k && start <= end) {
+                ans += nums.size() - end;   // all subarrays from this start are valid
+
+                if (nums[start] == maxi)
+                    count--;
+
+                start++;
+            }
+
+            end++;
+        }
+
+        return ans;
+    }
+};
