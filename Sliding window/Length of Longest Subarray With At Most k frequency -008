@@ -1,0 +1,120 @@
+/*
+Problem:
+---------
+Maximum Subarray Length With Each Element Appearing At Most K Times
+
+Given an integer array `nums` and an integer `k`,
+find the maximum length of a contiguous subarray such that
+no element appears more than `k` times in that subarray.
+
+
+Approach:
+---------
+Sliding Window + Hash Map
+
+We maintain a window [start ... end] and a hash map that stores
+the frequency of elements inside the window.
+
+1. Expand the window by moving `end` and increasing the frequency of nums[end].
+2. If the frequency of nums[end] becomes greater than `k`,
+   the window becomes invalid.
+3. Shrink the window from the left (move `start`) until
+   nums[end] appears at most `k` times again.
+4. At every valid window, update the maximum length.
+
+
+Time Complexity:
+----------------
+O(n), where n is the size of the array.
+Each element is added and removed from the window at most once.
+
+Space Complexity:
+-----------------
+O(n) in the worst case for the hash map.
+*/
+
+class Solution {
+public:
+    int maxSubarrayLength(vector<int>& nums, int k) {
+        int start = 0, end = 0;
+        int ans = INT_MIN;
+        unordered_map<int, int> mp;   // stores frequency of elements in current window
+
+        while (end < nums.size()) {
+            mp[nums[end]]++;         // include nums[end] in the window
+
+            // if nums[end] exceeds k times, shrink from the left
+            while (mp[nums[end]] > k && start <= end) {
+                mp[nums[start]]--;
+                start++;
+            }
+
+            // update maximum length of valid window
+            ans = max(ans, end - start + 1);
+
+            end++;
+        }
+
+        return ans;
+    }
+};
+/*
+Problem:
+---------
+Maximum Subarray Length With Each Element Appearing At Most K Times
+
+Given an integer array `nums` and an integer `k`,
+find the maximum length of a contiguous subarray such that
+no element appears more than `k` times in that subarray.
+
+
+Approach:
+---------
+Sliding Window + Hash Map
+
+We maintain a window [start ... end] and a hash map that stores
+the frequency of elements inside the window.
+
+1. Expand the window by moving `end` and increasing the frequency of nums[end].
+2. If the frequency of nums[end] becomes greater than `k`,
+   the window becomes invalid.
+3. Shrink the window from the left (move `start`) until
+   nums[end] appears at most `k` times again.
+4. At every valid window, update the maximum length.
+
+
+Time Complexity:
+----------------
+O(n), where n is the size of the array.
+Each element is added and removed from the window at most once.
+
+Space Complexity:
+-----------------
+O(n) in the worst case for the hash map.
+*/
+
+class Solution {
+public:
+    int maxSubarrayLength(vector<int>& nums, int k) {
+        int start = 0, end = 0;
+        int ans = INT_MIN;
+        unordered_map<int, int> mp;   // stores frequency of elements in current window
+
+        while (end < nums.size()) {
+            mp[nums[end]]++;         // include nums[end] in the window
+
+            // if nums[end] exceeds k times, shrink from the left
+            while (mp[nums[end]] > k && start <= end) {
+                mp[nums[start]]--;
+                start++;
+            }
+
+            // update maximum length of valid window
+            ans = max(ans, end - start + 1);
+
+            end++;
+        }
+
+        return ans;
+    }
+};
