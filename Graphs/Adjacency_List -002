@@ -1,0 +1,127 @@
+             #include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+------------------------------------------------------------
+APPROACH: Adjacency List (Directed Weighted Graph)
+------------------------------------------------------------
+- We use a vector of lists where each index represents a vertex
+- Each vertex stores a list of (neighbor, weight) pairs
+- For every directed edge u -> v with weight w,
+  we add (v, w) to AdjList[u]
+
+Graph Type:
+- Directed
+- Weighted
+- Vertices are labeled from 0 to V-1
+
+Why this representation?
+- Memory efficient for sparse graphs
+- Easy to traverse neighbors
+- Preferred for graph algorithms like BFS, DFS, Dijkstra
+------------------------------------------------------------
+
+TIME COMPLEXITY:
+- Creating adjacency list: O(V)
+- Inserting E edges: O(E)
+- Printing adjacency list: O(V + E)
+
+SPACE COMPLEXITY:
+- O(V + E)
+------------------------------------------------------------
+*/
+
+int main() {
+    int vertex, edges;
+
+    cout << "Enter number of vertices and edges" << endl;
+    cin >> vertex >> edges;
+
+    // Adjacency list: each vertex stores (neighbor, weight)
+    vector<vector<pair<int,int>>> AdjList(vertex);
+
+    cout << "Enter edges in format: u v weight" << endl;
+    for (int i = 0; i < edges; i++) {
+        int u, v, weight;
+        cin >> u >> v >> weight;
+
+        // Directed edge u -> v with given weight
+        AdjList[u].push_back({v, weight});
+    }
+
+    cout << "\nAdjacency List:\n";
+    for (int i = 0; i < vertex; i++) {
+        cout << i << " -> ";
+        for (auto edge : AdjList[i]) {
+            cout << "(" << edge.first << ", " << edge.second << ") ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+------------------------------------------------------------
+APPROACH: Adjacency List (Directed Weighted Graph)
+------------------------------------------------------------
+- We use a vector of lists where each index represents a vertex
+- Each vertex stores a list of (neighbor, weight) pairs
+- For every directed edge u -> v with weight w,
+  we add (v, w) to AdjList[u]
+
+Graph Type:
+- Directed
+- Weighted
+- Vertices are labeled from 0 to V-1
+
+Why this representation?
+- Memory efficient for sparse graphs
+- Easy to traverse neighbors
+- Preferred for graph algorithms like BFS, DFS, Dijkstra
+------------------------------------------------------------
+
+TIME COMPLEXITY:
+- Creating adjacency list: O(V)
+- Inserting E edges: O(E)
+- Printing adjacency list: O(V + E)
+
+SPACE COMPLEXITY:
+- O(V + E)
+------------------------------------------------------------
+*/
+
+int main() {
+    int vertex, edges;
+
+    cout << "Enter number of vertices and edges" << endl;
+    cin >> vertex >> edges;
+
+    // Adjacency list: each vertex stores (neighbor, weight)
+    vector<vector<pair<int,int>>> AdjList(vertex);
+
+    cout << "Enter edges in format: u v weight" << endl;
+    for (int i = 0; i < edges; i++) {
+        int u, v, weight;
+        cin >> u >> v >> weight;
+
+        // Directed edge u -> v with given weight
+        AdjList[u].push_back({v, weight});
+    }
+
+    cout << "\nAdjacency List:\n";
+    for (int i = 0; i < vertex; i++) {
+        cout << i << " -> ";
+        for (auto edge : AdjList[i]) {
+            cout << "(" << edge.first << ", " << edge.second << ") ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
+
