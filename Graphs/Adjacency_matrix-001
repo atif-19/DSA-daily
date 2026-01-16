@@ -1,0 +1,61 @@
+#include <iostream>
+#include <vector>
+using namespace std;
+
+/*
+------------------------------------------------------------
+APPROACH: Adjacency Matrix (Directed Weighted Graph)
+------------------------------------------------------------
+- We use a 2D matrix `AdjMat` of size V x V
+- AdjMat[u][v] stores the weight of the edge from u -> v
+- If there is no edge, the value remains 0
+
+Graph Type:
+- Directed
+- Weighted
+- Vertices are labeled from 0 to V-1
+
+Why this representation?
+- Simple and intuitive
+- Fast edge existence check
+- Best suited for dense graphs
+------------------------------------------------------------
+
+TIME COMPLEXITY:
+- Creating matrix: O(V^2)
+- Inserting E edges: O(E)
+- Printing matrix: O(V^2)
+
+SPACE COMPLEXITY:
+- O(V^2) for adjacency matrix
+------------------------------------------------------------
+*/
+
+int main() {
+    int vertex, edges;
+
+    cout << "Enter number of vertices and edges" << endl;
+    cin >> vertex >> edges;
+
+    // Initialize adjacency matrix with 0 (no edge)
+    vector<vector<int>> AdjMat(vertex, vector<int>(vertex, 0));
+
+    cout << "Enter edges in format: u v weight" << endl;
+    for (int i = 0; i < edges; i++) {
+        int u, v, weight;
+        cin >> u >> v >> weight;
+
+        // Directed edge u -> v with given weight
+        AdjMat[u][v] = weight;
+    }
+
+    cout << "\nAdjacency Matrix:\n";
+    for (int i = 0; i < vertex; i++) {
+        for (int j = 0; j < vertex; j++) {
+            cout << AdjMat[i][j] << " ";
+        }
+        cout << endl;
+    }
+
+    return 0;
+}
