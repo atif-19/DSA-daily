@@ -1,0 +1,73 @@
+class Solution {
+  public:
+
+    /*
+        DFS function to detect cycle in an undirected graph.
+
+        node   -> current node being visited
+        visited-> keeps track of visited nodes
+        edges  -> adjacency list
+        prev   -> parent of the current node (to avoid false cycle detection)
+    */
+    bool DFS(int node,
+             unordered_map<int,int>& visited,
+             vector<vector<int>>& edges,
+             int prev) {
+
+        // mark current node as visited
+        visited[node] = 1;
+
+        // explore all adjacent vertices
+        for (int i = 0; i < edges[node].size(); i++) {
+            int neighbor = edges[node][i];
+
+            // if neighbor is parent, skip it
+            // (because in undirected graph, parent will always appear)
+            if (neighbor == prev)
+                continue;
+
+            // if neighbor is already visited and not parent
+            // then a cycle exists
+            if (visited[neighbor]) {
+                return true;
+            }
+
+            // recursively visit unvisited neighbor
+            if (DFS(neighbor, visited, edges, node))
+                return true;
+        }
+
+        // no cycle found from this path
+        return false;
+    }
+
+    bool isCycle(int V, vector<vector<int>>& edges) {
+
+        // Step 1: Convert edge list to adjacency list
+        vector<vector<int>> adj(V);
+        for (int i = 0; i < edges.size(); i++) {
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+        }
+
+        // visited map to track visited nodes
+        unordered_map<int,int> visited;
+
+        /*
+            Step 2: Graph can be disconnected,
+            so we run DFS from every unvisited node
+        */
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+
+                // if cycle is found in any component
+                // return true immediately
+                if (DFS(i, visited, adj, -1))
+                    return true;
+            }
+        }
+
+        // no cycle found in any component
+        return false;
+    }
+};
