@@ -1,0 +1,66 @@
+/*
+Problem:
+---------
+Depth First Search (DFS) of a Graph
+
+Given an adjacency list representation of a graph,
+perform Depth First Search (DFS) starting from node 0
+and return the order of traversal.
+
+
+Approach:
+---------
+Depth First Search (Recursive)
+
+1. Use a visited array to track visited nodes.
+2. Start DFS from node 0.
+3. Mark the current node as visited and add it to the result.
+4. Recursively visit all unvisited adjacent nodes.
+5. Continue until all reachable nodes from the start node are visited.
+
+
+Time Complexity:
+----------------
+O(V + E)
+V = number of vertices
+E = number of edges
+Each vertex and edge is visited exactly once.
+
+
+Space Complexity:
+-----------------
+O(V)
+Used for:
+- Visited array
+- Recursion stack (worst case)
+- Result vector
+*/
+
+class Solution {
+public:
+    void DFS(int node, vector<vector<int>>& adj,
+             vector<int>& visited, vector<int>& ans) {
+
+        // mark current node as visited
+        visited[node] = 1;
+        ans.push_back(node);
+
+        // visit all unvisited neighbors
+        for (int i = 0; i < adj[node].size(); i++) {
+            if (!visited[adj[node][i]]) {
+                DFS(adj[node][i], adj, visited, ans);
+            }
+        }
+    }
+
+    vector<int> dfs(vector<vector<int>>& adj) {
+
+        vector<int> visited(adj.size(), 0);  // tracks visited nodes
+        vector<int> ans;                     // stores DFS traversal
+
+        // start DFS from node 0
+        DFS(0, adj, visited, ans);
+
+        return ans;
+    }
+};
