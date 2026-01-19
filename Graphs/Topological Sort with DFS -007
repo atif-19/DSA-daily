@@ -1,0 +1,81 @@
+class Solution {
+  public:
+    /*
+        Problem:
+        Find the Topological Sort of a Directed Acyclic Graph (DAG).
+
+        Approach (DFS-based Topological Sort):
+        - Convert the given edge list into an adjacency list.
+        - Use Depth First Search (DFS) to traverse the graph.
+        - For each node:
+            - Visit all its unvisited neighbors first.
+            - Push the node into a stack AFTER all its neighbors
+              are completely processed.
+        - Finally, pop elements from the stack to get the
+          topological ordering.
+
+        Key Idea:
+        - A node is added to the stack only after all nodes
+          dependent on it are already placed below it.
+        - This ensures correct topological order.
+
+        Note:
+        - This approach works only for Directed Acyclic Graphs (DAG).
+        - Topological sorting is not defined for graphs with cycles.
+
+        Time Complexity:
+        - Building adjacency list: O(V + E)
+        - DFS traversal: O(V + E)
+        - Stack operations: O(V)
+        - Overall: O(V + E)
+
+        Space Complexity:
+        - Adjacency list: O(V + E)
+        - Visited array: O(V)
+        - Recursion stack (DFS): O(V)
+        - Explicit stack for topo sort: O(V)
+        - Overall: O(V + E)
+    */
+
+    // DFS helper function
+    void DFS(vector<vector<int>>& adjList, stack<int>& st, int node, vector<int>& visited) {
+        visited[node] = 1;
+
+        // Visit all unvisited neighbors
+        for (int i = 0; i < adjList[node].size(); i++) {
+            int neighbor = adjList[node][i];
+            if (!visited[neighbor])
+                DFS(adjList, st, neighbor, visited);
+        }
+
+        // Push node after all neighbors are processed
+        st.push(node);
+    }
+
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+
+        // Convert edge list to adjacency list
+        vector<vector<int>> adjList(V);
+        for (int i = 0; i < edges.size(); i++) {
+            adjList[edges[i][0]].push_back(edges[i][1]);
+        }
+
+        stack<int> st;
+        vector<int> visited(V, 0);
+
+        // Run DFS for all components
+        for (int i = 0; i < V; i++) {
+            if (!visited[i])
+                DFS(adjList, st, i, visited);
+        }
+
+        // Extract topological order from stack
+        vector<int> ans;
+        while (!st.empty()) {
+            ans.push_back(st.top());
+            st.pop();
+        }
+
+        return ans;
+    }
+};
