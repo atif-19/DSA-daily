@@ -1,0 +1,83 @@
+class Solution {
+  public:
+    /*
+        Problem:
+        Detect a cycle in an undirected graph.
+
+        Approach (BFS with Parent Tracking):
+        - First, convert the given edge list into an adjacency list.
+        - Since the graph can be disconnected, we run BFS from every unvisited node.
+        - For BFS, we store (currentNode, parentNode) in the queue.
+        - While traversing:
+            - If we encounter a visited neighbor that is NOT the parent,
+              then a cycle exists.
+        - If BFS finishes for all components without finding such a case,
+          the graph has no cycle.
+
+        Why parent is needed:
+        - In an undirected graph, every edge is bidirectional.
+        - Without parent tracking, we would always think the immediate
+          backward edge is a cycle.
+        - Parent helps us ignore that trivial backward edge.
+
+        Time Complexity:
+        - Building adjacency list: O(V + E)
+        - BFS traversal: each vertex and edge visited once → O(V + E)
+        - Overall: O(V + E)
+
+        Space Complexity:
+        - Adjacency list: O(V + E)
+        - Visited array: O(V)
+        - Queue (BFS): O(V)
+        - Overall: O(V + E)
+    */
+    bool isCycle(int V, vector<vector<int>>& edges) {
+        
+        // Build adjacency list from edge list
+        vector<vector<int>> adj(V);
+        for (int i = 0; i < edges.size(); i++) {
+            adj[edges[i][0]].push_back(edges[i][1]);
+            adj[edges[i][1]].push_back(edges[i][0]);
+        }
+
+        // Visited array to track visited vertices
+        vector<int> visited(V, 0);
+
+        // Graph may be disconnected, so check from every vertex
+        for (int i = 0; i < V; i++) {
+            if (!visited[i]) {
+
+                // Queue stores {currentNode, parentNode}
+                queue<pair<int,int>> q;
+                q.push({i, -1});
+                visited[i] = 1;
+
+                while (!q.empty()) {
+                    int node = q.front().first;
+                    int parent = q.front().second;
+                    q.pop();
+
+                    // Traverse all neighbors
+                    for (int j = 0; j < adj[node].size(); j++) {
+                        int neighbor = adj[node][j];
+
+                        // Ignore the edge going back to parent
+                        if (neighbor == parent)
+                            continue;
+
+                        // If neighbor is already visited and not parent → cycle
+                        if (visited[neighbor])
+                            return true;
+
+                        // Otherwise, visit neighbor
+                        visited[neighbor] = 1;
+                        q.push({neighbor, node});
+                    }
+                }
+            }
+        }
+
+        // No cycle found
+        return false;
+    }
+};
