@@ -1,0 +1,75 @@
+class Solution {
+  public:
+    // DFS helper function to detect cycle in directed graph
+    // node      : current node we are visiting
+    // path[]    : tracks nodes in current recursion stack
+    // visited[] : tracks nodes fully processed
+    bool DFS(vector<vector<int>>& adjList, int node, vector<int>& path, vector<int>& visited){
+        path[node] = 1;  // mark node as part of current DFS path
+
+        for(int i = 0; i < adjList[node].size(); i++){
+            int neighbor = adjList[node][i];
+
+            // back edge found → cycle exists
+            if(path[neighbor] == 1)
+                return true;
+
+            // if already fully visited, skip
+            if(visited[neighbor])
+                continue;
+
+            // DFS on neighbor
+            if(DFS(adjList, neighbor, path, visited))
+                return true;
+        }
+
+        path[node] = 0;       // remove node from recursion stack
+        visited[node] = 1;    // mark node as fully processed
+        return false;
+    }
+
+    // Main function to detect cycle in directed graph
+    // V     : number of vertices
+    // edges : list of directed edges [u, v] (u -> v)
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+        // convert edge list to adjacency list
+        vector<vector<int>> adjList(V);
+        for(int i = 0; i < edges.size(); i++){
+            adjList[edges[i][0]].push_back(edges[i][1]);
+        }
+
+        // visited array to track fully processed nodes
+        vector<int> visited(V, 0);
+        // path array to track nodes in current DFS recursion stack
+        vector<int> path(V, 0);
+
+        // DFS from every unvisited node (graph may be disconnected)
+        for(int i = 0; i < V; i++){
+            if(!visited[i] && DFS(adjList, i, path, visited))
+                return true;  // cycle detected
+        }
+
+        return false;  // no cycle in the graph
+    }
+};
+
+/*
+APPROACH:
+- Use DFS to traverse the graph.
+- Maintain a `path` array to track nodes in current DFS stack.
+- If we encounter a node already in `path`, a cycle exists.
+- Use `visited` array to avoid redundant DFS calls.
+- Check each vertex in case the graph is disconnected.
+
+TIME COMPLEXITY: O(V + E)
+- Each node is visited once, and each edge is traversed once.
+
+SPACE COMPLEXITY: O(V)
+- `visited` array + `path` array + DFS recursion stack.
+
+APPLICATIONS:
+- Detecting deadlocks in operating systems.
+- Checking prerequisites in course scheduling.
+- Dependency resolution in package managers.
+- Any scenario where cyclic dependencies in directed graphs must be detected.
+*/
