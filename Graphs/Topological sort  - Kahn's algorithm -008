@@ -1,0 +1,84 @@
+class Solution {
+  public:
+    /*
+        Problem:
+        Find the Topological Sort of a Directed Acyclic Graph (DAG).
+
+        Approach (Kahn’s Algorithm – BFS using Indegree):
+        - Convert the given edge list into an adjacency list.
+        - Compute indegree of every vertex.
+        - Push all vertices with indegree = 0 into a queue.
+        - Repeatedly:
+            - Pop a node from the queue and add it to the answer.
+            - Reduce indegree of all its neighbors.
+            - If any neighbor’s indegree becomes 0, push it into the queue.
+        - The order in which nodes are removed from the queue forms
+          the topological ordering.
+
+        Key Idea:
+        - A node can be placed in the topological order only when
+          all its incoming edges are removed (indegree becomes 0).
+
+        Note:
+        - This algorithm works only for DAGs.
+        - If the graph contains a cycle, a valid topological order
+          does not exist (queue will not process all vertices).
+
+        Time Complexity:
+        - Building adjacency list: O(V + E)
+        - Computing indegree: O(V + E)
+        - BFS traversal: O(V + E)
+        - Overall: O(V + E)
+
+        Space Complexity:
+        - Adjacency list: O(V + E)
+        - Indegree array: O(V)
+        - Queue: O(V)
+        - Answer vector: O(V)
+        - Overall: O(V + E)
+    */
+
+    vector<int> topoSort(int V, vector<vector<int>>& edges) {
+
+        // Convert edge list to adjacency list
+        vector<vector<int>> adjList(V);
+        for (int i = 0; i < edges.size(); i++) {
+            adjList[edges[i][0]].push_back(edges[i][1]);
+        }
+
+        // Create indegree array
+        vector<int> indegree(V, 0);
+        for (int i = 0; i < adjList.size(); i++) {
+            for (int j = 0; j < adjList[i].size(); j++) {
+                indegree[adjList[i][j]]++;
+            }
+        }
+
+        // Push all vertices with indegree 0 into the queue
+        queue<int> q;
+        for (int i = 0; i < indegree.size(); i++) {
+            if (indegree[i] == 0)
+                q.push(i);
+        }
+
+        // Store topological order
+        vector<int> ans;
+
+        // BFS traversal
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+            ans.push_back(node);
+
+            // Reduce indegree of neighbors
+            for (int i = 0; i < adjList[node].size(); i++) {
+                int neighbor = adjList[node][i];
+                indegree[neighbor]--;
+                if (indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+
+        return ans;
+    }
+};
