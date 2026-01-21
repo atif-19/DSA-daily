@@ -1,0 +1,86 @@
+class Solution {
+  public:
+    /*
+        APPROACH (BFS + Graph Coloring):
+
+        A graph is bipartite if we can color all vertices using 2 colors
+        such that no two adjacent vertices have the same color.
+
+        We use BFS to:
+        - Traverse the graph level by level
+        - Assign alternate colors (0 and 1) to adjacent vertices
+
+        Color meanings:
+        - -1 : Uncolored (unvisited)
+        -  0 : Color A
+        -  1 : Color B
+
+        If at any point two adjacent vertices have the same color,
+        the graph is NOT bipartite.
+
+        The graph may be disconnected, so we run BFS from every
+        uncolored vertex.
+    */
+
+    bool isBipartite(int V, vector<vector<int>> &edges) {
+
+        // Step 1: Convert edge list to adjacency list
+        vector<vector<int>> adjList(V);
+        for (int i = 0; i < edges.size(); i++) {
+            adjList[edges[i][0]].push_back(edges[i][1]);
+            adjList[edges[i][1]].push_back(edges[i][0]);
+        }
+
+        // Color array:
+        // -1 -> uncolored
+        //  0 -> first color
+        //  1 -> second color
+        vector<int> color(V, -1);
+
+        // Step 2: Handle disconnected components
+        for (int i = 0; i < V; i++) {
+
+            // If vertex is already colored, skip it
+            if (color[i] != -1)
+                continue;
+
+            // Step 3: Start BFS from uncolored vertex
+            queue<int> q;
+            q.push(i);
+            color[i] = 0;
+
+            // Step 4: BFS traversal
+            while (!q.empty()) {
+                int node = q.front();
+                q.pop();
+
+                for (int j = 0; j < adjList[node].size(); j++) {
+                    int neighbor = adjList[node][j];
+
+                    // If neighbor is uncolored, assign opposite color
+                    if (color[neighbor] == -1) {
+                        color[neighbor] = 1 - color[node];
+                        q.push(neighbor);
+                    }
+                    // If neighbor has same color, graph is not bipartite
+                    else if (color[neighbor] == color[node]) {
+                        return false;
+                    }
+                }
+            }
+        }
+
+        // Step 5: All vertices colored successfully
+        return true;
+    }
+};
+
+/*
+    TIME COMPLEXITY:
+    - O(V + E)
+      Each vertex and edge is processed once.
+
+    SPACE COMPLEXITY:
+    - O(V + E) for adjacency list
+    - O(V) for color array and BFS queue
+*/
