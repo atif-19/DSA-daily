@@ -1,0 +1,58 @@
+class Solution {
+  public:
+    bool isCyclic(int V, vector<vector<int>> &edges) {
+
+        // We use Kahn's Algorithm (Topological Sort using BFS)
+        // Idea:
+        // If the topological sort contains all V vertices → no cycle
+        // If some vertices are left out → cycle exists
+
+        // Step 1: Convert edge list into adjacency list
+        vector<vector<int>> adjList(V);
+        for (int i = 0; i < edges.size(); i++) {
+            adjList[edges[i][0]].push_back(edges[i][1]);
+        }
+
+        // Step 2: Calculate indegree of each vertex
+        // indegree[i] = number of incoming edges to vertex i
+        vector<int> indegree(V, 0);
+        for (int i = 0; i < V; i++) {
+            for (int j = 0; j < adjList[i].size(); j++) {
+                indegree[adjList[i][j]]++;
+            }
+        }
+
+        // Step 3: Push all vertices with indegree 0 into the queue
+        queue<int> q;
+        for (int i = 0; i < V; i++) {
+            if (indegree[i] == 0)
+                q.push(i);
+        }
+
+        // count will store the number of vertices processed
+        int count = 0;
+
+        // Step 4: Perform BFS (Topological Sort)
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+
+            // Increment count for each processed node
+            count++;
+
+            // Reduce indegree of neighboring vertices
+            for (int i = 0; i < adjList[node].size(); i++) {
+                int neighbor = adjList[node][i];
+                indegree[neighbor]--;
+
+                // If indegree becomes 0, push it into the queue
+                if (indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+
+        // Step 5:
+        // If count != V, not all vertices were processed → cycle exists
+        return count != V;
+    }
+};
