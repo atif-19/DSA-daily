@@ -1,0 +1,99 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+    PROBLEM:
+    --------
+    Count the number of X-shaped regions in a grid.
+
+    - 'X' represents a filled cell
+    - 'O' represents an empty cell
+    - An X-shape is a group of connected 'X' cells
+    - Connectivity is allowed only in 4 directions
+      (up, down, left, right)
+
+    APPROACH:
+    ---------
+    - Traverse the grid cell by cell.
+    - When an unvisited 'X' is found:
+        - Increment the count.
+        - Perform BFS to visit all connected 'X' cells.
+        - Mark visited cells as 'P' (processed) to avoid revisits.
+    - BFS ensures the entire connected component is covered.
+
+    WHY BFS?
+    --------
+    BFS/DFS both are valid.
+    BFS is used here for clean and iterative traversal.
+    */
+
+    int n, m;
+
+    // 4-direction movement
+    int dx[4] = {0, 0, 1, -1};
+    int dy[4] = {-1, 1, 0, 0};
+
+    // Check grid boundaries
+    bool valid(int r, int c) {
+        return r >= 0 && c >= 0 && r < n && c < m;
+    }
+
+    int xShape(vector<vector<char>>& grid) {
+        n = grid.size();
+        m = grid[0].size();
+
+        int count = 0;
+        queue<pair<int,int>> q;
+
+        // Traverse entire grid
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+
+                // Found a new X-shape
+                if(grid[i][j] == 'X') {
+                    count++;
+                    q.push({i, j});
+                    grid[i][j] = 'P'; // mark visited
+
+                    // BFS to mark the whole X-shape
+                    while(!q.empty()) {
+                        int row = q.front().first;
+                        int col = q.front().second;
+                        q.pop();
+
+                        for(int k = 0; k < 4; k++) {
+                            int nr = row + dx[k];
+                            int nc = col + dy[k];
+
+                            if(valid(nr, nc) && grid[nr][nc] == 'X') {
+                                q.push({nr, nc});
+                                grid[nr][nc] = 'P';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return count;
+    }
+};
+
+/*
+TIME COMPLEXITY:
+----------------
+O(n * m)
+Each cell is visited once.
+
+SPACE COMPLEXITY:
+-----------------
+O(n * m)
+Queue may store all cells in the worst case.
+
+KEY CONCEPTS:
+-------------
+- BFS / Flood Fill
+- Connected Components
+- Grid Traversal
+*/
