@@ -1,0 +1,109 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+    ========================= APPROACH =========================
+    This is a classic Multi-Source BFS problem (similar to Rotting Oranges).
+
+    - Each cell in the hospital grid represents:
+        0 -> Empty cell
+        1 -> Healthy patient
+        2 -> Infected patient
+
+    - All initially infected patients (value 2) are pushed into the queue first.
+      This allows us to spread the infection simultaneously from all sources.
+
+    - BFS is performed level by level:
+        Each level represents 1 unit of time.
+        During each level, infected patients spread the infection
+        to their adjacent healthy patients (up, down, left, right).
+
+    - We mark newly infected patients immediately to avoid reprocessing.
+
+    - After BFS completes:
+        If any healthy patient (1) still exists, return -1
+        (means some patients are isolated and never infected).
+
+    - Otherwise, return total time taken to infect all patients.
+    ============================================================
+    */
+
+    int row[4] = {0, 0, -1, 1};
+    int col[4] = {-1, 1, 0, 0};
+
+    int n, m;
+
+    int helpaterp(vector<vector<int>> hospital) {
+        queue<pair<int,int>> q;
+
+        n = hospital.size();
+        m = hospital[0].size();
+
+        // Step 1: Push all initially infected patients into queue
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(hospital[i][j] == 2){
+                    q.push({i, j});
+                }
+            }
+        }
+
+        // Step 2: Multi-source BFS
+        int time = 0;
+
+        while(!q.empty()){
+            int size = q.size();
+            bool infected = false;
+
+            for(int i = 0; i < size; i++){
+                int r = q.front().first;
+                int c = q.front().second;
+                q.pop();
+
+                for(int k = 0; k < 4; k++){
+                    int nr = r + row[k];
+                    int nc = c + col[k];
+
+                    if(valid(nr, nc) && hospital[nr][nc] == 1){
+                        hospital[nr][nc] = 2; // mark infected
+                        q.push({nr, nc});
+                        infected = true;
+                    }
+                }
+            }
+
+            // Increase time only if infection actually spread
+            if(infected) time++;
+        }
+
+        // Step 3: Check if any healthy patient is left
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < m; j++){
+                if(hospital[i][j] == 1)
+                    return -1;
+            }
+        }
+
+        return time;
+    }
+
+    // Utility function to check valid grid coordinates
+    bool valid(int i, int j){
+        return i >= 0 && i < n && j >= 0 && j < m;
+    }
+};
+
+/*
+========================= COMPLEXITY =========================
+
+Time Complexity:
+- O(n * m)
+  Each cell is visited at most once during BFS.
+
+Space Complexity:
+- O(n * m)
+  Queue can hold all cells in the worst case.
+
+==============================================================
+*/
