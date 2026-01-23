@@ -1,0 +1,113 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+    APPROACH:
+    ----------
+    This is a classic Multi-Source BFS problem (Rotting Oranges).
+
+    - Each cell in the grid represents:
+        0 -> Empty cell
+        1 -> Fresh orange
+        2 -> Rotten orange
+
+    - All initially rotten oranges are pushed into the queue first.
+    - BFS is performed level by level.
+    - Each BFS level represents 1 unit of time.
+    - From each rotten orange, we rot all adjacent fresh oranges (up, down, left, right).
+    - Newly rotten oranges are pushed into the queue for the next level.
+    - At the end, if any fresh orange remains, return -1.
+    - Otherwise, return the time taken.
+
+    WHY MULTI-SOURCE BFS?
+    ---------------------
+    Because multiple oranges can start rotting at the same time.
+    Pushing all initial rotten oranges together ensures correct time calculation.
+    */
+
+    int n, m;
+
+    // Direction vectors for 4-directional movement
+    int row[4] = {0, 0, -1, 1};
+    int col[4] = {-1, 1, 0, 0};
+
+    // Checks if a cell index is within grid boundaries
+    bool valid(int i, int j) {
+        return i >= 0 && i < n && j >= 0 && j < m;
+    }
+
+    int orangesRot(vector<vector<int>>& hospital) {
+        queue<pair<int,int>> q;
+
+        n = hospital.size();
+        m = hospital[0].size();
+
+        // Push all initially rotten oranges into the queue
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(hospital[i][j] == 2) {
+                    q.push({i, j});
+                }
+            }
+        }
+
+        int time = 0;
+
+        // BFS traversal (each level = 1 unit of time)
+        while(!q.empty()) {
+            time++;
+            int size = q.size();
+
+            for(int i = 0; i < size; i++) {
+                int r = q.front().first;
+                int c = q.front().second;
+                q.pop();
+
+                // Try to rot all 4 adjacent cells
+                for(int k = 0; k < 4; k++) {
+                    int nr = r + row[k];
+                    int nc = c + col[k];
+
+                    if(valid(nr, nc) && hospital[nr][nc] == 1) {
+                        hospital[nr][nc] = 2; // make it rotten
+                        q.push({nr, nc});
+                    }
+                }
+            }
+        }
+
+        // Check if any fresh orange remains
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(hospital[i][j] == 1)
+                    return -1;
+            }
+        }
+
+        // If there were no rotten oranges initially
+        if(time == 0)
+            return 0;
+
+        // Subtract 1 because last level doesn't contribute to rotting
+        return time - 1;
+    }
+};
+
+/*
+TIME COMPLEXITY:
+---------------
+O(n * m)
+Each cell is visited at most once.
+
+SPACE COMPLEXITY:
+----------------
+O(n * m)
+Queue can hold all cells in the worst case.
+
+KEY CONCEPTS USED:
+------------------
+- Multi-source BFS
+- Level-order traversal
+- Grid traversal
+*/
