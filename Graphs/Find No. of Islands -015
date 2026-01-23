@@ -1,0 +1,99 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+    PROBLEM:
+    --------
+    Count the number of islands in a grid.
+
+    - 'L' represents land
+    - 'W' represents water
+    - An island is formed by connecting adjacent lands
+    - Connectivity is allowed in ALL 8 directions
+      (horizontal, vertical, and diagonal)
+
+    APPROACH:
+    ---------
+    - Traverse the grid cell by cell.
+    - When an unvisited land cell ('L') is found:
+        - Increment island count.
+        - Perform BFS to visit all connected land cells.
+        - Mark visited land as 'I' to avoid revisiting.
+    - BFS ensures all cells of one island are covered at once.
+
+    WHY BFS?
+    --------
+    BFS/DFS both work.
+    BFS is used here for clarity and level-wise traversal.
+    */
+
+    int n, m;
+
+    // 8-direction movement (including diagonals)
+    int dx[8] = {0, 0, 1, -1, 1, -1, 1, -1};
+    int dy[8] = {-1, 1, 0, 0, -1, -1, 1, 1};
+
+    // Check if the cell lies inside the grid
+    bool valid(int r, int c) {
+        return r >= 0 && c >= 0 && r < n && c < m;
+    }
+
+    int countIslands(vector<vector<char>>& grid) {
+        n = grid.size();
+        m = grid[0].size();
+
+        int islands = 0;
+        queue<pair<int,int>> q;
+
+        // Traverse the entire grid
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+
+                // If unvisited land is found, start BFS
+                if(grid[i][j] == 'L') {
+                    islands++;
+                    q.push({i, j});
+                    grid[i][j] = 'I'; // mark as visited
+
+                    // BFS to mark the entire island
+                    while(!q.empty()) {
+                        int row = q.front().first;
+                        int col = q.front().second;
+                        q.pop();
+
+                        for(int k = 0; k < 8; k++) {
+                            int nr = row + dx[k];
+                            int nc = col + dy[k];
+
+                            if(valid(nr, nc) && grid[nr][nc] == 'L') {
+                                q.push({nr, nc});
+                                grid[nr][nc] = 'I';
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return islands;
+    }
+};
+
+/*
+TIME COMPLEXITY:
+----------------
+O(n * m)
+Each cell is visited at most once.
+
+SPACE COMPLEXITY:
+-----------------
+O(n * m)
+Queue may store all land cells in the worst case.
+
+KEY CONCEPTS USED:
+------------------
+- BFS traversal
+- Flood fill technique
+- Grid traversal with 8-direction connectivity
+*/
