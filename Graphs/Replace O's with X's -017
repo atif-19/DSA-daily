@@ -1,0 +1,128 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+    PROBLEM:
+    --------
+    Given a matrix containing 'X' and 'O', capture all regions surrounded by 'X'.
+
+    - A region of 'O' is captured if it is completely surrounded by 'X'.
+    - Any 'O' connected to the boundary (directly or indirectly) cannot be captured.
+
+    APPROACH (Boundary BFS – Optimal Solution):
+    -------------------------------------------
+    Instead of checking every 'O' region individually, we:
+    
+    1. Start BFS from all boundary cells that contain 'O'.
+    2. Mark all 'O' cells connected to the boundary as 'P' (protected).
+    3. After BFS:
+        - All remaining 'O' cells are surrounded → convert them to 'X'.
+        - Convert all 'P' cells back to 'O'.
+
+    This ensures only truly surrounded regions are captured.
+
+    WHY THIS WORKS:
+    ---------------
+    Any 'O' that can reach the boundary cannot be surrounded.
+    BFS from boundaries marks exactly those cells.
+    */
+
+    int n, m;
+
+    // 4-direction movement (up, down, left, right)
+    int row[4] = {0, 0, 1, -1};
+    int col[4] = {1, -1, 0, 0};
+
+    // Check if indices are inside the matrix
+    bool valid(int i, int j) {
+        return i >= 0 && j >= 0 && i < n && j < m;
+    }
+
+    void fill(vector<vector<char>>& mat) {
+        n = mat.size();
+        m = mat[0].size();
+
+        queue<pair<int,int>> q;
+
+        // 1st column
+        for(int i = 0; i < n; i++) {
+            if(mat[i][0] == 'O') {
+                q.push({i, 0});
+                mat[i][0] = 'P'; // mark as protected
+            }
+        }
+
+        // Last row
+        for(int j = 0; j < m; j++) {
+            if(mat[n - 1][j] == 'O') {
+                q.push({n - 1, j});
+                mat[n - 1][j] = 'P';
+            }
+        }
+
+        // Last column
+        for(int i = n - 1; i >= 0; i--) {
+            if(mat[i][m - 1] == 'O') {
+                q.push({i, m - 1});
+                mat[i][m - 1] = 'P';
+            }
+        }
+
+        // First row
+        for(int j = m - 1; j >= 1; j--) {
+            if(mat[0][j] == 'O') {
+                q.push({0, j});
+                mat[0][j] = 'P';
+            }
+        }
+
+        // BFS to mark all boundary-connected 'O's
+        while(!q.empty()) {
+            int r = q.front().first;
+            int c = q.front().second;
+            q.pop();
+
+            for(int k = 0; k < 4; k++) {
+                int nr = r + row[k];
+                int nc = c + col[k];
+
+                if(valid(nr, nc) && mat[nr][nc] == 'O') {
+                    mat[nr][nc] = 'P';
+                    q.push({nr, nc});
+                }
+            }
+        }
+
+        // Final transformation
+        for(int i = 0; i < n; i++) {
+            for(int j = 0; j < m; j++) {
+                if(mat[i][j] == 'O') {
+                    mat[i][j] = 'X'; // surrounded region
+                }
+                else if(mat[i][j] == 'P') {
+                    mat[i][j] = 'O'; // restore protected cells
+                }
+            }
+        }
+    }
+};
+
+/*
+TIME COMPLEXITY:
+----------------
+O(n * m)
+Each cell is visited at most once.
+
+SPACE COMPLEXITY:
+-----------------
+O(n * m)
+Queue can store all cells in the worst case.
+
+KEY CONCEPTS:
+-------------
+- Boundary BFS
+- Flood fill
+- Connected components
+- Grid traversal
+*/
