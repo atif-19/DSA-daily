@@ -1,0 +1,96 @@
+/*
+=====================================================
+Problem: Course Schedule II (Find Order of Tasks)
+
+You are given:
+- n tasks (0 to n-1)
+- A list of prerequisites where each pair [a, b]
+  means you must complete task b before task a.
+
+Return:
+- A valid ordering of tasks.
+- If no ordering is possible (cycle exists), return empty array.
+
+-----------------------------------------------------
+Approach:
+We use Topological Sort (Kahn's Algorithm - BFS).
+
+Key Idea:
+1. Represent tasks as a directed graph.
+2. Edge: b -> a (b must be done before a)
+3. Tasks with indegree = 0 can be done immediately.
+4. Repeatedly remove nodes with indegree 0 and reduce
+   indegree of their neighbors.
+5. If we process all nodes, ordering is possible.
+   Else, a cycle exists.
+
+-----------------------------------------------------
+Algorithm:
+1. Build adjacency list.
+2. Build indegree array.
+3. Push all nodes with indegree 0 into queue.
+4. While queue not empty:
+   - Pop node
+   - Add to answer
+   - Reduce indegree of neighbors
+   - If neighbor becomes 0, push into queue
+5. If answer size < n → return empty list
+6. Else return answer
+
+-----------------------------------------------------
+Time Complexity:  O(N + E)
+Space Complexity: O(N + E)
+N = number of nodes
+E = number of edges
+
+=====================================================
+*/
+
+class Solution {
+public:
+    vector<int> findOrder(int n, vector<vector<int>> &prerequisites) {
+        
+        // Adjacency list for directed graph
+        vector<vector<int>> adjList(n);
+        
+        // Indegree array
+        vector<int> indegree(n, 0);
+
+        // Build graph and indegree
+        for(int i = 0; i < prerequisites.size(); i++){
+            int after = prerequisites[i][0];
+            int before = prerequisites[i][1];
+            adjList[before].push_back(after);
+            indegree[after]++;
+        }
+
+        // Queue for nodes with indegree 0
+        queue<int> q;
+        for(int i = 0; i < n; i++){
+            if(indegree[i] == 0)
+                q.push(i);
+        }
+
+        vector<int> ans;
+
+        // Kahn's Algorithm
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            ans.push_back(node);
+
+            for(int neighbor : adjList[node]){
+                indegree[neighbor]--;
+                if(indegree[neighbor] == 0){
+                    q.push(neighbor);
+                }
+            }
+        }
+
+        // If cycle exists
+        if(ans.size() < n)
+            return {};
+
+        return ans;
+    }
+};
