@@ -1,0 +1,97 @@
+/*
+------------------------------------------------------------
+PROBLEM: Course Schedule / Prerequisite Tasks
+------------------------------------------------------------
+
+Given N tasks and P prerequisite pairs.
+Each pair (u, v) means: to do task u, you must first do task v.
+
+Goal:
+Check if it is possible to finish all N tasks.
+
+This becomes:
+- Each task -> node
+- Each prerequisite -> directed edge v -> u
+- If graph has a cycle → impossible
+- If DAG → possible
+
+------------------------------------------------------------
+APPROACH: Topological Sort (Kahn's Algorithm)
+------------------------------------------------------------
+
+1. Build adjacency list and indegree array.
+2. Push all nodes with indegree = 0 into queue.
+3. Repeatedly:
+   - Pop node
+   - Reduce indegree of its neighbors
+   - If any neighbor becomes indegree 0 → push to queue
+   - Count processed nodes
+4. If processed nodes == N → no cycle → return true
+5. Else → cycle exists → return false
+
+------------------------------------------------------------
+TIME COMPLEXITY:
+------------------------------------------------------------
+O(N + P)
+
+------------------------------------------------------------
+SPACE COMPLEXITY:
+------------------------------------------------------------
+O(N + P)
+
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    bool isPossible(int N, int P, vector<pair<int, int> >& prerequisites) {
+
+        // STEP 1: Build adjacency list & indegree array
+    
+        vector<vector<int>> adjList(N);
+        vector<int> indegree(N, 0);
+
+        for(int i = 0; i < P; i++){
+            int u = prerequisites[i].first;   // task to perform
+            int v = prerequisites[i].second;  // prerequisite
+
+            adjList[v].push_back(u);   // edge v -> u
+            indegree[u]++;
+        }
+
+        
+        // STEP 2: Push all nodes with indegree 0
+
+        queue<int> q;
+        int count = 0;   // number of processed nodes
+
+        for(int i = 0; i < N; i++){
+            if(indegree[i] == 0){
+                q.push(i);
+                count++;
+            }
+        }
+
+        
+        // STEP 3: Kahn's Algorithm
+        
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+
+            for(int neighbor : adjList[node]){
+                indegree[neighbor]--;
+
+                if(indegree[neighbor] == 0){
+                    q.push(neighbor);
+                    count++;
+                }
+            }
+        }
+
+        
+        // STEP 4: Cycle Check
+        
+        return count == N;
+    }
+};
