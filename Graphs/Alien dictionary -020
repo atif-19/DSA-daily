@@ -1,0 +1,126 @@
+/*
+------------------------------------------------------------
+PROBLEM: Alien Dictionary (Topological Sort on Characters)
+------------------------------------------------------------
+
+We are given a sorted dictionary of an alien language.
+Our task is to find the order of characters in that language.
+
+Idea:
+- Each adjacent word pair gives information about character ordering.
+- Treat each character as a node.
+- If char X comes before char Y in dictionary order, add edge X -> Y.
+- Finally perform Topological Sort (Kahn's Algorithm).
+
+------------------------------------------------------------
+APPROACH:
+------------------------------------------------------------
+
+1. Count all unique characters.
+2. Build adjacency list and indegree array:
+   - Compare each pair of adjacent words.
+   - Find first differing character.
+   - Add directed edge.
+   - Handle invalid prefix case.
+3. Push all characters with indegree = 0 into queue.
+4. Perform BFS Topological Sort.
+5. If topo size < number of unique characters => cycle => return "".
+6. Else build answer string.
+
+------------------------------------------------------------
+TIME COMPLEXITY:
+------------------------------------------------------------
+O(total characters in words + 26)
+
+------------------------------------------------------------
+SPACE COMPLEXITY:
+------------------------------------------------------------
+O(26 + edges)
+
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    string findOrder(vector<string> &words) {
+
+        // ----------------------------------------------------
+        // STEP 1: Count unique characters
+        // ----------------------------------------------------
+        vector<int> count(26, 0);
+        int N = 0;   // number of unique characters
+
+        for(int i = 0; i < words.size(); i++){
+            for(int j = 0; j < words[i].size(); j++){
+                if(count[words[i][j] - 'a'] == 0)
+                    N++;
+                count[words[i][j] - 'a']++;
+            }
+        }
+
+        // ----------------------------------------------------
+        // STEP 2: Build Graph (Adjacency List + Indegree)
+        // ----------------------------------------------------
+        vector<vector<int>> adjList(26);
+        vector<int> indegree(26, 0);
+
+        for(int i = 0; i < words.size() - 1; i++){
+            string w1 = words[i];
+            string w2 = words[i+1];
+
+            int j = 0, k = 0;
+
+            // Find first different character
+            while(j < w1.size() && k < w2.size() && w1[j] == w2[k]){
+                j++;
+                k++;
+            }
+
+            // Case 1: w1 is prefix of w2 -> valid
+            if(j == w1.size())
+                continue;
+
+            // Case 2: w2 is prefix of w1 -> invalid
+            if(j < w1.size() && k == w2.size())
+                return "";
+
+            // Create edge w1[j] -> w2[k]
+            adjList[w1[j] - 'a'].push_back(w2[k] - 'a');
+            indegree[w2[k] - 'a']++;
+        }
+
+        // ----------------------------------------------------
+        // STEP 3: Push all indegree 0 nodes
+        // ----------------------------------------------------
+        queue<int> q;
+        for(int i = 0; i < 26; i++){
+            if(count[i] > 0 && indegree[i] == 0)
+                q.push(i);
+        }
+
+        // ----------------------------------------------------
+        // STEP 4: Kahn's Algorithm (Topo Sort)
+        // ----------------------------------------------------
+        string ans = "";
+
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            ans += (node + 'a');
+
+            for(int neighbor : adjList[node]){
+                indegree[neighbor]--;
+                if(count[neighbor] > 0 && indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+
+        // ----------------------------------------------------
+        // STEP 5: Cycle Check
+        // ----------------------------------------------------
+        if(ans.size() < N)
+            return "";
+
+        return ans;
+    }
+};
