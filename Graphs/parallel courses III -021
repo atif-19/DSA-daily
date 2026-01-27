@@ -1,0 +1,94 @@
+/*
+    Problem:
+    --------
+    Given n courses, relations where relations[i] = [u, v] means
+    course u must be completed before course v,
+    and time[i] is the duration of course i.
+
+    Find the minimum total time required to finish all courses.
+
+    --------------------------------------------------------------
+
+    Approach:
+    ---------
+    This problem forms a Directed Acyclic Graph (DAG).
+
+    We use:
+    - Kahn’s Algorithm (Topological Sort using BFS)
+    - Dynamic Programming to store maximum time needed to reach each course
+
+    Steps:
+    1. Build adjacency list and indegree array
+    2. Push all nodes with indegree 0 into queue
+    3. Perform BFS (Kahn’s Algorithm)
+    4. For each neighbor, update the maximum time to reach it
+    5. Final answer = max(courseTime[i] + time[i])
+
+    --------------------------------------------------------------
+
+    Time Complexity:  O(N + M)
+    Space Complexity: O(N + M)
+
+    Where:
+    N = number of courses
+    M = number of relations
+*/
+
+class Solution {
+public:
+    int minimumTime(int n, vector<vector<int>>& relations, vector<int>& time) {
+
+        // Adjacency list
+        vector<vector<int>> adjList(n);
+
+        // Indegree array
+        vector<int> indegree(n, 0);
+
+        // Build graph
+        for(int i = 0; i < relations.size(); i++){
+            int u = relations[i][0] - 1; // prerequisite
+            int v = relations[i][1] - 1; // dependent course
+
+            adjList[u].push_back(v);
+            indegree[v]++;
+        }
+
+        // Queue for Kahn's Algorithm
+        queue<int> q;
+
+        // Push all nodes with indegree 0
+        for(int i = 0; i < n; i++){
+            if(indegree[i] == 0)
+                q.push(i);
+        }
+
+        // courseTime[i] = max time needed before starting course i
+        vector<int> courseTime(n, 0);
+
+        // Topological BFS
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+
+            for(int neighbor : adjList[node]){
+                indegree[neighbor]--;
+
+                // Update maximum time to reach neighbor
+                courseTime[neighbor] =
+                    max(courseTime[neighbor],
+                        courseTime[node] + time[node]);
+
+                if(indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+
+        // Find maximum finishing time
+        int ans = 0;
+        for(int i = 0; i < n; i++){
+            ans = max(ans, courseTime[i] + time[i]);
+        }
+
+        return ans;
+    }
+};
