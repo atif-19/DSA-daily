@@ -1,0 +1,113 @@
+/*
+    Problem:
+    --------
+    Given numCourses courses, prerequisites[i] = [u, v] means
+    course u must be taken before course v.
+
+    For each query [u, v], determine if u is a prerequisite of v.
+
+    ------------------------------------------------------------
+
+    Approach:
+    ---------
+    We use Topological Sort (Kahn’s Algorithm) along with
+    a data structure that stores all prerequisites of each course.
+
+    For each node:
+    pre[i] = set of all courses that must be completed before i.
+
+    While performing topological BFS:
+    - If u -> v exists,
+      then u is a prerequisite of v
+    - Also, every prerequisite of u
+      is also a prerequisite of v.
+
+    After building this structure,
+    each query can be answered in O(1).
+
+    ------------------------------------------------------------
+
+    Time Complexity:
+    Building graph: O(N + M)
+    Set propagation: up to O(N^2) in worst case
+    Queries: O(Q)
+
+    Space Complexity:
+    O(N^2) in worst case (storing prerequisites)
+
+    Where:
+    N = number of courses
+    M = number of prerequisite relations
+    Q = number of queries
+*/
+
+class Solution {
+public:
+    vector<bool> checkIfPrerequisite(int numCourses,
+                                     vector<vector<int>>& prerequisites,
+                                     vector<vector<int>>& queries) {
+
+        vector<bool> ans(queries.size(), false);
+
+        // Edge case: no prerequisites
+        if(prerequisites.size() == 0)
+            return ans;
+
+        // Adjacency list
+        vector<vector<int>> adjList(numCourses);
+
+        // Indegree array
+        vector<int> indegree(numCourses, 0);
+
+        // Build graph
+        for(int i = 0; i < prerequisites.size(); i++){
+            int u = prerequisites[i][0];
+            int v = prerequisites[i][1];
+            adjList[u].push_back(v);
+            indegree[v]++;
+        }
+
+        // Queue for Kahn's Algorithm
+        queue<int> q;
+        for(int i = 0; i < numCourses; i++){
+            if(indegree[i] == 0)
+                q.push(i);
+        }
+
+        // pre[i] stores all prerequisites of course i
+        vector<unordered_set<int>> pre(numCourses);
+
+        // Topological BFS
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+
+            for(int neighbor : adjList[node]){
+                indegree[neighbor]--;
+
+                // node is direct prerequisite of neighbor
+                pre[neighbor].insert(node);
+
+                // all prerequisites of node
+                // also become prerequisites of neighbor
+                for(int x : pre[node]){
+                    pre[neighbor].insert(x);
+                }
+
+                if(indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+
+        // Answer queries
+        for(int i = 0; i < queries.size(); i++){
+            int u = queries[i][0];
+            int v = queries[i][1];
+
+            if(pre[v].count(u))
+                ans[i] = true;
+        }
+
+        return ans;
+    }
+};
