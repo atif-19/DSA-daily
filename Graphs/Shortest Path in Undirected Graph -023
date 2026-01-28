@@ -1,0 +1,78 @@
+/*
+------------------------------------------------------------
+Problem: Shortest Path in Undirected Graph (Unweighted)
+Platform: GeeksforGeeks
+
+Approach:
+---------
+Since the graph is unweighted, Breadth First Search (BFS) is the
+most optimal way to find the shortest distance from a source node
+to all other nodes.
+
+Steps:
+1. Convert edge list into an adjacency list.
+2. Initialize a distance array with -1 (means unvisited).
+3. Set distance of source node = 0.
+4. Perform BFS:
+   - For each node, visit its neighbors.
+   - If neighbor is unvisited, update distance and push into queue.
+5. Return the distance array.
+
+Why BFS?
+--------
+In an unweighted graph, BFS explores nodes level by level, ensuring
+that the first time we reach a node is via the shortest path.
+
+Time Complexity:
+----------------
+O(V + E)
+V = number of vertices
+E = number of edges
+
+Space Complexity:
+-----------------
+O(V + E) for adjacency list
+O(V) for distance array and queue
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+    vector<int> shortestPath(int V, vector<vector<int>> &edges, int src) {
+
+        // Step 1: Build adjacency list
+        vector<vector<int>> adjList;
+        adjList.resize(V);
+
+        for (int i = 0; i < edges.size(); i++) {
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adjList[u].push_back(v);
+            adjList[v].push_back(u);
+        }
+
+        // Step 2: Distance array initialized with -1 (unvisited)
+        vector<int> dist(V, -1);
+
+        // Step 3: BFS initialization
+        queue<int> q;
+        dist[src] = 0;
+        q.push(src);
+
+        // Step 4: Perform BFS
+        while (!q.empty()) {
+            int node = q.front();
+            q.pop();
+
+            for (int neighbor : adjList[node]) {
+                if (dist[neighbor] == -1) {
+                    dist[neighbor] = dist[node] + 1;
+                    q.push(neighbor);
+                }
+            }
+        }
+
+        // Step 5: Return shortest distances
+        return dist;
+    }
+};
