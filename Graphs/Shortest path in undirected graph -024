@@ -1,0 +1,100 @@
+/*
+------------------------------------------------------------
+Problem: Shortest Path Between Two Nodes in an Undirected Graph
+Approach: Breadth First Search (BFS) + Parent Tracking
+
+Why BFS?
+--------
+Since the graph is unweighted, BFS guarantees the shortest path
+because it explores nodes level by level.
+
+Key Idea:
+---------
+Instead of storing distances, we store the parent of each node.
+Once BFS is complete, we reconstruct the path by moving backward
+from target to source using the parent array.
+
+Steps:
+------
+1. Convert edge list into adjacency list.
+2. Use BFS starting from source.
+3. Maintain a parent array to track the path.
+4. If target is unreachable, return empty.
+5. Otherwise, reconstruct path from target to source.
+6. Reverse the path and convert back to 1-based indexing.
+
+Time Complexity:
+----------------
+O(V + E)
+
+Space Complexity:
+-----------------
+O(V + E) for adjacency list
+O(V) for parent array and queue
+------------------------------------------------------------
+*/
+
+vector<int> shortestPath(
+    vector<pair<int,int>> edges,
+    int V,
+    int m,
+    int src,
+    int t
+){
+    // Convert to 0-based indexing
+    src--;
+    t--;
+
+    // STEP 1: Build adjacency list
+    vector<vector<int>> adjList(V);
+    for(int i = 0; i < edges.size(); i++){
+        int u = edges[i].first - 1;
+        int v = edges[i].second - 1;
+        adjList[u].push_back(v);
+        adjList[v].push_back(u);
+    }
+
+    // STEP 2: Parent array to reconstruct path
+    // parent[i] = node from which we reached i
+    vector<int> parent(V, -1);
+
+    // STEP 3: BFS initialization
+    queue<int> q;
+    q.push(src);
+    parent[src] = src;  // mark source as visited
+
+    // STEP 4: BFS traversal
+    while(!q.empty()){
+        int node = q.front();
+        q.pop();
+
+        for(int neighbor : adjList[node]){
+            if(parent[neighbor] == -1){
+                parent[neighbor] = node;
+                q.push(neighbor);
+            }
+        }
+    }
+
+    // STEP 5: If target is unreachable
+    if(parent[t] == -1)
+        return {};
+
+    // STEP 6: Reconstruct path from target to source
+    vector<int> ans;
+    while(t != src){
+        ans.push_back(t);
+        t = parent[t];
+    }
+    ans.push_back(src);
+
+    // Reverse to get source -> target
+    reverse(ans.begin(), ans.end());
+
+    // Convert back to 1-based indexing
+    for(int i = 0; i < ans.size(); i++){
+        ans[i]++;
+    }
+
+    return ans;
+}
