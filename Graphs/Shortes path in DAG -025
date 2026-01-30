@@ -1,0 +1,123 @@
+// User function Template for C++
+class Solution {
+  public:
+
+    /*
+    ============================================================
+    TOPOLOGICAL SORT USING KAHN'S ALGORITHM (BFS BASED)
+    ------------------------------------------------------------
+    Purpose:
+    Finds a linear ordering of vertices such that for every
+    directed edge u -> v, u appears before v in ordering.
+
+    Time Complexity: O(V + E)
+    Space Complexity: O(V)
+    ============================================================
+    */
+    void topological_sort(vector<vector<pair<int,int>>>& adjList,
+                          vector<int>& topo){
+
+        // indegree[i] = number of incoming edges to vertex i
+        vector<int> indegree(adjList.size(), 0);
+
+        // Compute indegree of each vertex
+        for(int i = 0; i < adjList.size(); i++){
+            for(int j = 0; j < adjList[i].size(); j++){
+                int node = adjList[i][j].first;
+                indegree[node]++;
+            }
+        }
+
+        // Push all vertices with indegree 0
+        queue<int> q;
+        for(int i = 0; i < indegree.size(); i++){
+            if(indegree[i] == 0)
+                q.push(i);
+        }
+
+        // BFS
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+
+            topo.push_back(node);
+
+            // Reduce indegree of neighbors
+            for(int i = 0; i < adjList[node].size(); i++){
+                int neighbor = adjList[node][i].first;
+                indegree[neighbor]--;
+
+                if(indegree[neighbor] == 0)
+                    q.push(neighbor);
+            }
+        }
+    }
+
+
+    /*
+    ============================================================
+    SHORTEST PATH IN DIRECTED ACYCLIC GRAPH (DAG)
+    ------------------------------------------------------------
+    Approach:
+    1. Build adjacency list.
+    2. Compute topological order of graph.
+    3. Initialize distance of source (0) as 0.
+    4. Traverse nodes in topological order and relax edges.
+
+    Why It Works:
+    In DAG, once a node is processed in topological order,
+    its shortest distance is finalized.
+
+    Time Complexity: O(V + E)
+    Space Complexity: O(V + E)
+    ============================================================
+    */
+    vector<int> shortestPath(int V, int E, vector<vector<int>>& edges) {
+
+        // Build adjacency list
+        vector<vector<pair<int,int>>> adjList(V);
+
+        for(int i = 0; i < E; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            int weight = edges[i][2];
+
+            adjList[u].push_back({v, weight});
+        }
+
+        // Get topological ordering
+        vector<int> topo;
+        topological_sort(adjList, topo);
+
+        // dist[i] = shortest distance from src (0) to i
+        vector<int> dist(V, -1);
+        dist[0] = 0;   // source
+
+        // Process vertices in topological order
+        for(int i = 0; i < topo.size(); i++){
+            int node = topo[i];
+
+            // Skip unreachable nodes
+            if(dist[node] == -1)
+                continue;
+
+            // Relax all outgoing edges
+            for(int j = 0; j < adjList[node].size(); j++){
+                int neighbor = adjList[node][j].first;
+                int weight   = adjList[node][j].second;
+
+                // First time visit
+                if(dist[neighbor] == -1){
+                    dist[neighbor] = dist[node] + weight;
+                }
+                // Found shorter path
+                else{
+                    dist[neighbor] = min(dist[neighbor],
+                                         dist[node] + weight);
+                }
+            }
+        }
+
+        return dist;
+    }
+};
