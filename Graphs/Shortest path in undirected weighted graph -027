@@ -1,0 +1,113 @@
+/*
+---------------------------------------------------------
+Dijkstra’s Algorithm - Shortest Path in Weighted Graph
+---------------------------------------------------------
+
+Problem:
+Given an undirected weighted graph with N nodes and M edges,
+return the shortest path from node 1 to node N.
+If no path exists, return {-1}.
+
+Approach:
+- Use Dijkstra’s algorithm with a min-heap (priority_queue)
+- Maintain:
+  -> dist[]   : shortest distance from source
+  -> parent[]: to reconstruct the path
+- Lazy deletion technique is used for priority queue
+
+Time Complexity:
+O((N + M) * log N)
+
+Space Complexity:
+O(N + M)
+
+---------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    vector<int> shortestPath(int n, int m, vector<vector<int>>& edges) {
+
+        // Number of vertices
+        int V = n;
+
+        // Adjacency list: {neighbor, weight}
+        vector<vector<pair<int,int>>> adjList(V);
+
+        // Build graph (convert to 0-based indexing)
+        for(int i = 0; i < edges.size(); i++){
+            int u = edges[i][0] - 1;
+            int v = edges[i][1] - 1;
+            int weight = edges[i][2];
+
+            adjList[u].push_back({v, weight});
+            adjList[v].push_back({u, weight});
+        }
+
+        // parent[i] stores previous node in shortest path
+        vector<int> parent(V, -1);
+
+        // dist[i] stores shortest distance from source
+        vector<int> dist(V, INT_MAX);
+
+        // Source node = 0 (node 1 in 1-based indexing)
+        int src = 0;
+        dist[src] = 0;
+        parent[src] = 0;
+
+        // Min-heap storing {distance, node}
+        priority_queue<
+            pair<int,int>,
+            vector<pair<int,int>>,
+            greater<pair<int,int>>
+        > pq;
+
+        pq.push({0, src});
+
+        // Dijkstra's Algorithm
+        while(!pq.empty()){
+            int node = pq.top().second;
+            int currDist = pq.top().first;
+            pq.pop();
+
+            // Ignore stale entries
+            if(currDist > dist[node])
+                continue;
+
+            // Relax edges
+            for(int i = 0; i < adjList[node].size(); i++){
+                int neighbor = adjList[node][i].first;
+                int weight = adjList[node][i].second;
+
+                if(dist[neighbor] > dist[node] + weight){
+                    dist[neighbor] = dist[node] + weight;
+                    pq.push({dist[neighbor], neighbor});
+                    parent[neighbor] = node;
+                }
+            }
+        }
+
+        // If destination unreachable
+        if(dist[n-1] == INT_MAX)
+            return {-1};
+
+        // Reconstruct shortest path
+        vector<int> path;
+        int totalCost = dist[n-1];
+
+        int curr = n-1;
+        while(curr != src){
+            path.push_back(curr + 1); // back to 1-based indexing
+            curr = parent[curr];
+        }
+
+        path.push_back(src + 1);
+
+        // First element should be total cost
+        path.push_back(totalCost);
+
+        reverse(path.begin(), path.end());
+
+        return path;
+    }
+};
