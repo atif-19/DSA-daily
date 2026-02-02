@@ -1,0 +1,84 @@
+/*
+---------------------------------------------------------
+Bellman-Ford Algorithm - Single Source Shortest Path
+---------------------------------------------------------
+
+Problem:
+Given a directed weighted graph with V vertices and an edge list,
+find the shortest distance from a given source vertex to all
+other vertices.
+
+If a negative weight cycle exists, return {-1}.
+
+Approach:
+- Initialize all distances as infinity
+- Relax all edges (V-1) times
+- Use early stopping if no relaxation occurs in an iteration
+- Perform one extra relaxation pass to detect negative cycle
+
+Time Complexity:
+O(V * E)
+
+Space Complexity:
+O(V)
+
+---------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    vector<int> bellmanFord(int V, vector<vector<int>>& edges, int src) {
+
+        // dist[i] = shortest distance from src to i
+        vector<int> dist(V, 100000000);
+
+        // Distance of source from itself is 0
+        dist[src] = 0;
+
+        // Relax all edges V-1 times
+        int count = V - 1;
+        while(count--){
+
+            // Track if any update happens in this iteration
+            bool change = false;
+
+            // Traverse all edges
+            for(int i = 0; i < edges.size(); i++){
+                int node = edges[i][0];
+                int neighbor = edges[i][1];
+                int weight = edges[i][2];
+
+                // If node is unreachable, skip
+                if(dist[node] == 100000000)
+                    continue;
+
+                // Relaxation step
+                if(dist[neighbor] > dist[node] + weight){
+                    dist[neighbor] = dist[node] + weight;
+                    change = true;
+                }
+            }
+
+            // If no distance updated, stop early
+            if(!change)
+                return dist;
+        }
+
+        // One more pass to detect negative cycle
+        for(int i = 0; i < edges.size(); i++){
+            int node = edges[i][0];
+            int neighbor = edges[i][1];
+            int weight = edges[i][2];
+
+            if(dist[node] == 100000000)
+                continue;
+
+            // If still relaxable → negative cycle exists
+            if(dist[neighbor] > dist[node] + weight){
+                return {-1};
+            }
+        }
+
+        return dist;
+    }
+};
