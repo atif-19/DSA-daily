@@ -1,0 +1,65 @@
+/*
+-------------------------------------------------------
+Algorithm: Floyd-Warshall (All-Pairs Shortest Path)
+
+Description:
+Computes the shortest distance between every pair of
+vertices in a weighted graph.
+
+- Works for directed and undirected graphs
+- Handles negative edge weights
+- Can detect negative weight cycles
+
+Time Complexity:  O(N^3)
+Space Complexity: O(1)  (in-place on distance matrix)
+
+Representation:
+dist[i][j] = weight of edge from i -> j
+If no edge exists, dist[i][j] = INF (1e8)
+
+-------------------------------------------------------
+*/
+
+#include <bits/stdc++.h>
+using namespace std;
+
+class Solution {
+public:
+    void floydWarshall(vector<vector<int>> &dist) {
+
+        int n = dist.size();
+        const int INF = 1e8;
+
+        // Try every vertex as an intermediate node
+        for (int k = 0; k < n; k++) {
+
+            for (int i = 0; i < n; i++) {
+
+                for (int j = 0; j < n; j++) {
+
+                    // If path through k exists
+                    if (dist[i][k] != INF && dist[k][j] != INF) {
+
+                        // Relax the distance
+                        dist[i][j] = min(
+                            dist[i][j],
+                            dist[i][k] + dist[k][j]
+                        );
+                    }
+                }
+            }
+        }
+
+        // Negative Cycle Detection
+        // If dist[i][i] < 0, a negative cycle exists
+        for (int i = 0; i < n; i++) {
+            if (dist[i][i] < 0) {
+                // Graph contains a negative cycle
+                return;
+            }
+        }
+    }
+};
+
+
+
