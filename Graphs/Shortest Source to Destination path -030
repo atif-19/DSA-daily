@@ -1,0 +1,91 @@
+// ------------------------------------------------------------
+// Problem: Shortest Distance in a Binary Maze
+// Approach: Breadth First Search (BFS)
+// ------------------------------------------------------------
+//
+// We are given a binary matrix where:
+// 1 -> valid cell (can move)
+// 0 -> blocked cell (cannot move)
+//
+// Task:
+// Find the shortest distance from source (0,0) to destination (X,Y)
+// using only 4-directional movement (up, down, left, right).
+//
+// ------------------------------------------------------------
+// Key Idea:
+// Since each move has equal cost, BFS guarantees the shortest path.
+// We perform level-wise traversal and return the level (steps)
+// as soon as we reach the destination.
+// ------------------------------------------------------------
+//
+// Time Complexity: O(N * M)
+// - Each cell is visited at most once.
+//
+// Space Complexity: O(min(N, M)) [Queue]
+// - In worst case, BFS queue holds cells of one level.
+//
+// ------------------------------------------------------------
+
+class Solution {
+  public:
+    // Direction vectors for 4-directional movement
+    int row[4] = {-1, 1, 0, 0};
+    int col[4] = {0, 0, -1, 1};
+    
+    int n, m;
+    
+    // Utility function to check if a cell is within bounds
+    bool valid(int i, int j) {
+        return i >= 0 && j >= 0 && i < n && j < m;
+    }
+    
+    int shortestDistance(int N, int M, vector<vector<int>> mat, int X, int Y) {
+        n = N;
+        m = M;
+        
+        // If source itself is blocked, no path exists
+        if (mat[0][0] == 0)
+            return -1;
+        
+        // BFS queue storing cell coordinates
+        queue<pair<int,int>> q;
+        q.push({0, 0});
+        
+        // Mark source as visited
+        mat[0][0] = 0;
+        
+        int steps = 0; // distance from source
+        
+        // Perform BFS level-wise
+        while (!q.empty()) {
+            int size = q.size();  // number of nodes at current level
+            
+            while (size--) {
+                auto [i, j] = q.front();
+                q.pop();
+                
+                // Destination reached
+                if (i == X && j == Y)
+                    return steps;
+                
+                // Explore all 4 neighbors
+                for (int k = 0; k < 4; k++) {
+                    int ni = i + row[k];
+                    int nj = j + col[k];
+                    
+                    // Valid cell and not yet visited
+                    if (valid(ni, nj) && mat[ni][nj] == 1) {
+                        q.push({ni, nj});
+                        mat[ni][nj] = 0; // mark as visited
+                    }
+                }
+            }
+            
+            // Move to next level (distance increases)
+            steps++;
+        }
+        
+        // Destination not reachable
+        return -1;
+    }
+};
