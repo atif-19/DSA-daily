@@ -1,0 +1,92 @@
+// ------------------------------------------------------------
+// Problem: Minimum Steps for Knight to Reach Target
+//
+// A knight is placed on an N x N chessboard.
+// Given starting position and target position,
+// find the minimum number of steps required for the knight
+// to reach the target.
+//
+// Knight moves in 8 possible directions.
+// ------------------------------------------------------------
+//
+// Approach: Breadth First Search (BFS)
+//
+// Each knight move has equal cost, so BFS guarantees the
+// shortest path. We perform level-wise traversal where
+// each level represents one move.
+//
+// ------------------------------------------------------------
+// Time Complexity: O(N * N)
+// - Each cell is visited at most once.
+//
+// Space Complexity: O(N * N)
+// - Visited matrix + BFS queue.
+//
+// ------------------------------------------------------------
+
+class Solution {
+  public:
+    // Knight's 8 possible moves
+    int row[8] = {-2, -2,  2,  2, -1,  1, -1,  1};
+    int col[8] = { 1, -1,  1, -1, -2, -2,  2,  2};
+    
+    int n;
+    
+    // Utility function to check board boundaries
+    bool valid(int i, int j) {
+        return i >= 0 && j >= 0 && i < n && j < n;
+    }
+    
+    int minStepToReachTarget(vector<int>& KnightPos, vector<int>& TargetPos, int N) {
+        n = N;
+        
+        // Convert positions from 1-based to 0-based indexing
+        KnightPos[0] -= 1;
+        KnightPos[1] -= 1;
+        TargetPos[0] -= 1;
+        TargetPos[1] -= 1;
+        
+        // Visited matrix to avoid revisiting cells
+        vector<vector<bool>> visited(N, vector<bool>(N, false));
+        
+        // BFS queue storing board positions
+        queue<pair<int,int>> q;
+        q.push({KnightPos[0], KnightPos[1]});
+        visited[KnightPos[0]][KnightPos[1]] = true;
+        
+        int steps = 0; // number of moves
+        
+        // Perform BFS level-wise
+        while (!q.empty()) {
+            int size = q.size();  // nodes at current level
+            
+            while (size--) {
+                int i = q.front().first;
+                int j = q.front().second;
+                q.pop();
+                
+                // Target reached
+                if (i == TargetPos[0] && j == TargetPos[1])
+                    return steps;
+                
+                // Explore all 8 knight moves
+                for (int k = 0; k < 8; k++) {
+                    int ni = i + row[k];
+                    int nj = j + col[k];
+                    
+                    // Check valid and unvisited cell
+                    if (valid(ni, nj) && !visited[ni][nj]) {
+                        visited[ni][nj] = true;
+                        q.push({ni, nj});
+                    }
+                }
+            }
+            
+            // Move to next BFS level
+            steps++;
+        }
+        
+        // Target not reachable (theoretically impossible on open board)
+        return -1;
+    }
+};
