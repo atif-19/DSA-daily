@@ -1,0 +1,94 @@
+// ------------------------------------------------------------
+// Problem: Find whether a path exists from Source to Destination
+// Grid values:
+// 0 -> Blocked cell
+// 1 -> Source
+// 2 -> Destination
+// 3 -> Valid path cell
+//
+// Allowed moves: Up, Down, Left, Right
+// ------------------------------------------------------------
+//
+// Approach: Breadth First Search (BFS)
+//
+// Since we only need to check reachability (not shortest distance),
+// BFS is used to explore all reachable cells from the source.
+// If destination is encountered during traversal, return true.
+//
+// ------------------------------------------------------------
+// Time Complexity: O(N * N)
+// - Each cell is visited at most once.
+//
+// Space Complexity: O(N * N)
+// - Queue can hold all cells in worst case.
+//
+// ------------------------------------------------------------
+
+class Solution {
+  public:
+    // Direction vectors for 4-directional movement
+    int row[4] = {-1, 1, 0, 0};
+    int col[4] = {0, 0, -1, 1};
+    
+    int n;
+    
+    // Utility function to check valid grid boundaries
+    bool valid(int i, int j) {
+        return i >= 0 && j >= 0 && i < n && j < n;
+    }
+    
+    // Function to check if destination is reachable from source
+    bool is_Possible(vector<vector<int>>& grid) {
+        n = grid.size();
+        
+        // Store source and destination coordinates
+        vector<int> src(2), dest(2);
+        
+        // Locate source (1) and destination (2)
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < n; j++) {
+                if (grid[i][j] == 1)
+                    src = {i, j};
+                else if (grid[i][j] == 2)
+                    dest = {i, j};
+            }
+        }
+        
+        // BFS queue
+        queue<pair<int,int>> q;
+        q.push({src[0], src[1]});
+        
+        // Mark source as visited
+        grid[src[0]][src[1]] = 0;
+        
+        // Perform BFS traversal
+        while (!q.empty()) {
+            int i = q.front().first;
+            int j = q.front().second;
+            q.pop();
+            
+            // Destination reached
+            if (i == dest[0] && j == dest[1])
+                return true;
+            
+            // Explore all 4 neighbors
+            for (int k = 0; k < 4; k++) {
+                int ni = i + row[k];
+                int nj = j + col[k];
+                
+                // Valid and unvisited path cell
+                if (valid(ni, nj) && grid[ni][nj]) {
+                    q.push({ni, nj});
+                    grid[ni][nj] = 0; // mark as visited
+                    
+                    // Early exit if destination is found
+                    if (ni == dest[0] && nj == dest[1])
+                        return true;
+                }
+            }
+        }
+        
+        // Destination not reachable
+        return false;
+    }
+};
