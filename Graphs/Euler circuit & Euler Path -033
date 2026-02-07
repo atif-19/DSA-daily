@@ -1,0 +1,110 @@
+// ------------------------------------------------------------
+// Problem: Check whether an undirected graph has
+//          Euler Circuit or Euler Path
+//
+// Return values:
+// 0 -> Neither Euler Path nor Euler Circuit
+// 1 -> Euler Path exists
+// 2 -> Euler Circuit exists
+//
+// ------------------------------------------------------------
+//
+// Theory:
+// 1. Euler Circuit:
+//    - All vertices with non-zero degree must have EVEN degree
+//    - All non-zero degree vertices must be connected
+//
+// 2. Euler Path (but not circuit):
+//    - Exactly TWO vertices have ODD degree
+//    - All non-zero degree vertices must be connected
+//
+// ------------------------------------------------------------
+// Approach:
+//
+// Step 1: Calculate degree of each vertex
+// Step 2: Count vertices with odd degree
+// Step 3: Decide Euler Path / Circuit possibility using degree rules
+// Step 4: Check graph connectivity using DFS
+//         (only considering non-zero degree vertices)
+//
+// ------------------------------------------------------------
+// Time Complexity: O(V + E)
+// - Degree calculation + DFS traversal
+//
+// Space Complexity: O(V)
+// - Visited array + recursion stack
+//
+// ------------------------------------------------------------
+
+class Solution {
+  public:
+    
+    // DFS to check connectivity of non-zero degree vertices
+    void DFS(int node, vector<int> adj[], vector<int>& visited) {
+        visited[node] = 1;
+        for (int i = 0; i < adj[node].size(); i++) {
+            int neighbor = adj[node][i];
+            if (!visited[neighbor])
+                DFS(neighbor, adj, visited);
+        }
+    }
+    
+    int isEulerCircuit(int V, vector<int> adj[]) {
+        
+        // Step 1: Calculate degree of each vertex
+        vector<int> degree(V, 0);
+        for (int i = 0; i < V; i++) {
+            degree[i] = adj[i].size();
+        }
+        
+        // Step 2: Count vertices with odd degree
+        int odd = 0;
+        for (int i = 0; i < V; i++) {
+            if (degree[i] % 2 == 1)
+                odd++;
+        }
+        
+        int ans;
+        
+        // Step 3: Apply Euler conditions
+        if (odd == 0) {
+            // All degrees even -> Euler Circuit
+            ans = 2;
+        }
+        else if (odd == 2) {
+            // Exactly two odd degree vertices -> Euler Path
+            ans = 1;
+        }
+        else {
+            // Neither Euler Path nor Euler Circuit
+            return 0;
+        }
+        
+        // Step 4: Check connectivity of non-zero degree vertices
+        vector<int> visited(V, 0);
+        
+        // Find a vertex with non-zero degree to start DFS
+        int node = -1;
+        for (int i = 0; i < V; i++) {
+            if (degree[i] != 0) {
+                node = i;
+                break;
+            }
+        }
+        
+        // If all vertices have zero degree, it's trivially Euler Circuit
+        if (node == -1)
+            return 2;
+        
+        // Perform DFS
+        DFS(node, adj, visited);
+        
+        // Check if all non-zero degree vertices are connected
+        for (int i = 0; i < V; i++) {
+            if (degree[i] != 0 && !visited[i])
+                return 0;
+        }
+        
+        return ans;
+    }
+};
