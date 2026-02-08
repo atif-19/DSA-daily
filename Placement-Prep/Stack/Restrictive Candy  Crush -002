@@ -1,0 +1,92 @@
+class Solution {
+  public:
+    /*
+     Problem:
+     --------
+     Given a string s and an integer k, repeatedly remove groups of
+     k consecutive identical characters until no such group exists.
+
+     Approach:
+     ----------
+     - Use two stacks:
+         1) st    -> stores characters
+         2) count -> stores frequency of consecutive characters till that position
+     - Traverse the string character by character.
+     - For each character:
+         • If stack is empty, push character with count = 1
+         • If current character equals stack top:
+             - Increment count
+             - If count reaches k, pop k-1 elements (current one not pushed)
+         • If current character is different:
+             - Push character with count = 1
+     - This automatically handles chain reactions after removals.
+     - Finally, construct the result by popping from the stack.
+
+     Time Complexity:
+     ----------------
+     O(n), where n is the length of the string.
+     Each character is pushed and popped at most once.
+
+     Space Complexity:
+     -----------------
+     O(n), for stacks used to store characters and counts.
+    */
+
+    string Reduced_String(int k, string s) {
+
+        // Edge case: if k == 1, all characters are removed
+        if (k == 1) {
+            return "";
+        }
+
+        // Stack to store characters
+        stack<char> st;
+        // Stack to store count of consecutive characters
+        stack<int> count;
+
+        for (int i = 0; i < s.size(); i++) {
+
+            char curr = s[i];
+
+            // If stack is empty, push first character
+            if (st.empty()) {
+                st.push(curr);
+                count.push(1);
+                continue;
+            }
+
+            // If current character matches stack top
+            if (st.top() == curr) {
+
+                // If count reaches k-1, remove k-1 characters
+                if (count.top() == k - 1) {
+                    int cnt = k - 1;
+                    while (cnt--) {
+                        st.pop();
+                        count.pop();
+                    }
+                }
+                // Otherwise, push character and increment count
+                else {
+                    st.push(curr);
+                    count.push(count.top() + 1);
+                }
+            }
+            // If current character is different
+            else {
+                st.push(curr);
+                count.push(1);
+            }
+        }
+
+        // Construct the final answer from stack
+        string ans;
+        while (!st.empty()) {
+            ans.push_back(st.top());
+            st.pop();
+        }
+
+        reverse(ans.begin(), ans.end());
+        return ans;
+    }
+};
