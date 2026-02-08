@@ -1,0 +1,61 @@
+class Solution {
+  public:
+    /*
+     Approach:
+     ----------
+     - Traverse the string character by character.
+     - Use a stack to store characters of the current word.
+     - When a space is encountered:
+         • Pop all characters from the stack and append them to the answer
+         • Add a single space to separate words
+     - Skip leading spaces.
+     - After traversal, flush remaining characters from the stack.
+     - Remove trailing space if present.
+
+     Time Complexity:
+     ----------------
+     O(n), where n is the length of the string.
+     Each character is pushed and popped at most once.
+
+     Space Complexity:
+     -----------------
+     O(n), due to the stack and output string.
+    */
+
+    string reverseWords(string &s) {
+        string ans = "";
+        stack<char> st;
+
+        for (int i = 0; i < s.size(); i++) {
+
+            // Skip leading spaces
+            if (st.empty() && s[i] == ' ')
+                continue;
+
+            // If space encountered, reverse current word
+            if (s[i] == ' ') {
+                while (!st.empty()) {
+                    ans += st.top();
+                    st.pop();
+                }
+                ans += ' ';
+            }
+            // Push characters of the word into stack
+            else {
+                st.push(s[i]);
+            }
+        }
+
+        // Reverse the last word
+        while (!st.empty()) {
+            ans += st.top();
+            st.pop();
+        }
+
+        // Remove trailing space if any
+        if (!ans.empty() && ans.back() == ' ')
+            ans.pop_back();
+
+        return ans;
+    }
+};
