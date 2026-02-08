@@ -1,0 +1,52 @@
+class Solution {
+  public:
+    /*
+     Problem:
+     --------
+     Delete the middle element of a stack using recursion.
+
+     Approach:
+     ----------
+     - Use recursion to reach the middle of the stack.
+     - Pass the current index and the target middle index.
+     - When current index equals middle index:
+         • Pop the middle element and return.
+     - While returning from recursion:
+         • Push back all previously popped elements.
+     - This way, only the middle element is removed and order is preserved.
+
+     Time Complexity:
+     ----------------
+     O(n), where n is the number of elements in the stack.
+     Each element is popped and pushed once.
+
+     Space Complexity:
+     -----------------
+     O(n), due to recursive call stack.
+     No extra data structure is used.
+    */
+
+    // Recursive helper function
+    void solve(stack<int>& s, int index, int mid) {
+        // Base case: middle element reached
+        if (index == mid) {
+            s.pop();
+            return;
+        }
+
+        // Store top element and remove it
+        int element = s.top();
+        s.pop();
+
+        // Recursive call for next index
+        solve(s, index + 1, mid);
+
+        // Push the stored element back
+        s.push(element);
+    }
+
+    // Function to delete middle element of stack
+    void deleteMid(stack<int>& s) {
+        solve(s, 0, s.size() / 2);
+    }
+};
