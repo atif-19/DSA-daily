@@ -1,0 +1,49 @@
+class Solution {
+  public:
+    vector<int> nextFreqGreater(vector<int>& arr) {
+        /*
+        APPROACH:
+        1. First, count the frequency of each element using a hash map.
+        2. Use a stack to store indices of elements whose Next Greater Frequency
+           element has not been found yet.
+        3. Traverse the array:
+           - While stack is not empty and frequency of current element
+             is greater than frequency of element at stack top,
+             update answer for that index and pop it.
+           - Push current index into the stack.
+        4. Elements left in stack have no next greater frequency,
+           so their answer remains -1.
+        
+        TIME COMPLEXITY:
+        - O(n)
+          * Frequency calculation: O(n)
+          * Each index pushed and popped once from stack (amortized O(n))
+        
+        SPACE COMPLEXITY:
+        - O(n)
+          * Hash map for frequencies
+          * Stack for indices
+          * Answer array
+        */
+
+        unordered_map<int,int> freq;   // stores frequency of each element
+        stack<int> st;                 // stores indices
+        vector<int> ans(arr.size(), -1);
+
+        // Step 1: Count frequency of each element
+        for(int i = 0; i < arr.size(); i++) {
+            freq[arr[i]]++;
+        }
+
+        // Step 2: Find next element with greater frequency
+        for(int i = 0; i < arr.size(); i++) {
+            while(!st.empty() && freq[arr[st.top()]] < freq[arr[i]]) {
+                ans[st.top()] = arr[i];
+                st.pop();
+            }
+            st.push(i);
+        }
+
+        return ans;
+    }
+};
