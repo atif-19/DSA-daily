@@ -1,0 +1,55 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+    ------------------------------------------------------------
+    Problem:
+    Clone a stack into another stack without using extra data
+    structures like arrays or vectors.
+    
+    The original stack should remain unchanged in order.
+    ------------------------------------------------------------
+    Approach:
+    - Repeatedly extract the bottom element of the original stack
+    - Store temporarily popped elements in the cloned stack
+    - Restore the original stack after extracting the bottom
+    - Push extracted bottom element into the cloned stack
+    - Repeat for all elements
+    ------------------------------------------------------------
+    Time Complexity: O(n^2)
+    - For each element, we traverse the stack to reach the bottom
+    ------------------------------------------------------------
+    Space Complexity: O(n)
+    - Extra stack used for cloning
+    ------------------------------------------------------------
+    */
+    
+    void clonestack(stack<int> st, stack<int>& cloned) {
+        int n = st.size();
+        
+        for (int i = 0; i < n; i++) {
+            int bottom;
+            
+            // Step 1: Remove all elements except the bottom
+            while (st.size() > 1) {
+                cloned.push(st.top());
+                st.pop();
+            }
+            
+            // Bottom element of original stack
+            bottom = st.top();
+            st.pop();
+            
+            // Step 2: Restore original stack from cloned stack
+            // Stop once original stack has i elements restored
+            while (cloned.size() > i) {
+                st.push(cloned.top());
+                cloned.pop();
+            }
+            
+            // Step 3: Push the extracted bottom element into cloned stack
+            cloned.push(bottom);
+        }
+    }
+};
