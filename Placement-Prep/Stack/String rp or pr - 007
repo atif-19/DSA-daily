@@ -1,0 +1,104 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    /*
+        PROBLEM IDEA:
+        ----------------
+        We are given a string S consisting of characters 'p' and 'r'.
+        We can remove:
+          - "pr" and gain X points
+          - "rp" and gain Y points
+
+        Each removal changes the string, so order matters.
+
+        GOAL:
+        Maximize total points.
+
+        APPROACH (Greedy + Stack):
+        --------------------------
+        1. Always remove the substring which gives MORE points first.
+           - If X >= Y → remove all "pr" first
+           - Else       → remove all "rp" first
+
+        Why?
+        Removing higher-value pairs earlier prevents them from being broken
+        by lower-value removals.
+
+        2. Use a stack to simulate removals in one pass.
+        3. After first pass, rebuild the remaining string.
+        4. Do a second pass to remove the remaining lower-value pairs.
+
+        This guarantees maximum score.
+
+        TIME COMPLEXITY:
+        ----------------
+        O(N)
+        - Each character is pushed and popped at most once per pass.
+
+        SPACE COMPLEXITY:
+        -----------------
+        O(N) auxiliary space due to stack.
+    */
+
+    long long solve(int X, int Y, string S) {
+        long long ans = 0;
+        stack<char> st;
+
+        // STEP 1: Remove higher value substring first
+        if (X >= Y) {
+            // Remove all "pr" first
+            for (char c : S) {
+                if (!st.empty() && st.top() == 'p' && c == 'r') {
+                    ans += X;
+                    st.pop();
+                } else {
+                    st.push(c);
+                }
+            }
+        } else {
+            // Remove all "rp" first
+            for (char c : S) {
+                if (!st.empty() && st.top() == 'r' && c == 'p') {
+                    ans += Y;
+                    st.pop();
+                } else {
+                    st.push(c);
+                }
+            }
+        }
+
+        // STEP 2: Rebuild the remaining string
+        S.clear();
+        while (!st.empty()) {
+            S += st.top();
+            st.pop();
+        }
+        reverse(S.begin(), S.end());
+
+        // STEP 3: Remove the remaining lower value substring
+        if (X >= Y) {
+            // Now remove "rp"
+            for (char c : S) {
+                if (!st.empty() && st.top() == 'r' && c == 'p') {
+                    ans += Y;
+                    st.pop();
+                } else {
+                    st.push(c);
+                }
+            }
+        } else {
+            // Now remove "pr"
+            for (char c : S) {
+                if (!st.empty() && st.top() == 'p' && c == 'r') {
+                    ans += X;
+                    st.pop();
+                } else {
+                    st.push(c);
+                }
+            }
+        }
+
+        return ans;
+    }
+};
