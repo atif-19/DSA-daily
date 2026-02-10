@@ -1,0 +1,99 @@
+// User function Template for C++
+
+class Solution {
+  public:
+    vector<int> getSmaller(vector<int> arr) {
+        int n = arr.size();
+        
+        /*
+        ------------------------------------------------------------
+        Problem:
+        For each index i, find the nearest smaller element.
+        - Smaller element can be on LEFT or RIGHT
+        - Choose the one with minimum distance
+        - If distance is same, choose the smaller value
+        - If no smaller element exists, answer is -1
+        ------------------------------------------------------------
+        Approach:
+        1. Find Next Smaller Element on the Right using monotonic stack
+        2. Find Previous Smaller Element on the Left using monotonic stack
+        3. For each index, decide the answer based on distance and value
+        ------------------------------------------------------------
+        Time Complexity: O(n)
+        Space Complexity: O(n)
+        ------------------------------------------------------------
+        */
+        
+        // right[i] -> index of next smaller element on the right of i
+        vector<int> right(n, -1);
+        
+        // left[i] -> index of previous smaller element on the left of i
+        vector<int> left(n, -1);
+        
+        stack<int> st;
+        
+        // -------- Step 1: Next Smaller Element (Right) --------
+        // Monotonic increasing stack
+        for (int i = 0; i < n; i++) {
+            while (!st.empty() && arr[st.top()] > arr[i]) {
+                right[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+        
+        // Clear stack before reuse
+        while (!st.empty())
+            st.pop();
+        
+        // -------- Step 2: Previous Smaller Element (Left) --------
+        // Traverse from right to left
+        for (int i = n - 1; i >= 0; i--) {
+            while (!st.empty() && arr[st.top()] > arr[i]) {
+                left[st.top()] = i;
+                st.pop();
+            }
+            st.push(i);
+        }
+        
+        // -------- Step 3: Construct Final Answer --------
+        vector<int> ans(n, -1);
+        
+        for (int i = 0; i < n; i++) {
+            // Case 1: No smaller element on either side
+            if (left[i] == -1 && right[i] == -1) {
+                ans[i] = -1;
+            }
+            // Case 2: Only left smaller exists
+            else if (right[i] == -1) {
+                ans[i] = left[i];
+            }
+            // Case 3: Only right smaller exists
+            else if (left[i] == -1) {
+                ans[i] = right[i];
+            }
+            // Case 4: Smaller elements exist on both sides
+            else {
+                int distLeft = abs(i - left[i]);
+                int distRight = abs(right[i] - i);
+                
+                // Choose the one with smaller distance
+                if (distLeft < distRight) {
+                    ans[i] = left[i];
+                }
+                else if (distRight < distLeft) {
+                    ans[i] = right[i];
+                }
+                // If distance is same, choose smaller value
+                else {
+                    if (arr[left[i]] <= arr[right[i]])
+                        ans[i] = left[i];
+                    else
+                        ans[i] = right[i];
+                }
+            }
+        }
+        
+        return ans;
+    }
+};
