@@ -1,0 +1,162 @@
+/*
+============================================================
+🔗 Problem: Critical Connections in a Network (Bridges)
+============================================================
+
+📌 Problem Summary:
+Given a network of 'n' nodes labeled from 0 to n-1 and a list
+of undirected connections, return all critical connections 
+(also known as bridges).
+
+A critical connection is an edge that, if removed, increases 
+the number of connected components in the graph.
+
+------------------------------------------------------------
+🧠 Approach: Tarjan’s Algorithm (DFS + Low Link Values)
+------------------------------------------------------------
+
+We use Depth First Search (DFS) to track:
+
+1️⃣ disc[node]  → Discovery time of each node
+2️⃣ low[node]   → Lowest discovery time reachable from that node
+3️⃣ parent      → To avoid revisiting the same edge
+4️⃣ visited     → Track visited nodes
+
+💡 Key Bridge Condition:
+If disc[node] < low[neighbor]
+→ Then (node, neighbor) is a bridge
+
+Why?
+Because neighbor cannot reach node or any ancestor of node
+without using this edge.
+
+------------------------------------------------------------
+📊 Time Complexity:
+O(V + E)
+- V = number of vertices
+- E = number of edges
+Each node and edge is visited once.
+
+📦 Space Complexity:
+O(V + E)
+- Adjacency list: O(V + E)
+- disc, low, visited arrays: O(V)
+- Recursion stack: O(V)
+
+------------------------------------------------------------
+🪜 Steps:
+1. Build adjacency list
+2. Initialize disc, low, visited arrays
+3. Start DFS traversal
+4. Update low values
+5. Check bridge condition
+6. Store critical connections
+------------------------------------------------------------
+*/
+
+class Solution {
+public:
+
+    /*
+    ------------------------------------------------------------
+    DFS Function
+    ------------------------------------------------------------
+    node     → current node
+    parent   → parent of current node
+    adjList  → adjacency list representation of graph
+    disc     → discovery time array
+    low      → lowest reachable discovery time
+    visited  → visited array
+    ans      → stores critical connections
+    time     → global timer for discovery time
+    ------------------------------------------------------------
+    */
+
+    void DFS(int node,
+             int parent,
+             vector<vector<int>>& adjList,
+             vector<int>& disc,
+             vector<int>& low,
+             vector<bool>& visited,
+             vector<vector<int>>& ans,
+             int &time)
+    {
+        // Mark node visited
+        visited[node] = true;
+
+        // Initialize discovery time and low value
+        disc[node] = low[node] = time;
+
+        // Traverse all neighbors
+        for(int i = 0; i < adjList[node].size(); i++) {
+
+            int neighbor = adjList[node][i];
+
+            // Ignore the edge leading back to parent
+            if(neighbor == parent)
+                continue;
+
+            // Case 1: If neighbor already visited (Back Edge)
+            if(visited[neighbor]) {
+                // Update low value
+                low[node] = min(low[node], disc[neighbor]);
+            }
+            else {
+                // Increment time for child
+                time++;
+
+                // Recursive DFS call
+                DFS(neighbor, node, adjList, disc, low, visited, ans, time);
+
+                // After recursion, update low value
+                low[node] = min(low[node], low[neighbor]);
+
+                // Bridge condition
+                if(disc[node] < low[neighbor]) {
+                    ans.push_back({node, neighbor});
+                }
+            }
+        }
+    }
+
+    /*
+    ------------------------------------------------------------
+    Main Function
+    ------------------------------------------------------------
+    n            → number of nodes
+    connections  → list of edges
+    ------------------------------------------------------------
+    */
+
+    vector<vector<int>> criticalConnections(int n,
+                                            vector<vector<int>>& connections)
+    {
+        // Step 1: Build adjacency list
+        vector<vector<int>> adjList(n);
+
+        for(int i = 0; i < connections.size(); i++) {
+            int u = connections[i][0];
+            int v = connections[i][1];
+
+            adjList[u].push_back(v);
+            adjList[v].push_back(u);
+        }
+
+        // Step 2: Initialize helper arrays
+        vector<int> disc(n, -1);       // discovery time
+        vector<int> low(n, -1);        // low value
+        vector<bool> visited(n, false);
+        vector<vector<int>> ans;
+
+        int time = 0;
+
+        // Step 3: Handle disconnected components
+        for(int i = 0; i < n; i++) {
+            if(!visited[i]) {
+                DFS(i, -1, adjList, disc, low, visited, ans, time);
+            }
+        }
+
+        return ans;
+    }
+};
