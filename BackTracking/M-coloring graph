@@ -1,0 +1,40 @@
+class Solution {
+  public:
+    bool find(int node,vector<vector<int>> & adj,int m,vector<int>&color){
+        // try each color for this node
+        for(int i=0;i<m;i++){
+            // only if adjacent are not the same  color already
+            int isPossible = 1;
+            for(int j=0;j<adj[node].size();j++){
+                int neighbor = adj[node][j];
+                if(color[neighbor]==i)
+                {
+                    isPossible = 0;
+                    break;
+                }
+            }
+            // if not possible then try using next color
+            if(isPossible)
+            {
+            color[node]=i;
+            if(node==adj.size()-1)
+                return 1;
+            if(find(node+1,adj,m,color))
+                return 1;
+            color[node]=-1;
+            }
+        }
+        return 0;
+    }
+    bool graphColoring(int v, vector<vector<int>> &edges, int m) {
+        vector<vector<int>>adj(v);
+        for(int i=0;i<edges.size();i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+        vector<int>color(v,-1);
+        return find(0,adj,m,color);
+    }
+};
