@@ -1,0 +1,17 @@
+class Solution {
+  public:
+    int findMin(int n) {
+        vector<int>coin = {1,2,5,10};
+        int index = 3;
+        int ans = 0,money;
+        while(n){
+            money = n/coin[index];
+            while(money--)
+                ans++;
+                
+            n %= coin[index];
+            index--;
+        }
+        return ans;
+    }
+};
