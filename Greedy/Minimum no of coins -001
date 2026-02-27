@@ -1,17 +1,112 @@
+/*
+===============================================================================
+Problem Name: Minimum Number of Coins
+===============================================================================
+
+Problem Statement:
+------------------
+Given an integer n representing an amount of money (in rupees), 
+find the minimum number of coins required to make up that amount.
+
+Available coin denominations:
+{1, 2, 5, 10}
+
+You can use each coin denomination any number of times.
+
+-------------------------------------------------------------------------------
+Example:
+Input:  n = 28
+Output: 6
+Explanation:
+28 = 10 + 10 + 5 + 2 + 1
+Total coins used = 5
+
+-------------------------------------------------------------------------------
+Approach:
+---------
+We use a GREEDY approach.
+
+Observation:
+The given coin denominations {1, 2, 5, 10} form a canonical coin system.
+In such systems, the greedy strategy (always picking the largest possible coin)
+guarantees the optimal (minimum) number of coins.
+
+Steps:
+1. Start from the largest denomination (10).
+2. Take as many coins as possible of the current denomination.
+3. Reduce the remaining amount.
+4. Move to the next smaller denomination.
+5. Repeat until the amount becomes 0.
+
+Why Greedy Works Here?
+Because the denominations are structured such that:
+10 > 5 > 2 > 1
+and each larger coin is a multiple-friendly expansion of smaller ones,
+so taking the largest possible coin always reduces total coin count optimally.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+----------------
+O(1)
+
+Reason:
+- Number of denominations is constant (4).
+- Loop runs at most 4 times.
+- Operations inside loop are constant time.
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-----------------
+O(1)
+
+Reason:
+- Only a fixed-size vector of 4 elements is used.
+- No extra dynamic memory used.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-----------
+1. n = 0 → Output = 0
+2. n < 0 → Not valid (as per typical constraints)
+3. n = 1 → Output = 1
+
+-------------------------------------------------------------------------------
+*/
+
 class Solution {
   public:
     int findMin(int n) {
-        vector<int>coin = {1,2,5,10};
+        
+        // Available coin denominations (sorted in ascending order)
+        vector<int> coin = {1, 2, 5, 10};
+        
+        // Start from the largest denomination (10)
         int index = 3;
-        int ans = 0,money;
-        while(n){
-            money = n/coin[index];
-            while(money--)
+        
+        // Stores the final minimum number of coins required
+        int ans = 0;
+        
+        // Variable to store how many coins of current denomination we can take
+        int money;
+        
+        // Continue until the amount becomes 0
+        while (n) {
+            
+            // Find maximum coins of current denomination we can use
+            money = n / coin[index];
+            
+            // Add that many coins to answer
+            while (money--)
                 ans++;
-                
+            
+            // Reduce the remaining amount
             n %= coin[index];
+            
+            // Move to next smaller denomination
             index--;
         }
+        
+        // Return the minimum number of coins required
         return ans;
     }
 };
