@@ -1,0 +1,147 @@
+/*
+===============================================================================
+Problem Name: Shop in Candy Store (Min-Max Cost Problem)
+===============================================================================
+
+Problem Statement:
+------------------
+Given:
+- An array `prices[]` where prices[i] represents the cost of the i-th candy.
+- An integer k.
+
+Offer:
+For every candy you BUY, you can get at most k other candies for FREE.
+
+Task:
+Return a vector of size 2:
+1. Minimum amount of money required to buy all candies.
+2. Maximum amount of money required to buy all candies.
+
+-------------------------------------------------------------------------------
+Example:
+Input:
+prices = {3, 2, 1, 4}
+k = 2
+
+Output:
+{3, 7}
+
+Explanation:
+Minimum Cost:
+Buy cheapest candies first and get expensive ones free.
+
+Maximum Cost:
+Buy expensive candies first and get cheaper ones free.
+
+-------------------------------------------------------------------------------
+Approach:
+---------
+
+Key Observation:
+For every candy purchased, we can skip k candies (consider them free).
+
+To MINIMIZE total cost:
+- Sort prices in ascending order.
+- Always buy the cheapest available candy.
+- Skip the k most expensive remaining candies.
+
+To MAXIMIZE total cost:
+- Sort prices in descending order.
+- Always buy the most expensive available candy.
+- Skip the k cheapest remaining candies.
+
+Two-Pointer Technique:
+We use:
+- `low`  → pointer to buying candy
+- `high` → pointer to skipping (free candies)
+
+Each time:
+- Add prices[low] to total.
+- Increment low (move forward).
+- Decrease high by k (skip k candies).
+
+-------------------------------------------------------------------------------
+Time Complexity:
+----------------
+O(n log n)
+
+Reason:
+- Sorting dominates the complexity.
+- Two-pointer traversal is O(n).
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-----------------
+O(1) auxiliary space
+(ignoring output vector)
+
+Sorting is done in-place.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-----------
+1. k = 0 → Must buy every candy → min = max = sum of all prices.
+2. k >= n → Only need to buy 1 candy.
+3. n = 1 → min = max = prices[0]
+
+-------------------------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    vector<int> minMaxCandy(vector<int>& prices, int k) {
+        
+        // Result vector:
+        // candy[0] → minimum cost
+        // candy[1] → maximum cost
+        vector<int> candy(2);
+        
+        int mini = 0, maxi = 0;
+        
+        // Sort prices in ascending order
+        sort(prices.begin(), prices.end());
+        
+        int low = 0;
+        int high = prices.size() - 1;
+        
+        /*
+        =========================
+        Calculate Minimum Cost
+        =========================
+        Strategy:
+        Buy cheapest candy, skip k costliest candies.
+        */
+        while (low <= high) {
+            mini += prices[low];  // Buy cheapest
+            
+            low++;                // Move to next cheapest
+            high -= k;            // Skip k most expensive candies
+        }
+        
+        candy[0] = mini;
+        
+        /*
+        =========================
+        Calculate Maximum Cost
+        =========================
+        Strategy:
+        Reverse the array (descending order),
+        Buy costliest candy, skip k cheapest candies.
+        */
+        reverse(prices.begin(), prices.end());
+        
+        low = 0;
+        high = prices.size() - 1;
+        
+        while (low <= high) {
+            maxi += prices[low];  // Buy most expensive
+            
+            low++;                // Move to next expensive
+            high -= k;            // Skip k cheapest candies
+        }
+        
+        candy[1] = maxi;
+        
+        return candy;
+    }
+};
