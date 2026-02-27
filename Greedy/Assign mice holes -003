@@ -1,0 +1,123 @@
+/*
+===============================================================================
+Problem Name: Assign Mice to Holes
+===============================================================================
+
+Problem Statement:
+------------------
+Given:
+- A vector `mices[]` representing positions of mice on a number line.
+- A vector `holes[]` representing positions of holes on the same number line.
+
+Each hole can accommodate only ONE mouse.
+Each mouse moves with speed = 1 unit per minute.
+
+Task:
+Return the minimum time required so that all mice are inside a hole.
+
+The time required for a mouse to enter a hole is:
+|position_of_mouse - position_of_hole|
+
+We need to minimize the MAXIMUM time taken by any mouse.
+
+-------------------------------------------------------------------------------
+Example:
+Input:
+mices = {4, -4, 2}
+holes = {4, 0, 5}
+
+Output:
+4
+
+Explanation:
+After sorting:
+mices = {-4, 2, 4}
+holes = {0, 4, 5}
+
+Distances:
+|-4 - 0| = 4
+|2 - 4|  = 2
+|4 - 5|  = 1
+
+Maximum = 4
+
+-------------------------------------------------------------------------------
+Approach:
+---------
+
+Greedy Strategy:
+
+Key Insight:
+To minimize the maximum distance,
+we should match the i-th smallest mouse with the i-th smallest hole.
+
+Why?
+If we cross-assign (small mouse to far hole),
+it increases the maximum distance unnecessarily.
+
+Steps:
+1. Sort both arrays.
+2. Pair mices[i] with holes[i].
+3. Compute absolute difference.
+4. Track maximum difference.
+5. Return maximum difference.
+
+This guarantees minimum possible maximum movement time.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+----------------
+O(n log n)
+
+Reason:
+- Sorting both arrays dominates: O(n log n)
+- Single traversal: O(n)
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-----------------
+O(1) auxiliary space
+(Sorting done in-place, no extra data structures)
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-----------
+1. Only one mouse → direct absolute difference.
+2. Negative positions → handled by absolute value.
+3. All positions same → answer = 0.
+
+-------------------------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+  
+    // Helper function to calculate absolute value
+    int mod(int num){
+        if(num < 0)
+            num *= -1;
+        return num;
+    }
+    
+    int assignHole(vector<int>& mices, vector<int>& holes) {
+        
+        // Sort both arrays to apply greedy pairing
+        sort(mices.begin(), mices.end());
+        sort(holes.begin(), holes.end());
+        
+        // Stores the maximum time required
+        int ans = INT_MIN;
+        
+        // Pair i-th mouse with i-th hole
+        for(int i = 0; i < mices.size(); i++){
+            
+            // Time taken for this mouse
+            int num = mod(mices[i] - holes[i]);
+            
+            // Track maximum time
+            ans = max(num, ans);
+        }
+        
+        return ans;
+    }
+};
