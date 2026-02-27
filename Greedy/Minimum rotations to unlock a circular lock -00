@@ -1,0 +1,112 @@
+/*
+===============================================================================
+Problem Name: Minimum Rotations to Convert R to D
+===============================================================================
+
+Problem Statement:
+------------------
+Given two integers:
+- R → current number displayed on a circular lock
+- D → desired number
+
+Each digit in the lock is circular from 0 to 9.
+That means:
+0 comes after 9 and 9 comes before 0.
+
+In one move, you can rotate a single digit by 1 step forward or backward.
+
+Task:
+Return the minimum total rotations required to convert R into D.
+
+-------------------------------------------------------------------------------
+Concept:
+--------
+Each digit behaves like a circular wheel:
+
+For digits a and b:
+Direct distance = |a - b|
+Circular distance = 10 - |a - b|
+
+Minimum rotations for that digit:
+min( |a - b| , 10 - |a - b| )
+
+We compute this for every digit and sum them.
+
+-------------------------------------------------------------------------------
+Example:
+Input:
+R = 123
+D = 321
+
+Digit-wise:
+1 → 3  → min(2, 8) = 2
+2 → 2  → min(0,10) = 0
+3 → 1  → min(2, 8) = 2
+
+Total rotations = 4
+
+-------------------------------------------------------------------------------
+Approach:
+---------
+1. Extract last digit of R and D using modulo 10.
+2. Compute:
+      abs(num1 - num2)
+      10 - abs(num1 - num2)
+3. Add minimum of both to answer.
+4. Remove last digit using division by 10.
+5. Repeat until all digits processed.
+
+This works because each digit rotation is independent.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+----------------
+O(n)
+
+Where n = number of digits in R (or D).
+
+We process each digit once.
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-----------------
+O(1)
+
+Only constant extra variables are used.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-----------
+1. R == D → Output = 0
+2. Single digit numbers.
+3. Large numbers (handled using long long).
+4. Leading zeros are not an issue since numeric input ignores them.
+
+-------------------------------------------------------------------------------
+*/
+
+class Solution {
+  public:
+    int rotationCount(long long R, long long D) {
+        
+        int ans = 0;
+        
+        // Process digit by digit
+        while (R) {
+            
+            // Extract last digit of R
+            int num1 = R % 10;
+            R /= 10;
+            
+            // Extract last digit of D
+            int num2 = D % 10;
+            D /= 10;
+            
+            // Calculate minimum rotations for this digit
+            ans += min(abs(num1 - num2),
+                       10 - abs(num1 - num2));
+        }
+        
+        return ans;
+    }
+};
