@@ -1,0 +1,121 @@
+/*
+===============================================================================
+Problem Name: Fractional Knapsack
+===============================================================================
+
+Problem Statement:
+------------------
+Given:
+- val[] → value of each item
+- wt[]  → weight of each item
+- capacity → maximum weight capacity of knapsack
+
+You are allowed to take FRACTIONS of items.
+
+Task:
+Return the maximum total value that can be obtained
+within the given capacity.
+
+-------------------------------------------------------------------------------
+Concept:
+--------
+This is a classic GREEDY problem.
+
+Key Idea:
+---------
+To maximize profit when fractions are allowed,
+always pick the item with the highest value per unit weight first.
+
+Value per unit weight = val[i] / wt[i]
+
+Why greedy works?
+Because taking the highest ratio item first
+always increases total value optimally when fractions are allowed.
+
+-------------------------------------------------------------------------------
+Algorithm:
+----------
+1. Compute value/weight ratio for each item.
+2. Store as {ratio, weight}.
+3. Sort items in descending order of ratio.
+4. Traverse sorted items:
+    - If full item fits → take it.
+    - Else → take fraction equal to remaining capacity.
+5. Return accumulated value.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+----------------
+O(n log n)
+
+Reason:
+- Sorting dominates.
+- Single traversal is O(n).
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-----------------
+O(n)
+
+Reason:
+- Extra vector to store {ratio, weight} pairs.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-----------
+1. capacity = 0 → return 0.
+2. Single item.
+3. All items heavier than capacity.
+4. Large values handled using double.
+
+-------------------------------------------------------------------------------
+*/
+
+// Comparator to sort by ratio (descending)
+bool comp(pair<double,double>& a, pair<double,double>& b){
+    return a.first > b.first;
+}
+
+class Solution {
+  public:
+  
+    double fractionalKnapsack(vector<int>& val, vector<int>& wt, int capacity) {
+        
+        int n = val.size();
+        
+        // Store {value/weight ratio, weight}
+        vector<pair<double,double>> knap;
+        
+        for(int i = 0; i < n; i++){
+            knap.push_back({ double(val[i]) / wt[i], wt[i] });
+        }
+        
+        // Sort by highest ratio first
+        sort(knap.begin(), knap.end(), comp);
+        
+        double ans = 0.0;
+        int index = 0;
+        
+        // Traverse items greedily
+        while(index < n && capacity > 0){
+            
+            double weight = knap[index].second;
+            double ratio  = knap[index].first;
+            
+            // If whole item can be taken
+            if(weight <= capacity){
+                capacity -= weight;
+                ans += ratio * weight; // full value
+            }
+            else {
+                // Take fraction of item
+                ans += capacity * ratio;
+                break;
+            }
+            
+            index++;
+        }
+        
+        return ans;
+    }
+};
