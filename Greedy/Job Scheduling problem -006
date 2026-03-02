@@ -1,0 +1,147 @@
+/*
+===============================================================================
+Problem Name: Job Sequencing with Deadlines
+===============================================================================
+
+Problem Statement:
+------------------
+Given:
+- deadline[i] → deadline of i-th job
+- profit[i]   → profit of i-th job
+
+Each job:
+- Takes exactly 1 unit of time.
+- Must be completed on or before its deadline.
+- Only one job can be scheduled at a time.
+
+Task:
+Return:
+ans[0] → Maximum number of jobs done
+ans[1] → Maximum profit earned
+
+-------------------------------------------------------------------------------
+Core Idea:
+----------
+This is a GREEDY + DISJOINT SET UNION (DSU) problem.
+
+Greedy Strategy:
+1. Always pick the job with the highest profit first.
+2. Try to schedule it in the latest possible free slot
+   before its deadline.
+
+Why latest?
+Because it leaves earlier slots free for other jobs.
+
+To efficiently find the latest available slot,
+we use Disjoint Set (Union-Find).
+
+-------------------------------------------------------------------------------
+Algorithm Steps:
+----------------
+
+1. Combine jobs as {profit, deadline}.
+2. Sort jobs in descending order of profit.
+3. Find maximum deadline (maxi).
+4. Create a parent array of size (maxi + 1):
+   parent[i] = i
+   Each index represents a free time slot.
+5. For each job:
+   - Find the latest available slot using DSU.
+   - If slot != 0:
+        schedule job
+        add profit
+        union(slot, slot-1)
+
+Slot 0 means no free slot available.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+----------------
+Sorting: O(n log n)
+DSU operations: O(n * α(n))  ≈ O(n)
+Total: O(n log n)
+
+Where α(n) is inverse Ackermann (almost constant).
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-----------------
+O(n)
+
+- parent array
+- vector of jobs
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-----------
+1. All deadlines same → only 1 job possible.
+2. Deadlines greater than number of jobs.
+3. No possible scheduling → return {0,0}.
+
+-------------------------------------------------------------------------------
+*/
+
+// Comparator to sort jobs by profit (descending)
+bool comp(pair<int,int>& a, pair<int,int>& b){
+    return a.first > b.first;
+}
+
+class Solution {
+  public:
+  
+    // DSU Find with Path Compression
+    int find(int num, vector<int>& parent){
+        if(num == parent[num])
+            return num;
+        
+        return parent[num] = find(parent[num], parent);
+    }
+    
+    vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
+        
+        // ans[0] → number of jobs done
+        // ans[1] → total profit
+        vector<int> ans(2, 0);
+        
+        // Step 1: Store jobs as {profit, deadline}
+        vector<pair<int,int>> timer;
+        for(int i = 0; i < deadline.size(); i++){
+            timer.push_back({profit[i], deadline[i]});
+        }
+        
+        // Step 2: Sort jobs by highest profit first
+        sort(timer.begin(), timer.end(), comp);
+        
+        // Step 3: Find maximum deadline
+        int maxi = 0;
+        for(int i = 0; i < deadline.size(); i++){
+            maxi = max(maxi, deadline[i]);
+        }
+        
+        // Step 4: Initialize DSU parent array
+        vector<int> parent(maxi + 1);
+        for(int i = 0; i <= maxi; i++)
+            parent[i] = i;
+        
+        // Step 5: Process jobs
+        for(int i = 0; i < timer.size(); i++){
+            
+            int money = timer[i].first;   // profit
+            int end   = timer[i].second;  // deadline
+            
+            // Find latest available slot
+            int slot = find(end, parent);
+            
+            // If slot available
+            if(slot != 0){
+                ans[0]++;          // increment job count
+                ans[1] += money;   // add profit
+                
+                // Mark slot as occupied
+                parent[slot] = slot - 1;
+            }
+        }
+        
+        return ans;
+    }
+};
