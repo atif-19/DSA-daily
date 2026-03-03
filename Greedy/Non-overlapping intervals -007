@@ -1,0 +1,24 @@
+bool comp(vector<int>&I1,vector<int>&I2){
+    return I1[1]<I2[1];
+}
+class Solution {
+public:
+    int eraseOverlapIntervals(vector<vector<int>>& intervals) {
+        // sort the intervals based on end time
+        sort(intervals.begin(),intervals.end(),comp);
+
+        int n = intervals.size();
+        int index = 1,ans=0;
+        int end = intervals[0][1];
+        while(index<n){
+            if(intervals[index][0]<end){
+                ans++;
+            }
+            else{
+                end = intervals[index][1];
+            }
+            index++;
+        }
+        return ans;
+    }
+};
