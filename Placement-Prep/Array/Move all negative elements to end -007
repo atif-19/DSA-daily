@@ -1,0 +1,109 @@
+/*
+===============================================================================
+Problem Name: Segregate Positive and Negative Numbers
+===============================================================================
+
+Problem Statement:
+------------------
+Given an array `nums`, rearrange the elements such that:
+1. All **non-negative numbers (>= 0)** appear first.
+2. All **negative numbers (< 0)** appear after them.
+3. The **relative order of elements must be preserved**.
+
+This means the algorithm should be **stable**:
+- Positive numbers remain in their original order.
+- Negative numbers remain in their original order.
+
+-------------------------------------------------------------------------------
+Example:
+-------------------------------------------------------------------------------
+
+Input:
+nums = [1, -1, 3, 2, -7, -5, 11, 6]
+
+Output:
+[1, 3, 2, 11, 6, -1, -7, -5]
+
+Explanation:
+All non-negative numbers appear first in their original order,
+followed by negative numbers in their original order.
+
+-------------------------------------------------------------------------------
+Approach: Two Pass Stable Partition
+-------------------------------------------------------------------------------
+
+Idea:
+-----
+Use a temporary array to preserve order.
+
+Step 1:
+Traverse the array and store all **non-negative elements**.
+
+Step 2:
+Traverse again and store all **negative elements**.
+
+Step 3:
+Replace the original array with the temporary array.
+
+This guarantees stability.
+
+-------------------------------------------------------------------------------
+Algorithm Steps:
+-------------------------------------------------------------------------------
+1. Create an empty vector `temp`.
+2. Traverse `nums`:
+      If nums[i] >= 0 → push into temp.
+3. Traverse `nums` again:
+      If nums[i] < 0 → push into temp.
+4. Assign `nums = temp`.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+-------------------------------------------------------------------------------
+O(n)
+
+Reason:
+- Two passes through the array.
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-------------------------------------------------------------------------------
+O(n)
+
+Reason:
+- Extra temporary vector used to maintain order.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-------------------------------------------------------------------------------
+1. All elements positive.
+2. All elements negative.
+3. Array with zero (0 is treated as non-negative).
+4. Single element array.
+
+===============================================================================
+*/
+
+class Solution {
+  public:
+    void segregateElements(vector<int>& nums) {
+        
+        // Temporary vector to maintain stable ordering
+        vector<int> temp;
+        
+        // First pass: store all non-negative elements
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] >= 0)
+                temp.push_back(nums[i]);
+        }
+        
+        // Second pass: store all negative elements
+        for(int i = 0; i < nums.size(); i++){
+            if(nums[i] < 0)
+                temp.push_back(nums[i]);
+        }
+        
+        // Replace original array with rearranged result
+        nums = temp;
+    }
+};
