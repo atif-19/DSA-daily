@@ -1,0 +1,117 @@
+/*
+===============================================================================
+Problem Name: Intersection of Two Arrays
+(LeetCode 349 - Intersection of Two Arrays)
+===============================================================================
+
+Problem Statement:
+------------------
+Given two integer arrays `nums1` and `nums2`, return an array containing
+their **intersection**.
+
+Rules:
+1. Each element in the result must be **unique**.
+2. The order of elements in the output **does not matter**.
+
+-------------------------------------------------------------------------------
+Example:
+-------------------------------------------------------------------------------
+
+Input:
+nums1 = [1,2,2,1]
+nums2 = [2,2]
+
+Output:
+[2]
+
+Explanation:
+Even though 2 appears multiple times, it is returned only once
+because the intersection must contain **unique elements**.
+
+-------------------------------------------------------------------------------
+Approach: Hash Set (Efficient Lookup)
+-------------------------------------------------------------------------------
+
+We use **unordered_set** to achieve O(1) average lookup time.
+
+Idea:
+-----
+1. Store all elements of `nums1` inside a hash set.
+2. Traverse `nums2`.
+3. If an element exists in the set, add it to the answer set.
+4. Convert the answer set to a vector and return it.
+
+Why two sets?
+-------------
+Set `s`:
+    Stores elements from nums1 for fast lookup.
+
+Set `ans`:
+    Ensures the result contains **only unique elements**.
+
+-------------------------------------------------------------------------------
+Algorithm Steps:
+-------------------------------------------------------------------------------
+1. Create a hash set `s`.
+2. Insert all elements of `nums1` into `s`.
+3. Traverse `nums2`.
+4. If element exists in `s`, insert it into result set `ans`.
+5. Convert `ans` into a vector and return.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+-------------------------------------------------------------------------------
+O(n + m)
+
+Where:
+n = size of nums1
+m = size of nums2
+
+Reason:
+- Insertion in hash set → O(1) average
+- Lookup → O(1) average
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-------------------------------------------------------------------------------
+O(n + k)
+
+Where:
+n = elements stored from nums1
+k = size of intersection set
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-------------------------------------------------------------------------------
+1. One array empty → intersection is empty.
+2. No common elements → return empty array.
+3. All elements same in both arrays.
+4. Large arrays → hash lookup remains efficient.
+
+===============================================================================
+*/
+
+class Solution {
+public:
+    vector<int> intersection(vector<int>& nums1, vector<int>& nums2) {
+        
+        // Set to store elements of nums1
+        unordered_set<int> s;
+        
+        // Set to store unique intersection elements
+        unordered_set<int> ans;
+
+        // Insert all elements of nums1 into set
+        for(int i = 0; i < nums1.size(); i++)
+            s.insert(nums1[i]);
+
+        // Check elements of nums2
+        for(int i = 0; i < nums2.size(); i++){
+            if(s.count(nums2[i]))
+                ans.insert(nums2[i]);
+        }
+
+        // Convert set to vector for final result
+        return vector<int>(ans.begin(), ans.end());
+    }
+};
