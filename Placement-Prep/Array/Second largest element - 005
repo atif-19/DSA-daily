@@ -1,0 +1,139 @@
+/*
+===============================================================================
+Problem Name: Second Largest Element in an Array
+===============================================================================
+
+Problem Statement:
+------------------
+Given an array `arr`, find the **second largest distinct element** in the array.
+
+If the second largest element does not exist, return **-1**.
+
+Notes:
+- The second largest element must be **distinct** from the largest element.
+- The solution should ideally work in **one traversal** of the array.
+
+-------------------------------------------------------------------------------
+Example:
+--------
+
+Input:
+arr = [12, 35, 1, 10, 34, 1]
+
+Output:
+34
+
+Explanation:
+Largest element = 35
+Second largest = 34
+
+------------------------------------------------
+
+Input:
+arr = [10, 10, 10]
+
+Output:
+-1
+
+Explanation:
+No second largest distinct element exists.
+
+-------------------------------------------------------------------------------
+Approach: Single Pass Tracking
+-------------------------------------------------------------------------------
+
+Instead of sorting the array (which would take O(n log n)),
+we track two variables during a single traversal:
+
+1. `first`  → stores the largest element
+2. `second` → stores the second largest distinct element
+
+Algorithm:
+----------
+1. Initialize:
+       first  = arr[0]
+       second = -1
+
+2. Traverse the array from index 1:
+       element = arr[i]
+
+3. If element > first:
+       second = first
+       first  = element
+
+4. Else if:
+       element > second
+       AND element != first
+
+       then update:
+       second = element
+
+5. Return `second`.
+
+This ensures we always keep track of the top two distinct values.
+
+-------------------------------------------------------------------------------
+Why `element != first`?
+-------------------------------------------------------------------------------
+To ensure duplicates of the largest element do not incorrectly
+become the second largest.
+
+Example:
+arr = [10, 10, 9]
+
+Without this condition, second could become 10 (incorrect).
+
+-------------------------------------------------------------------------------
+Time Complexity:
+-------------------------------------------------------------------------------
+O(n)
+
+Only a single pass through the array is required.
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-------------------------------------------------------------------------------
+O(1)
+
+No extra space used except two variables.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-------------------------------------------------------------------------------
+1. Array size < 2 → second largest does not exist.
+2. All elements same → return -1.
+3. Negative numbers → handled correctly.
+4. Array already sorted → still O(n).
+
+===============================================================================
+*/
+
+class Solution {
+  public:
+  
+    int getSecondLargest(vector<int> &arr) {
+        
+        // Initialize largest and second largest
+        int first = arr[0];
+        int second = -1;
+        
+        // Traverse the array
+        for(int i = 1; i < arr.size(); i++){
+            
+            int element = arr[i];
+            
+            // If new largest element found
+            if(element > first){
+                second = first;
+                first = element;
+            }
+            
+            // If element lies between first and second
+            else if(element > second && element != first){
+                second = element;
+            }
+        }
+        
+        return second;
+    }
+};
