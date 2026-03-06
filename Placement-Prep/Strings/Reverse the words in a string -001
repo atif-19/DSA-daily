@@ -1,0 +1,136 @@
+/*
+===============================================================================
+Problem Name: Reverse Words in a String
+(LeetCode 151 - Reverse Words in a String)
+===============================================================================
+
+Problem Statement:
+------------------
+Given a string `s`, reverse the order of words.
+
+Rules:
+1. A word is defined as a sequence of non-space characters.
+2. Words must appear in reverse order in the output.
+3. Remove leading, trailing, and extra spaces between words.
+4. Only a single space should separate words in the final string.
+
+-------------------------------------------------------------------------------
+Example:
+-------------------------------------------------------------------------------
+
+Input:
+s = "  the sky   is blue  "
+
+Output:
+"blue is sky the"
+
+Explanation:
+- Leading spaces removed
+- Multiple spaces between words reduced to a single space
+- Word order reversed
+
+-------------------------------------------------------------------------------
+Approach: Parsing + Reverse Construction
+-------------------------------------------------------------------------------
+
+Idea:
+-----
+1. Ignore leading spaces.
+2. Extract words one by one.
+3. Store words in a vector.
+4. Traverse the vector in reverse order.
+5. Build the final string.
+
+Why store words first?
+Because reversing word order becomes very simple.
+
+-------------------------------------------------------------------------------
+Algorithm Steps:
+-------------------------------------------------------------------------------
+1. Skip leading spaces.
+2. Traverse the string character by character.
+3. Build characters into a temporary string `word`.
+4. When a space is found:
+      - If `word` is non-empty, store it.
+      - Clear `word`.
+5. After traversal, push the last word if it exists.
+6. Traverse the `words` vector in reverse order.
+7. Construct the final string with single spaces.
+
+-------------------------------------------------------------------------------
+Time Complexity:
+-------------------------------------------------------------------------------
+O(n)
+
+Reason:
+- One pass to extract words.
+- One pass to rebuild the result.
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-------------------------------------------------------------------------------
+O(n)
+
+Reason:
+- Vector storing words.
+- Result string.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-------------------------------------------------------------------------------
+1. String contains only spaces.
+2. Single word input.
+3. Multiple spaces between words.
+4. Leading or trailing spaces.
+
+===============================================================================
+*/
+
+class Solution {
+public:
+    string reverseWords(string s) {
+
+        // Vector to store extracted words
+        vector<string> words;
+
+        // Remove leading spaces
+        int i = 0;
+        while(i < s.size() && s[i] == ' ')
+            i++;
+
+        string word = "";
+
+        // Traverse the string
+        while(i < s.size()){
+
+            // Build the current word
+            if(s[i] != ' ')
+                word += s[i];
+
+            // If space encountered and word exists
+            else if(word.size()){
+                words.push_back(word);
+                word.clear();
+            }
+
+            i++;
+        }
+
+        // Push the last word if present
+        if(word.size() > 0)
+            words.push_back(word);
+
+        // Build the reversed string
+        string ans = "";
+
+        for(int i = words.size() - 1; i >= 0; i--){
+            ans += words[i];
+            ans += ' ';
+        }
+
+        // Remove trailing space
+        ans.pop_back();
+
+        return ans;
+    }
+};
