@@ -1,0 +1,165 @@
+/*
+===============================================================================
+Problem Name: Permutation in String
+(LeetCode 567 - Permutation in String)
+===============================================================================
+
+Problem Statement:
+------------------
+Given two strings `s1` and `s2`, return **true** if `s2` contains a
+**permutation of `s1`**, otherwise return **false**.
+
+A permutation of a string is a rearrangement of its characters.
+
+In other words:
+Check if any substring of `s2` has the **same character frequency**
+as `s1`.
+
+-------------------------------------------------------------------------------
+Example:
+-------------------------------------------------------------------------------
+
+Input:
+s1 = "ab"
+s2 = "eidbaooo"
+
+Output:
+true
+
+Explanation:
+Substring "ba" in s2 is a permutation of "ab".
+
+-----------------------------------
+
+Input:
+s1 = "ab"
+s2 = "eidboaoo"
+
+Output:
+false
+
+Explanation:
+No substring of length 2 contains both 'a' and 'b'.
+
+-------------------------------------------------------------------------------
+Approach: Sliding Window + Frequency Array
+-------------------------------------------------------------------------------
+
+Key Idea:
+---------
+If a substring of `s2` is a permutation of `s1`,
+then both must have the **same frequency of characters**.
+
+We use a **sliding window of size s1.length()** on `s2`
+and compare the character frequencies.
+
+Steps:
+------
+1. Create two frequency arrays:
+       count1 → frequency of characters in s1
+       count2 → frequency of characters in current window of s2
+
+2. Initialize the first window in `s2` with size `s1.length()`.
+
+3. Slide the window through `s2`:
+       - Compare count1 and count2
+       - If equal → permutation found → return true
+       - Remove left character from window
+       - Add next character to window
+
+4. If no window matches, return false.
+
+-------------------------------------------------------------------------------
+Sliding Window Visualization:
+-------------------------------------------------------------------------------
+
+s1 = "ab"
+s2 = "eidbaooo"
+
+Window size = 2
+
+ei → not match
+id → not match
+db → not match
+ba → MATCH → return true
+
+-------------------------------------------------------------------------------
+Time Complexity:
+-------------------------------------------------------------------------------
+O(n)
+
+Where:
+n = length of s2
+
+Reason:
+Each character enters and leaves the sliding window once.
+
+Frequency comparison of 26 elements is constant.
+
+-------------------------------------------------------------------------------
+Space Complexity:
+-------------------------------------------------------------------------------
+O(1)
+
+Reason:
+Two fixed-size arrays of size 26.
+
+-------------------------------------------------------------------------------
+Edge Cases:
+-------------------------------------------------------------------------------
+1. s1 longer than s2 → impossible → return false.
+2. Strings with repeating characters.
+3. s1 length = 1.
+4. Exact permutation appears at the end of s2.
+
+===============================================================================
+*/
+
+class Solution {
+public:
+    bool checkInclusion(string s1, string s2) {
+
+        // If s1 is longer than s2, permutation cannot exist
+        if(s2.size() < s1.size())
+            return false;
+
+        // Frequency arrays for characters
+        vector<int> count1(26, 0);
+        vector<int> count2(26, 0);
+
+        // Count characters in s1
+        for(int i = 0; i < s1.size(); i++)
+            count1[s1[i] - 'a']++;
+
+        int i = 0, j = 0;
+
+        // Build the first window of size s1.length()
+        while(j < s1.size()){
+            count2[s2[j] - 'a']++;
+            j++;
+        }
+
+        j--; // Adjust j to last index of the window
+
+        // Slide the window across s2
+        while(j < s2.size()){
+
+            // Check if both frequency arrays match
+            if(count1 == count2)
+                return true;
+
+            // Remove leftmost character of window
+            count2[s2[i] - 'a']--;
+            i++;
+
+            // Move window forward
+            j++;
+
+            // Add next character into the window
+            if(j < s2.size())
+                count2[s2[j] - 'a']++;
+        }
+
+        return false;
+    }
+};
