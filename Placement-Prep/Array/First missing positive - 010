@@ -1,0 +1,68 @@
+/*
+    🎯 First Missing Positive
+
+    🧩 Problem:
+    Given an unsorted integer array nums, return the smallest missing positive integer.
+    Must run in O(n) time and O(1) space.
+
+    🚀 Approach: Index Marking (Cyclic Insight without swapping)
+
+    🧠 Intuition:
+    - The answer must lie in the range [1, n+1]
+    - Use the array itself as a hash map by marking indices
+
+    ⚙️ Algorithm:
+
+    1. Clean the array:
+       Replace all values <= 0 or > n with (n + 1)
+       → because they are irrelevant to our answer
+
+    2. Mark presence:
+       For each value `val = abs(nums[i])`:
+       If val is in range [1, n], mark index (val - 1) as negative
+       → nums[val - 1] = -nums[val - 1] (only if it's positive)
+
+    3. Find answer:
+       First index i where nums[i] > 0 → missing number = i + 1
+
+    4. If all indices are marked:
+       Return n + 1
+
+    ⏱️ Complexity:
+    - Time: O(n)
+    - Space: O(1)
+
+    🔥 Key Insight:
+    Use index as a presence marker → negative means "number exists"
+*/
+
+class Solution {
+public:
+    int firstMissingPositive(vector<int>& nums) {
+        int n = nums.size();
+
+        // Step 1: Clean invalid values
+        for(int i = 0; i < n; i++){
+            if(nums[i] <= 0 || nums[i] > n){
+                nums[i] = n + 1;
+            }
+        }
+
+        // Step 2: Mark presence
+        for(int i = 0; i < n; i++){
+            int val = abs(nums[i]);
+            if(val <= n){
+                if(nums[val - 1] > 0)
+                    nums[val - 1] = -nums[val - 1];
+            }
+        }
+
+        // Step 3: Find first missing positive
+        for(int i = 0; i < n; i++){
+            if(nums[i] > 0)
+                return i + 1;
+        }
+
+        return n + 1;
+    }
+};
