@@ -1,0 +1,16 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    string s;
+    getline(cin,s);
+    
+    int hash = 0,star = 0;
+    for(int i=0;i<s.size();i++){
+        if(s[i]=='#')
+            hash++;
+        else if(s[i]=='*')
+            star++;
+    }
+    cout<<star-hash<<" ";
+    return 0;
+}
