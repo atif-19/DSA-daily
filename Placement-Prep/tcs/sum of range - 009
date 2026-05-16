@@ -1,0 +1,21 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int i , j;
+    cin>>i>>j;
+    int ans;
+    if(i<0 || i>=j || j>=10000){
+        cout<<"Invalid Input"<<endl;
+        return 0;
+    }
+    else{
+        ans = 0;
+        for(int k=i;k<=j;k++)
+        {
+            ans += k;
+        }
+    }
+    cout<<ans;
+    return 0;
+    
+}
