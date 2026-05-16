@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    int n,m,p,k,j;
+    cin>>n;
+    cin>>m;
+    cin>>p;
+    cin>>k;
+    cin>>j;
+    
+    int ans = n;
+    
+    while(m>=k){
+        ans--;
+        m-=k;
+    }
+    while(p>=j)
+    {
+        ans--;
+        p-=j;
+    }
+    
+    if(p||m)
+    ans--;
+    if(ans<0)
+    ans=0;
+    cout<<ans<<" ";
+}
