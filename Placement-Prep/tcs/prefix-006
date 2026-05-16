@@ -1,0 +1,23 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    vector<string>arr;
+    arr = {"rama","raja","radha","raman"};
+    
+    string ans="";
+    
+    sort(arr.begin(),arr.end());
+    int i = 0,j=0;
+    string start = arr[0];
+    string end = arr[arr.size()-1];
+    
+    while(i<start.size()&&j<end.size()){
+        if(start[i]!=end[j])
+            break;
+            
+        ans += start[i];
+        i++;
+        j++;
+    }
+    cout<<ans<<" ";
+}
