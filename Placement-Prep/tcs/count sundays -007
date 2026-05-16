@@ -1,0 +1,29 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    string s;
+    getline(cin,s);
+    
+    int n;
+    cin>>n;
+    
+    unordered_map<string,int>mp;
+    mp["sun"]=1;
+    mp["mon"]=7;
+    mp["tue"]=6;
+    mp["wed"]=5;
+    mp["thu"]=4;
+    mp["fri"]=3;
+    mp["sat"]=2;
+    
+    int rem = n;
+    int ans = 0;
+    if(rem>=mp[s]){
+        rem -= mp[s];
+        ans++;
+    }
+    
+    ans += rem/7;
+    cout<<ans<<" ";
+    
+}
