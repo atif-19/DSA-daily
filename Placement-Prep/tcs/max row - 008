@@ -1,0 +1,34 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int R,C;
+    cin>>R>>C;
+    vector<vector<bool>>matrix(R,vector<bool>(C,0));
+    
+    for(int i=0;i<R;i++){
+        for(int j=0;j<C;j++){
+            bool num;
+            cin>>num;
+            matrix[i][j]=num;
+        }
+    }
+    
+    int ans = 0,maxi = 0;
+    for(int i=0;i<R;i++){
+        int count = 0;
+        for(int j=0;j<C;j++){
+            if(matrix[i][j]==1)
+                count++;
+        }
+        if(count>maxi)
+        {
+            maxi = count;
+            ans = i;
+        }
+    }
+    
+    // 1 indexed
+    cout<<ans+1<<" ";
+    
+    
+}
