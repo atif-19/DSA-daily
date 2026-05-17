@@ -1,0 +1,38 @@
+#include<bits/stdc++.h>
+using namespace std;
+void subset(vector<int>&arr,int h,int &sum,int &ans,int index){
+    
+    if(sum==h)
+    {
+        ans = 1;
+        return;
+    }
+    if(ans==1||index>=arr.size())
+        return;
+    
+    //take this element
+    sum+=arr[index];
+    subset(arr,h,sum,ans,index+1);
+    // do not take this element
+    sum-=arr[index];
+    subset(arr,h,sum,ans,index+1);
+}
+int main(){
+    int h,n;
+    cin>>n;
+    vector<int>arr;
+    for(int i=0;i<n;i++)
+    {
+        int num;
+        cin>>num;
+        arr.push_back(num);
+    }
+    
+    cin>>h;
+    int sum = 0,ans = 0;
+    subset(arr,h,sum,ans,0);
+    if(ans)
+        cout<<"Yes"<<endl;
+    else
+        cout<<"No"<<endl;
+}
