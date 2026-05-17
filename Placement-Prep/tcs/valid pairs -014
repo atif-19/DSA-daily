@@ -1,0 +1,31 @@
+#include<bits/stdc++.h>
+using namespace std;
+int form(vector<int>NUM,int X , int Y){
+    int count = 0;
+    for(int i=0;i<NUM.size();i++){
+        for(int j=0;j<NUM.size();j++){
+            string s1 = to_string(NUM[i]);
+            string s2 = to_string(NUM[j]);
+            string s = s1+s2;
+            int n = stoi(s);
+            
+            if(n>=X && n<=Y)
+                count++;
+        }
+    }
+    return count;
+}
+int main(){
+    int N,X,Y;
+    vector<int>NUM;
+    cin>>N>>X>>Y;
+    
+    for(int i=0;i<N;i++){
+        int num;
+        cin>>num;
+        NUM.push_back(num);
+    }
+    
+    cout<<form(NUM,X,Y)<<endl;
+    return 0;
+}
