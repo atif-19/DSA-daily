@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    int N;
+    cin>>N;
+    
+    vector<int>arr;
+    long long total =0;
+    for(int i=0;i<N;i++){
+        int num;
+        cin>>num;
+        arr.push_back(num);
+        total+=num;
+    }
+    
+    long long leftSum = 0;
+    for(int i=0;i<N;i++){
+        total = total - arr[i];
+        if(leftSum == total){
+            cout<<i;
+            return 0;
+        }
+        leftSum += arr[i];
+    }
+    
+    cout<<-1;
+    
+}
