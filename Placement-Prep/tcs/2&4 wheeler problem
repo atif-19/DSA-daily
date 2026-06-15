@@ -1,0 +1,21 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    int V ,W;
+    cin>>V;
+    cin>>W;
+    
+    if(W%2 || W<2*V || W>4*V)
+    {
+        cout<<"INVALID INPUT";
+        return 0;
+    }
+   int FW = (W - 2*V)/2;
+   int TW = V - FW;
+   cout<<TW<<"\n"<<FW;
+    
+
+    
+    
+    
+}
