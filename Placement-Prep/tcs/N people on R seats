@@ -1,0 +1,22 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    int n,r;
+    cin>>n>>r;
+    
+    if(n<r){
+        cout<<"INVALID";
+        return 0;
+    }
+    long long ans = 1;
+    
+    while(r--){
+        ans *= n;
+        n--;
+    }
+    
+    cout<<ans;
+    
+    
+    return 0;
+}
