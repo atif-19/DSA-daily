@@ -1,0 +1,31 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main(){
+    int n;
+    cin>>n;
+    
+    int original = n,result = 0,rem, digits = 0;
+    
+    int temp = n;
+    // count number of digits
+    while(temp){
+        digits++;
+        temp/=10;
+    }
+    
+    temp = n;
+    while(temp){
+        rem = temp % 10;
+        temp /=10;
+        
+        result += pow(rem,digits);
+    }
+    
+    if(original == result){
+        cout<<"Armstrong Number";
+    }
+    else{
+        cout<<"Not an Armstrong Number";
+    }
+    
+}
