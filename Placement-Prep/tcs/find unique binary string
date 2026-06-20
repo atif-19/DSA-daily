@@ -1,0 +1,15 @@
+class Solution {
+public:
+    string findDifferentBinaryString(vector<string>& nums) {
+        string s="";
+        for(int i=0;i<nums.size();i++){
+           s += nums[i][i];
+        }
+               if(s[i]=='0')
+                s[i]='1';
+            else
+                s[i]='0';
+        }
+        return s;
+    }
+};
