@@ -1,0 +1,42 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int N,W;
+    cin>>N>>W;
+    
+    vector<int>arr;
+    for(int i=0;i<N;i++){
+        int num;
+        cin>>num;
+        
+        arr.push_back(num);
+    }
+    
+    
+    int boxes=0,groups=0,Curr=0;
+    
+    for(int i=0;i<arr.size();i++){
+        if(arr[i]>W)
+            break;
+            
+        if(Curr + arr[i]<=W){
+            Curr += arr[i];
+            boxes++;
+        }
+        else{
+            groups++;
+            Curr = arr[i];
+            boxes++;
+        }
+    }
+    
+    if(Curr){
+        groups++;
+    }
+    
+    cout<<groups<<" "<<boxes;
+    
+}
+    
+    
+    
