@@ -1,0 +1,34 @@
+#include<bits/stdc++.h>
+using namespace std;
+int main(){
+    int N,T;
+    cin>>N;
+    vector<int>arr;
+    for(int i=0;i<N;i++){
+        int num;
+        cin>>num;
+        arr.push_back(num);
+    }
+    cin>>T;
+    
+    int maxi=0,index=-1,streak = 0;
+    
+    for(int i=0;i<N;i++){
+        if(arr[i]<=T){
+            streak++;
+        }
+        else{
+            streak = 0;
+        }
+        if(streak > maxi){
+            maxi = streak;
+            index = i;
+        }
+    }
+    
+    int start = index-maxi+1;
+    
+    cout<<arr[start]<<" "<<maxi<<" "<<index;
+    
+    
+}
