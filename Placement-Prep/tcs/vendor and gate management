@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    int N;
+    cin>>N;
+    
+    unordered_map<int,int>mp;
+    for(int i=0;i<N;i++){
+        int num;
+        cin>>num;
+        mp[num]++;
+    }
+    
+    int M;
+    cin>>M;
+    // use this for the buffer problem
+    cin.ignore();
+    
+    int Active = 0,check=0,blocked =0;
+    for(int i=0;i<M;i++){
+        string s;
+        getline(cin,s);
+        
+        // parse the string
+        string operation;
+        int ID=0;
+        int j=0;
+        while(j<s.size()&& s[j]!=' '){
+            operation.push_back(s[j]);
+            j++;
+        }
+        
+        j++;
+        while(j<s.size() && s[j]!='\n' && s[j]!='\r'){
+            ID = ID*10 + (s[j]-'0');
+            j++;
+        }
+        
+        if(operation == "ENTRY"){
+            if(!mp[ID]){
+                blocked++;
+            }
+            else
+                Active++;
+        }
+        else if(operation == "EXIT"){
+            if(Active>0)
+            Active--;
+        }
+        else if(operation == "CHECK"){
+            check++;
+        }
+    }
+    
+    cout<<"Active Vendors: "<<Active<<endl;
+    cout<<"Blocked: "<<blocked<<endl;
+    cout<<"Checked: "<<check<<endl;
+    
+}
