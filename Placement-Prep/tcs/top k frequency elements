@@ -1,0 +1,40 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+int main(){
+    string s;
+    getline(cin,s);
+    int k;
+    cin>>k;
+    stringstream ss(s);
+    vector<int>arr;
+    int num;
+    
+    while(ss>>num){
+        arr.push_back(num);
+         if (ss.peek() == ',') {
+            ss.ignore(); // Discard the comma
+        }
+    }
+    unordered_map<int,int>mp;
+    
+    for(int i=0;i<arr.size();i++){
+        mp[arr[i]]++;
+    }
+    // max heap
+    priority_queue<pair<int,int>>pq;
+    
+    for(int i=0;i<arr.size();i++){
+        if(mp[arr[i]]){
+            pq.push({mp[arr[i]],arr[i]});
+            mp[arr[i]]=0;
+        }
+    }
+    
+    for(int i=0;i<k;i++){
+        cout<<pq.top().second<<" ";
+        pq.pop();
+    }
+    
+    
+}
