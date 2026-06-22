@@ -1,0 +1,28 @@
+#include <bits/stdc++.h>
+using namespace std;
+int main() {
+    int n;
+    cin>>n;
+    vector<int>arr;
+    double sum = 0;
+    for(int i=0;i<n;i++){
+        int num;
+        cin>>num;
+        sum+=num;
+        arr.push_back(num);
+    }
+    
+    double mean = sum/n;
+    
+    double newSum = 0;
+    
+    for(int i=0;i<n;i++){
+        double deviation = (mean-arr[i])*(mean-arr[i]);
+        newSum += deviation;
+    }
+    
+    double variance = newSum/n;
+    double std = sqrt(variance);
+    
+    cout<<std;
+}
